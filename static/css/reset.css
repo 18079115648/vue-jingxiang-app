@@ -87,7 +87,6 @@ input {
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 0.28rem;
     font-weight: normal;
     vertical-align: baseline;
     list-style: none;
@@ -170,6 +169,7 @@ li {
 html,
 body {
     width: 100%;
+    font-size: 0.28rem;
 }
 
 body {

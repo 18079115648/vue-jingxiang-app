@@ -1,6 +1,53 @@
 <template>
     <div class="app">
-        11111
+    	<Header title="金象大药房" back="hidden"></Header>
+    	<div class="search-content">
+    		<a href="#/search" class="search-input">
+    			<img src="../../static/images/search-icon.png" />
+    			<span>搜索你要的宝贝</span>
+    		</a>
+    	</div>
+    	<section class="product-banner">
+			<mt-swipe :auto="0">
+				<mt-swipe-item>
+					<a href="" class="fullEle">
+						111
+					</a>
+				</mt-swipe-item>
+				<mt-swipe-item>
+					<a href="" class="fullEle">
+						222
+					</a>
+				</mt-swipe-item>
+			</mt-swipe>
+		</section>
+		<section class="product-nav">
+			<div class="left"></div>
+			<div class="right">
+				<div class="top"></div>
+				<div class="bottom"></div>
+			</div>
+		</section>
+		<section class="pop-product">
+			<div class="pop-product-tit">
+				<div class="tit"><span class="pop-icon"></span>人气热销</div>
+			</div>
+			<div class="pop-product-list">
+				<router-link to="" class="pop-product-item">
+					<div class="fullEle">
+						<div class="pop-product-img">
+							<img class="fullEle" src="" />
+						</div>
+						<div class="pop-product-desc">
+							<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
+							<p class="pop-product-price price-color">&yen; 111</p>
+						</div>
+					</div>
+					
+				</router-link>
+			</div>
+		</section>
+        <Menu actived="first"></Menu>
     </div>
 </template>
 
@@ -11,6 +58,128 @@ export default {
 }
 </script>
 
-<style lang="scss">
-    
+<style lang="scss" scoped>
+.app{
+	background: #f5f5f9;
+}    
+.search-content{
+	padding: 0 0.35rem 0.25rem;
+	background: #3cafb6;
+}
+.search-input{
+	width: 100%;
+	height: 0.55rem;
+	background: #FFFFFF;
+	border-radius: 0.08rem;
+	display: flex;
+	align-items: center;
+	img{
+		width: 0.32rem;
+		margin-left: 0.2rem;
+		margin-right: 0.2rem;
+	}
+	span{
+		color: #777;
+	}
+}
+.product-banner{
+	width: 100%;
+	height: 3rem;
+	background: #fff;
+}
+.product-nav{
+	margin-top: 0.2rem;
+	display: flex;
+	height: 5rem;
+	div{
+		flex: 1;
+		background: #fff;
+	}
+	.right{
+		border-left: 1px solid #F5F5F9;
+		div{
+			height: 2.5rem;
+		}
+		.top{
+			border-bottom: 1px solid #F5F5F9;
+		}
+	}
+}
+.pop-product-tit {
+	height: 1.1rem;
+	background: #f5f5f9;
+	line-height: 1.1rem;
+	text-align: center;
+}
+
+.pop-product-tit .tit {
+	display: inline-block;
+	height: 100%;
+	color: #ffad06;
+	font-size: 0.3rem;
+	position: relative;
+	padding-left: 0.46rem;
+}
+
+.pop-product-tit .tit:after {
+	content: '';
+	width: 0.5rem;
+	height: 0;
+	border-bottom: 1px solid #ffad06;
+	position: absolute;
+	right: -0.8rem;
+	top: 48%;
+}
+
+.pop-product-tit .tit:before {
+	content: '';
+	width: 0.5rem;
+	height: 0;
+	border-bottom: 1px solid #ffad06;
+	position: absolute;
+	left: -0.8rem;
+	top: 48%;
+}
+
+.pop-icon {
+	position: absolute;
+	width: 0.36rem;
+	height: 0.36rem;
+	background: url(../../static/images/pop-icon.png) no-repeat center;
+	background-size: 100%;
+	left: 0;
+	top: 50%;
+	margin-top: -0.18rem;
+}
+.pop-product-list{
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0 0.04rem;
+}
+.pop-product-item{
+	width: 50%;
+	height: 5rem;
+	padding: 0 0.08rem;
+	margin-bottom: 0.2rem;
+}
+.pop-product-item>div{
+	background: #fff;
+	padding: 0.16rem;
+}
+.pop-product-img{
+	width: 3.15rem;
+	height: 3.15rem;
+}
+.pop-product-desc{
+	padding-top: 0.3rem;
+}
+.pop-product-name{
+	line-height: 1.2;
+	height: 0.64rem;
+	overflow: hidden;
+}
+.pop-product-price{
+	padding-top: 0.16rem;
+	font-size: 0.3rem;
+}
 </style>

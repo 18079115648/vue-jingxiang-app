@@ -23,34 +23,25 @@ export default{
 </script>
 
 <style lang="scss">
-.allRepair .loading-layer{
-	display: none;
+input::-webkit-inner-spin-button,  
+input::-webkit-outer-spin-button { 
+        -webkit-appearance: none !important; 
+        appearance: none !important; 
+        margin: 0 !important; 
 }
-.content-html img{
-	display: inline-block;
-	border: 0;
-	max-width: 100%;
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+		display: none;
 }
-.updata-ing{
-	position: fixed;
-	text-align: center;
-	color: #666;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%,-50%);
-	z-index: 60;
-	margin-top: 30px;
-	font-size: 0.28rem;
-	
+.app{
+	min-height: 100vh;
 }
-.media-item.add input {
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 100rem;
-		bottom: 100rem;
-		opacity: 0;
-	}
+.price-color{
+	color: #f60;
+}
+.com-color{
+	color: #3cafb6;
+}
 .pop-product-img{
 	border: 1px solid #eee;
 }
@@ -64,7 +55,7 @@ export default{
 	opacity: 1 !important;
 }
 .mint-swipe-indicator.is-active{
-	background: #39B382 !important;
+	background: #3cafb6 !important;
 }
 .btn-hover:active{
 	opacity: 0.7;
@@ -133,12 +124,7 @@ export default{
 [v-cloak] {
   display: none;
 }
-input::-webkit-inner-spin-button,  
-input::-webkit-outer-spin-button { 
-        -webkit-appearance: none; 
-        appearance: none; 
-        margin: 0; 
-}
+
 	.has-right-arror{
 		position: relative;
 	}

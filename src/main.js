@@ -11,9 +11,13 @@ import axios from 'axios'
 import mint from 'mint-ui'
 import 'mint-ui/lib/style.css'
 
-
-
 import VueScroller from 'vue-scroller'
+
+import Menu from '@/components/common/tabBar'
+Vue.component('Menu', Menu)
+import Header from '@/components/common/Header'
+Vue.component('Header', Header)
+
 Vue.use(VueScroller)
 
 Vue.config.productionTip = true
