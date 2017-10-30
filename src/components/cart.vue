@@ -1,7 +1,10 @@
 <template>
     <div class="app">
     	<Header title="购物车" back="hidden"></Header>
-    	<div class="edit-status">编辑</div>
+    	<div class="edit-status" @click="editStatus = !editStatus">
+    		<span v-show="!editStatus">编辑</span>
+    		<span v-show="editStatus">完成</span>
+    	</div>
     	<div class="product-list">
 			<div class="product-item">
 				<div class="select-status">
@@ -57,11 +60,12 @@
 			</div>
 			<div class="total-text">
 				<span>全选</span>
-				<div class="total-price">
+				<div class="total-price" v-show="!editStatus">
 					<span>合计：</span>
 					<span class="price-color">&yen;111</span>
 				</div>
-				<div class="btn-operate">去结算(6)</div>
+				<div class="btn-operate" v-show="!editStatus">去结算(6)</div>
+				<div class="btn-delete" v-show="editStatus">删除</div>
 			</div>
 		</div>
 		<Menu actived="four"></Menu>
@@ -73,9 +77,10 @@
 export default {
 	data() {
 	    return {
-	      selected: [],
-	      aa: 1,
-	      bb: 2
+	    	editStatus: false,
+		    selected: [],
+		    aa: 1,
+		    bb: 2
 	    }
 	},
 	methods: {
@@ -238,5 +243,16 @@ export default {
 			color: #fff;
 		}
 	}
+}
+.btn-delete{
+	background: #f19325;
+    color: #fff;
+    height: 0.66rem;
+    align-self: center;
+    line-height: 0.66rem;
+    font-size: 0.28rem;
+    padding: 0 0.45rem;
+    margin-right: 0.4rem;
+    border-radius: 0.08rem;
 }
 </style>

@@ -1,0 +1,94 @@
+<template>
+  <section class="information">
+
+
+    <!-- 资讯列表 -->
+    <div class="msg_title"  v-for="item in banner">
+      <!-- 列表图标 -->
+      <div class="img_left">
+        <img src="" >
+      </div>
+      <!-- 列表文字 -->
+      <div class="msg_text">
+        <div>{{item.text}}</div>
+        <div class="teat_info">{{item.data}}</div>
+      </div>
+    </div>
+
+  
+
+   
+
+  </section>
+</template>
+
+<script>
+
+export default {
+  data() {
+    return {
+      loading: false,
+      scroller: null,
+      per_page: 20, // 每页条数
+      page: 1, // 当前页
+      last_page: 1, // 总页数
+      ismove: true, // 判断滑动和点击
+      imgs: '', // imgs
+      items: '', // 内容
+      banner: [
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"}
+      ] // banner
+    }
+  }
+
+}
+</script>
+
+<style lang="scss" scoped>
+* {
+    line-height: .28rem
+  }
+
+.information {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f5f5f9
+}
+
+.msg_title{
+  width: 100%;
+  height: 1.8rem;
+  background-color: #fff;
+  padding: .2rem .34rem .2rem .2rem;
+  position: relative;
+  border-bottom: solid 1px #f5f5f5
+}
+.img_left{
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color:blue;
+  
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}
+.msg_text{
+  width: 100% ;
+  height: 1.4rem;
+  position: absolute;
+  top: .2rem;
+  padding-left: 1.6rem;
+  padding-right: .4rem;
+}
+.teat_info{
+  position: absolute;
+  bottom: 0;
+  font-size: .9em;
+  color: #ccc;
+}
+</style>

@@ -57,6 +57,17 @@ input::-webkit-search-cancel-button {
 .mint-swipe-indicator.is-active{
 	background: #3cafb6 !important;
 }
+.btn-default{
+	width: 6.9rem;
+	height: 0.8rem;
+	border-radius: 0.08rem;
+	text-align: center;
+	line-height: 0.8rem;
+	color: #fff;
+	background: #3cafb6;
+	margin: 0 auto;
+	font-size: 0.32rem;
+}
 .btn-hover:active{
 	opacity: 0.7;
 }
@@ -131,13 +142,13 @@ input::-webkit-search-cancel-button {
 	.has-right-arror:after {
 		position: absolute;
 		content: '';
-		width: 0.15rem;
-		height: 0.3rem;
+		width: 0.12rem;
+		height: 0.2rem;
 		right: 0.3rem;
 		top: 50%;
-		margin-top: -0.17rem;
-		background: url(../static/image/arror.png) no-repeat center;
-		background-size: 100%;
+		margin-top: -0.12rem;
+		background: url(../static/images/arror.png) no-repeat center;
+		background-size: 100% 100%;
 	}
 	.fullEle{
 		display: block;
