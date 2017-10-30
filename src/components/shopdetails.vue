@@ -1,5 +1,7 @@
 <template>
   <section class="shopdetails">
+    <Header title="详情"></Header>
+
     <div class="shopdetails_title">
       <h3>超级无敌神奇的大补丸可活络筋骨、延年益寿、滋阴壮阳、上天入地就此一家</h3>
       <div>¥ <span>999.00</span></div>
@@ -13,24 +15,50 @@
         </div>
         <div class="evaluate_right">
           <span>好评度</span><span class="money">90</span><span class="money">%</span>
-          <div class="icon"></div>
+          <div class="icon">
+          </div>
         </div>
       </div>
       <hr>
     </div>
 
+    <div class="review">
+      <div class="review_info">
+        <div class="review_portrait">
+          <img src="../../static/images/图/1-13.png">
+          <h4>萨达萨达</h4>
+        </div>
+
+
+        <div class="review_grade">
+          <img src="../../static/images/28@3x.png">
+          <img src="../../static/images/28@3x.png">
+          <img src="../../static/images/28@3x.png">
+          <img src="../../static/images/27@3x.png">
+          <img src="../../static/images/27@3x.png">
+        </div>
+      </div>
+
+      <div class="review_body">
+        萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达
+      </div>
+    </div>
+
+
+    
+
     <!-- 详情内容 -->
     <div class="picture">
       <h4>图文介绍</h4>
       <div class="pics"  style="font-size: .28rem;">
-        <img src="" >
+        <img src="../../static/images/图/1-13.png">
       </div>
     </div>
     
     <!-- 立即购买 -->
     <div class="foot_button" style="display:none;">
       <div class="desired">
-        <img src="">
+        <img src="../../static/images/21@3x.png">
         <div>需求清单</div>
       </div>
       <div class="commit">提交需求</div>
@@ -38,9 +66,9 @@
 
 
     <!-- 加入购物车 -->
-    <div class="foot_button">
+    <div class="foot_button" >
       <div class="desired">
-        <img src="">
+        <img src="../../static/images/20@3x.png" style="width:auto;">
         <div>购物车</div>
       </div>
       <div class="operation">
@@ -71,16 +99,11 @@
               </span>
           </p>
           <div class="btncar" >
-            确定
+            确 定
           </div>
       </div>
     </div>
 
-    <!-- <btnwarp >
-      <btnIcon text="需求清单" icon="paidan" :num='numss' @touchend="carToggle(false, false, 902)"></btnIcon>
-      <btnFont v-show="statusBtn" text="提交需求" @touchend="tijiao(902)"></btnFont>
-      <btnFont v-show="!statusBtn" text="提交需求"></btnFont>
-    </btnwarp> -->
 
   </section>
 </template>
@@ -110,6 +133,7 @@
   width: 100%;
   height: 100vh;
   background-color: #f5f5f9;
+  color: #444;
 }
 .shopdetails_title{
   width: 100%;
@@ -119,7 +143,7 @@
   margin-bottom: .2rem;
   h3 {
     font-size: .30rem;
-    color: #222;
+    color: #444;
     line-height: .36rem;
   }
   div {
@@ -137,9 +161,9 @@
   height: auto;
   background-color: #fff;
   padding-left: .24rem;
-  margin-bottom: .2rem;
   hr{
-    border-top: #ccc
+    border-top: #ccc;
+    margin: 0 auto;
   }
   .evaluate_title{
     width: 100%;
@@ -150,11 +174,12 @@
     justify-content: space-between;
     align-self: center;
     .evaluate_left{
-      color: #ccc;
+      color: #999;
     }
     .evaluate_right{
       display: flex;
       align-items: center;
+      color: #999;
       justify-content: space-between;
     }
   }
@@ -170,6 +195,44 @@
     
   }
 }
+.review{
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  padding: .24rem;
+  margin-bottom: .2rem;
+}
+.review_info{
+  display: flex;
+}
+.review_portrait{
+  display: flex;
+  img{
+    width: .8rem;
+    height: .8rem;
+    border-radius: .4rem;
+    margin-right: .24rem;
+  }
+  h4{
+    display: flex;
+    line-height: .8rem;
+  }
+}
+.review_grade{
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  img{
+    width: .3rem;
+    height: .3rem;
+    margin-left: .1rem;
+  }
+}
+.review_body{
+    padding-top: .3rem;
+}
+
 .picture {
     width: 100%;
     height: auto;
@@ -179,7 +242,7 @@
     h4 {
         height: .8rem;
         font-size: .26rem;
-        color: #666;
+        color: #999;
         line-height: .8rem;
         padding: 0rem .34rem
     }
@@ -218,7 +281,7 @@
   .desired{
     width: 1.5rem;
     height: 100%;
-    color: #ccc;
+    color: #999;
     line-height: .24rem;
     text-align: center;
     img{
@@ -348,7 +411,10 @@
     background-color: #3CAFB6;
     position: absolute;
     bottom: 0px;
-    left: 0px
+    left: 0px;
+    font-size: .34rem;
+    font-weight: 100;
+    
 }
 
 .commodity_num {

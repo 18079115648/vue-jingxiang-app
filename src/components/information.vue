@@ -1,6 +1,7 @@
 <template>
   <section class="information">
 
+    <Header title="资讯"></Header>
 
     <!-- 资讯列表 -->
     <div class="msg_title"  v-for="item in banner">
@@ -36,11 +37,11 @@ export default {
       imgs: '', // imgs
       items: '', // 内容
       banner: [
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"}
+        {text:"萨达达达溜达溜达啦到啦卡",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
+        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"}
       ] // banner
     }
   }
@@ -63,14 +64,15 @@ export default {
   width: 100%;
   height: 1.8rem;
   background-color: #fff;
-  padding: .2rem .34rem .2rem .2rem;
+  padding: .2rem .2rem .2rem .2rem;
   position: relative;
-  border-bottom: solid 1px #f5f5f5
+  border-bottom: solid 1px #f5f5f5;
+  display: flex;
+  
 }
 .img_left{
   width: 1.4rem;
   height: 1.4rem;
-  background-color:blue;
   
   img{
     width: 100%;
@@ -78,17 +80,23 @@ export default {
   }
 }
 .msg_text{
-  width: 100% ;
+  width: 100%;
   height: 1.4rem;
-  position: absolute;
-  top: .2rem;
-  padding-left: 1.6rem;
-  padding-right: .4rem;
+  font-size: .27rem;
+  flex: 1;
+  flex-wrap: wrap;
+  padding-left: .2rem;
+  div{
+    line-height: .34rem;
+    font-weight: 400;
+  }
 }
 .teat_info{
-  position: absolute;
-  bottom: 0;
+  width: auto;
+  height: .24rem;
   font-size: .9em;
+  position: absolute;
+  bottom: .2rem;
   color: #ccc;
 }
 </style>
