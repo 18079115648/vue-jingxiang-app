@@ -1,6 +1,6 @@
 <template>
     <section class="article">
-
+        <Header title="资讯"></Header>
         <!-- 文章内容 -->
         <article>
             <h1>{{title}}</h1>
@@ -24,7 +24,7 @@
                     <img src="">
                 </div>
                 <div class="info">
-                    <h3>大力丸</h3>
+                    <h3>大力丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸</h3>
                     <p>
                         <span class="price">￥10000</span>
                         <span class="button" @click="goto()">去购买</span>
@@ -41,9 +41,9 @@
 export default {
     data() {
         return {
-            title: '大力丸', // 商品名字
+            title: '大力丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸', // 商品名字
             time: '2010-10-9', // 发布时间
-            content: '哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒', // 文章富文本
+            content: '哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒', // 文章富文本
             items: '',
             imgs: '', // imgs列表
             shares: false, //
@@ -96,7 +96,7 @@ export default {
 article {
     width: 100%;
     height: auto;
-    padding: .5rem .34rem;
+    padding: .5rem .2rem;
     background-color: #fff;
     h1 {
         font-size: .36rem;
@@ -125,7 +125,7 @@ article {
 .list {
     width: 100%;
     height: 1.8rem;
-    padding: .2rem .34rem .2rem .2rem;
+    padding: .2rem .2rem .2rem .2rem;
     background-color: #fff;
     margin-bottom: .2rem
 }
@@ -142,7 +142,6 @@ article {
     width: 1.4rem;
     height: 1.4rem;
     margin-right: .2rem;
-    flex: auto;
     img {
         width: 100%;
         height: 100%
@@ -158,29 +157,29 @@ article {
         font-size: .3rem;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        // display: -webkit-box;
+        // -webkit-line-clamp: 2;
+        // -webkit-box-orient: vertical;
         height: .88rem;
-        line-height: .88rem
+        line-height: .34rem;
     }
     p {
         color: #999;
         font-size: .22rem;
-        line-height: .24rem;
+        line-height: .3rem;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         align-content: center;
         align-self: center;
         justify-content: space-between;
         .price {
             color: #ff6600;
-            font-size: .24rem
+            font-size: .34rem;
         }
         .button {
             width: 1.5rem;
-            height: .54rem;
-            line-height: .54rem;
+            height: .53rem;
+            line-height: .53rem;
             color: #fff;
             font-size: .3rem;
             background-color: #3cafb6;
@@ -191,23 +190,27 @@ article {
 }
 
 
-h2 {
-    height: 1rem;
-    line-height: 1rem;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    align-self: center;
-    justify-content: center;
-    color: #ffad06;
-    hr {
-        width: .56rem;
-        height: 2px;
-        background-color: #ffad06;
-        margin: 0 .26rem;
-        border-top: #ffad06;
+
+    h2 {
+        height: 1rem;
+        line-height: 1rem;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        align-self: center;
+        justify-content: center;
+        color: #ffad06;
+        hr {
+            width: .56rem;
+            height: 2px;
+            background-color: #ffad06;
+            margin: 0 .26rem;
+            border-top: #ffad06;
+        }
+        span{
+            font-size: .28rem;
+        }
     }
-}
 
 
 .maps {
@@ -215,12 +218,15 @@ h2 {
     height: 4.56rem;
     img {
         width: 100%;
-        height: 100%
+        height: 100%;
     }
 }
 
 .zhuanyi {
     font-size: .28rem;
     line-height: .3rem;
+    text-indent: .56rem;
 }
+
+
 </style>

@@ -27,6 +27,12 @@ const article = r => require.ensure([], () => r(require('../components/article.v
 const classification = r => require.ensure([], () => r(require('../components/classification.vue')), 'classification')
 const information = r => require.ensure([], () => r(require('../components/information.vue')), 'information')
 const shopdetails = r => require.ensure([], () => r(require('../components/shopdetails.vue')), 'shopdetails')
+const reviewList = r => require.ensure([], () => r(require('../components/reviewList.vue')), 'reviewList')
+
+
+const health = r => require.ensure([], () => r(require('../components/health.vue')), 'health')
+
+
 
 export default  [{ 
     	path: '/',
@@ -106,4 +112,10 @@ export default  [{
     },{
         path: '/addressDetail',
         component: addressDetail
+	},{
+        path: '/reviewList',
+        component: reviewList
+    },{
+        path: '/health',
+        component: health
     }]

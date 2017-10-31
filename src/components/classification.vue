@@ -1,5 +1,6 @@
 <template>
   <section class="classification">
+    <Header title="分类"></Header>
     <main>
       <div class="left_nav" ref="navtabs">
         <ul >
@@ -8,19 +9,34 @@
       </div>
       <div class="right_main_warp">
         <div class="right_main">
-          <div class="two" v-for="lists in navlist">
+          <div class="two" >
             <div class="nav_main">
-            	<h3>{{lists.name}}</h3>
-	            <div class="nav_main_list" v-for="list in lists.data" @click="goto(list.cat_id, list.name)">
-	              <img :src="list.thumb">
-	              <p>{{list.name}}</p>
+            	<h3>大大大</h3>
+	            <div class="nav_main_list" >
+                <img src="../../static/images/图/1-13.png">
+	              <p>大力丸</p>
+	            </div>
+              <div class="nav_main_list" >
+                <img src="../../static/images/图/1-13.png">
+	              <p>大力丸</p>
+	            </div>
+          	</div>
+          </div>
+          <div class="two" >
+            <div class="nav_main">
+            	<h3>大大大</h3>
+	            <div class="nav_main_list" >
+                <img src="../../static/images/图/1-13.png">
+	              <p>大力丸</p>
 	            </div>
           	</div>
           </div>
         </div>
       </div>
+      
     </main>
 
+    <Menu actived="second"></Menu>
 
   </section>
 </template>
@@ -44,8 +60,18 @@ export default {
         {name: "小小小"},
         {name: "小小小"},
         {name: "小小小"},
+        {name: "小小小"},
+        {name: "小小小"},
       ], // nav 分类
-      navlist: [ ],
+      navlist: [ 
+        {name:"大大"},
+        {name:"大大"},
+        {name:"大大"},
+        {name:"大大"},
+        {name:"大大"},
+        {name:"大大"},
+        {name:"大大"},
+      ],
       searchContent: '' // 搜索内容
     }
   },
