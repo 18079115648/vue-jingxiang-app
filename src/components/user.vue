@@ -7,11 +7,11 @@
     		</router-link>
     	</div>
     	<div class="user-nav">
-    		<router-link to="/userInfo" class="user-nav-item" >
+    		<router-link to="/myBalance" class="user-nav-item" >
     			<p class="amount charge"><span>100</span>元</p>
     			<p class="nav-text">余额</p>
     		</router-link>
-    		<router-link to="/userInfo" class="user-nav-item" >
+    		<router-link to="/myIntergal" class="user-nav-item" >
     			<p class="amount integral"><span>100</span>分</p>
     			<p class="nav-text">积分</p>
     		</router-link>
@@ -19,7 +19,7 @@
     	<div class="user-order">
     		<div class="order-top ">
     			<span>我的订单</span>
-    			<router-link to="/userInfo" class="more-order has-right-arror" >
+    			<router-link to="/allOrders" class="more-order has-right-arror" >
 	    			查看全部订单
 	    		</router-link>
     		</div>
@@ -60,7 +60,7 @@
 				<img src="../../static/images/8@3x.png" class="nav-icon" />
 				健康档案
 			</router-link>
-			<router-link to="/userInfo" class="link-item  has-right-arror">
+			<router-link to="/addressList" class="link-item  has-right-arror">
 				<img src="../../static/images/7@3x.png" class="nav-icon addr" />
 				收货地址
 			</router-link>
@@ -90,11 +90,13 @@ export default {
 <style lang="scss" scoped>
 .app{
 	background: #f5f5f9;
+	font-size: 0.26rem;
 } 
 .user-top{
 	height: 3.3rem;
-	background: url(../../static/images/10@3x.png) no-repeat center;
-	background-size: 100% auto;
+	/*background: url(../../static/images/10@3x.png) no-repeat center;*/
+	/*background-size: 100% auto;*/
+	background: #3cafb6;
 }
 .to-info{
 	display: block;
@@ -112,7 +114,7 @@ export default {
 	}
 	.nick-name{
 		color: #fff;
-		font-size: 0.32rem;
+		font-size: 0.3rem;
 		padding-top: 0.3rem;
 	}
 }
@@ -174,12 +176,12 @@ export default {
 		}
 		& > .count{
 			position: absolute;
-			min-width: 0.36rem;
-			height: 0.36rem;
+			min-width: 0.32rem;
+			height: 0.32rem;
 			border: 1px solid #ff6600;
 			border-radius: 50%;
 			text-align: center;
-			line-height: 0.36rem;
+			line-height: 0.32rem;
 			color: #f60;
 			left: 50%;
 			padding: 0 0.04rem;

@@ -13,6 +13,9 @@ import 'mint-ui/lib/style.css'
 
 import VueScroller from 'vue-scroller'
 
+import api from '@/fetch/api'
+Vue.prototype.$api = api
+
 import Menu from '@/components/common/tabBar'
 Vue.component('Menu', Menu)
 import Header from '@/components/common/Header'

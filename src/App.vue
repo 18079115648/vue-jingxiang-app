@@ -42,6 +42,26 @@ input::-webkit-search-cancel-button {
 .com-color{
 	color: #3cafb6;
 }
+
+
+.none-data{
+	padding-top: 1.5rem;
+}
+.none-img{
+	display: block;
+	width: 1.4rem;
+	margin: 0 auto;
+}
+.none-tip{
+	text-align: center;
+	padding-top: 0.4rem;
+	color: #ccc;
+}
+
+.mint-switch-input:checked + .mint-switch-core {
+    border-color: #3cafb6 !important;
+    background-color: #3cafb6 !important;
+}
 .pop-product-img{
 	border: 1px solid #eee;
 }
@@ -183,14 +203,6 @@ input::-webkit-search-cancel-button {
 	   	top: 0;
 	   	background: #F5F5F9;
    }
-  .icon {
-     width: 1em;
-     height: 1em;
-     vertical-align: -0.15em;
-     fill: currentColor;
-     overflow: hidden;
-     font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-  }
   
   .mint-msgbox-message .excharge{
   	position: relative;

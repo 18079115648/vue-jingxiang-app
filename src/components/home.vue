@@ -9,23 +9,30 @@
     	</div>
     	<section class="product-banner">
 			<mt-swipe :auto="0">
-				<mt-swipe-item>
-					<a href="" class="fullEle">
-						111
-					</a>
-				</mt-swipe-item>
-				<mt-swipe-item>
-					<a href="" class="fullEle">
-						222
-					</a>
+				<mt-swipe-item v-for="(item,index) in bannerList" :key="index">
+					<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="fullEle">
+						<img :src="item.thumb" class="fullEle" />
+					</router-link>
 				</mt-swipe-item>
 			</mt-swipe>
 		</section>
 		<section class="product-nav">
-			<div class="left"></div>
+			<div class="left">
+				<router-link :to="'/productList/' + bannerCat[0].activity_id" class="fullEle">
+					<img :src="bannerCat[0].thumb" class="fullEle" />
+				</router-link>
+			</div>
 			<div class="right">
-				<div class="top"></div>
-				<div class="bottom"></div>
+				<div class="top">
+					<router-link :to="'/productList/' + bannerCat[1].activity_id" class="fullEle">
+						<img :src="bannerCat[1].thumb" class="fullEle" />
+					</router-link>
+				</div>
+				<div class="bottom">
+					<router-link :to="'/productList/' + bannerCat[2].activity_id" class="fullEle">
+						<img :src="bannerCat[2].thumb" class="fullEle" />
+					</router-link>
+				</div>
 			</div>
 		</section>
 		<section class="pop-product">
@@ -54,17 +61,50 @@
 <script>
 
 export default {
-
+	data() {
+		return {
+			bannerList: [],
+			bannerCat: [{},{},{}]
+		}
+	},
+	created() {
+		this.$api.indexBanner().then(res => {   
+            res.forEach((item) => {
+            	let obj = {
+            		type_id: item.goods.type_id,
+            		type_id_name: item.goods.type_id_name,
+            		goods_id: item.goods.goods_id,
+            		thumb: item.thumb
+            	}
+            	this.bannerList.push(obj)
+            })
+        }, err => {
+        	
+        })
+		this.$api.indexBannerCat().then(res => {   
+			this.bannerCat = res.data
+        }, err => {
+        	
+        })
+		
+	}
 }
 </script>
 
 <style lang="scss" scoped>
 .app{
 	background: #f5f5f9;
+	padding-top: 0.8rem;
+	position: relative;
 }    
 .search-content{
 	padding: 0 0.35rem 0.25rem;
 	background: #3cafb6;
+	position: fixed;
+	left: 0;
+	width: 100%;
+	top: 0.92rem;
+	z-index: 10;
 }
 .search-input{
 	width: 100%;

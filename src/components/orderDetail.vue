@@ -1,8 +1,15 @@
 <template>
     <div class="app">
-    	<Header title="确认订单"></Header>
+    	<Header title="订单详情"></Header>
+    	<div class="order-status">
+    		<img src="../../static/images/54@3x.png" class="addr-icon" />
+    		<div class="order-status-info">
+    			<p class="price-color">等待审核</p>
+    			<p class="tip">拉矿大的</p>
+    			<p class="number">订单号：1888888888</p>
+    		</div>
+    	</div>
     	<div class="order-addr">
-    		<img src="../../static/images/line.png" class="bg-line" />
     		<img src="../../static/images/52@3x.png" class="addr-icon" />
     		<div class="addr-detail">
     			<div class="addr-contact">
@@ -12,7 +19,15 @@
     			<div class="addr-text">阿里山</div>
     			<div class="id-card">身份证：360127</div>
     		</div>
-    		<img src="../../static/images/arror.png" class="more-icon" />
+    		<!--<img src="../../static/images/arror.png" class="more-icon" />-->
+    	</div>
+    	<div class="recipe-content">
+    		<img src="../../static/images/51@3x.png" class="addr-icon" />
+    		<div class="recipe-info">
+    			<p>处方资料及联系方式</p>
+    			<p class="phone">18079115648</p>
+    		</div>
+    		<img src="" class="recipe-img" />
     	</div>
     	<div class="product-list">
     		<div class="product-item">
@@ -86,16 +101,16 @@
     			<span>&yen;111</span>
     		</div>
     	</div>
-    	<div class="points">
-    		<span class="point-icon">积分</span>
-    		<span>返200积分</span>
-    	</div>
-    	<div class="pay-content">
-    		<div class="total-num">
-    			共<span class="price-color"> 5 </span>件， 
-    			实付 <span class="price-color"> &yen; 111</span>
+    	<div class="total-price">
+    		<div class="price">
+    			<span>实付款</span>
+    			<span class="price-color">&yen;11</span>
     		</div>
-    		<div class="pay-btn">微信支付</div>
+    		<p class="time">下单时间：2017</p>
+    	</div>
+		<div class="order-operate">
+    		<span>取消订单</span>
+    		<span class="other">立即付款</span>
     	</div>
     </div>
 </template>
@@ -123,15 +138,65 @@ export default {
 .app{
 	background: #f5f5f9;
 	line-height: 1.5;
-	padding-bottom: 1.3rem;
+	padding-bottom: 0.3rem;
 	position: relative;
+	font-size: 0.26rem;
 } 
+.order-status{
+	display: flex;
+	background: #FFFFFF;
+	padding: 0.2rem 0.3rem;
+	align-items: flex-start;
+	margin-bottom: 0.2rem;
+	.addr-icon{
+		width: 0.28rem;
+		margin-right: 0.34rem;
+		margin-top: 0.06rem;
+	}
+	.order-status-info{
+		flex: 1;
+		overflow: hidden;
+		.tip{
+			padding: 0.14rem 0;
+			color: #999;
+			font-size: 0.24rem;
+			border-bottom: 1px solid #f6f6f6;
+		}
+		.number{
+			padding-top: 0.15rem;
+		}
+	}
+}
+.recipe-content{
+	display: flex;
+	background: #FFFFFF;
+	padding: 0.2rem 0.3rem;
+	align-items: flex-start;
+	margin-bottom: 0.2rem;
+	.addr-icon{
+		width: 0.22rem;
+		height: 0.32rem;
+		margin-right: 0.34rem;
+		margin-top: 0.02rem;
+	}
+	.recipe-info{
+		flex: 1;
+		.phone{
+			padding-top: 0.15rem;
+		}
+	}
+	.recipe-img{
+		width: 1rem;
+		height: 1rem;
+	}
+}
 .order-addr{
 	position: relative;
 	background: #FFFFFF;
 	padding: 0.16rem 0.3rem;
 	display: flex;
 	align-items: center;
+	margin-bottom: 0.2rem;
 	.bg-line{
 		position: absolute;
 		left: 0;
@@ -150,6 +215,7 @@ export default {
 	}
 	.addr-detail{
 		flex: 1;
+		padding-right: 0.3rem;
 		& > div{
 			padding: 0.04rem 0;
 			font-size: 0.24rem;
@@ -195,59 +261,51 @@ export default {
 	}
 }
 .order-total{
-	padding: 0 0.3rem;
+	padding: 0.15rem 0.3rem;
 	background: #fff;
+	border-bottom: 1px solid #f6f6f6;
 	.cell-item{
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 0.9rem;
-		border-bottom: 1px solid #f3f3f3;
-	}
-	.cell-item:last-child{
-		border: none;
+		height: 0.5rem;
 	}
 }
-.points{
-	height: 0.9rem;
-	display: flex;
+.total-price{
 	background: #fff;
-	align-items: center;
-	font-size: 0.24rem;
-	padding-left: 0.3rem;
-	margin-top: 0.2rem;
-	.point-icon{
-		padding: 0 0.08rem;
-		border: 1px solid #f60;
-		font-size: 0.2rem;
-		padding-top: 0.02rem;
-		border-radius: 0.06rem;
-		margin-right: 0.2rem;
-		color: #f60;
+	padding: 0.24rem 0.3rem;
+	margin-bottom: 0.2rem;
+	.price{
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 0.15rem;
+		.price-color{
+			font-size: 0.3rem;
+		}
+	}
+	.time{
+		color: #999999;
+		text-align: right;
+		font-size: 0.24rem;
 	}
 }
-.pay-content{
-	position: fixed;
-	width: 100%;
-	height: 1rem;
-	left: 0;
-	bottom: 0;
-	background: #fff;
-	border-top: 1px solid #eee;
+.order-operate{
+	padding: 0.18rem 0.3rem;
 	display: flex;
-	line-height: 1rem;
-	justify-content: space-between;
-	font-size: 0.3rem;
-	.pay-btn{
-		width: 3rem;
-		text-align: center;
-		background: #3cafb6;
-		color: #fff;
-		font-size: 0.32rem;
+	justify-content: flex-end;
+	background: #fff;
+	span{
+		height: 0.6rem;
+		line-height: 0.56rem;
+		border-radius: 0.28rem;
+		padding: 0 0.35rem;
+		border: 1px solid #ddd;
+		margin-left: 0.24rem;
+		color: #888;
 	}
-	.total-num{
-		padding-left: 0.3rem;
-		padding-right: 0.2rem;
+	span.other{
+		color: #3cafb6;
+		border-color: #3cafb6;
 	}
 }
 </style>

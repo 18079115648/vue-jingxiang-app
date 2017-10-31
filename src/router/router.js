@@ -11,6 +11,14 @@ const nickName = r => require.ensure([], () => r(require('../components/nickName
 const bindMemberCard = r => require.ensure([], () => r(require('../components/bindMemberCard.vue')), 'bindMemberCard')
 const identyAouth = r => require.ensure([], () => r(require('../components/identyAouth.vue')), 'identyAouth')
 const openMember = r => require.ensure([], () => r(require('../components/openMember.vue')), 'openMember')
+const myBalance = r => require.ensure([], () => r(require('../components/myBalance.vue')), 'myBalance')
+const myIntergal = r => require.ensure([], () => r(require('../components/myIntergal.vue')), 'myIntergal')
+const recharge = r => require.ensure([], () => r(require('../components/recharge.vue')), 'recharge')
+const allOrders = r => require.ensure([], () => r(require('../components/allOrders.vue')), 'allOrders')
+const orderDetail = r => require.ensure([], () => r(require('../components/orderDetail.vue')), 'orderDetail')
+const evaluate = r => require.ensure([], () => r(require('../components/evaluate.vue')), 'evaluate')
+const addressList = r => require.ensure([], () => r(require('../components/addressList.vue')), 'addressList')
+const addressDetail = r => require.ensure([], () => r(require('../components/addressDetail.vue')), 'addressDetail')
 
 
 
@@ -72,6 +80,30 @@ export default  [{
         path: '/information',
         component: information
     },{
-        path: '/shopdetails',
+        path: '/shopdetails/:id/:type',
         component: shopdetails
+    },{
+        path: '/myBalance',
+        component: myBalance
+    },{
+        path: '/myIntergal',
+        component: myIntergal
+    },{
+        path: '/recharge',
+        component: recharge
+    },{
+        path: '/allOrders',
+        component: allOrders
+    },{
+        path: '/orderDetail',
+        component: orderDetail
+    },{
+        path: '/evaluate',
+        component: evaluate
+    },{
+        path: '/addressList',
+        component: addressList
+    },{
+        path: '/addressDetail',
+        component: addressDetail
     }]
