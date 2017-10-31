@@ -9,25 +9,12 @@
       </div>
       <div class="right_main_warp">
         <div class="right_main">
-          <div class="two" >
+          <div class="two" v-for="lists in navlist" >
             <div class="nav_main">
-            	<h3>大大大</h3>
-	            <div class="nav_main_list" >
-                <img src="../../static/images/图/1-13.png">
-	              <p>大力丸</p>
-	            </div>
-              <div class="nav_main_list" >
-                <img src="../../static/images/图/1-13.png">
-	              <p>大力丸</p>
-	            </div>
-          	</div>
-          </div>
-          <div class="two" >
-            <div class="nav_main">
-            	<h3>大大大</h3>
-	            <div class="nav_main_list" >
-                <img src="../../static/images/图/1-13.png">
-	              <p>大力丸</p>
+            	<h3>{{lists.name}}</h3>
+	            <div class="nav_main_list" v-for="list in lists.data">
+                <img :src="list.thumb">
+	              <p>{{list.name}}</p>
 	            </div>
           	</div>
           </div>
@@ -48,33 +35,46 @@ export default {
       iscurnum: 0, // 选中的nav
       title: '', // nav标题
       ismove: true, // 判断滑动和点击
-      navtab: [
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-        {name: "小小小"},
-      ], // nav 分类
-      navlist: [ 
-        {name:"大大"},
-        {name:"大大"},
-        {name:"大大"},
-        {name:"大大"},
-        {name:"大大"},
-        {name:"大大"},
-        {name:"大大"},
-      ],
+      navtab: [], // nav 分类
+      navlist: [],
       searchContent: '' // 搜索内容
     }
   },
+  created() {
+    const self = this
+    this.$api.indexClassification().then(res => {
+      this.navtab = res
+      for (var i in res.data) {
+        self.navtab.push(res.data[i])
+      }
+      self.iscurnum = self.navtab[0].cat_id
+      self.navlist = self.navtab[0].data
+      for (var i in self.navtab[0].data) {
+        self.title = self.navtab[0].data[i].name
+      }
+    }, err => {
+        
+    })
+  },
+  methods: {
+    active(item, index, title){
+      
+    const self = this
+    this.$api.indexClassification().then(res => {
+      this.navtab = res
+      for (var i in res.data) {
+        self.navtab.push(res.data[i])
+      }
+      self.iscurnum = self.navtab[3].cat_id
+      self.navlist = self.navtab[3].data
+      for (var i in self.navtab[3].data) {
+        self.title = self.navtab[3].data[i].name
+      }
+    }, err => {
+        
+    })
+    }
+  }
   
 
   
@@ -86,7 +86,9 @@ export default {
 
 <style lang="scss" scoped>
 .classification {
-  height: 100vh
+  height: 100vh;
+  background-color: #F5F5F9;
+  
 }
 
 header {
@@ -108,17 +110,18 @@ main {
 
 .left_nav {
   width: 1.88rem;
-  height: 100%; // overflow-y:scroll
+  height: 100%; 
   overflow-y: auto;
 }
 
 ul {
-  width: 100%; // height: 100%;
+  width: 1.88rem; 
   height: auto;
   font-size: .24rem;
   color: #222;
-  background-color: #fff; // overflow-y:scroll;
-  // -webkit-overflow-scrolling: touch
+  background-color: #fff;
+  position: fixed;
+  top: .92rem;
 }
 
 li {
@@ -181,7 +184,9 @@ h3 {
   img {
     width: .9rem;
     height: .9rem;
-    margin-top: .3rem
+    margin: 0 auto;
+    margin-top: .3rem;
+    
   }
   p {
     line-height: .36rem;

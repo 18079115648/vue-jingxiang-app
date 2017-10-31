@@ -10,14 +10,14 @@
             </router-link>
         </li>
         <li :class="{'active':actived == 'second'}">
-            <router-link to='/overview' replace>
+            <router-link to='/classification' replace>
                 <img v-show="actived == 'second'" src="../../../static/images/1@3x.png" alt="分类"/>
                 <img v-show="actived != 'second'" src="../../../static/images/33@3x.png" alt="分类"/>
                 <div>分类</div>
             </router-link>
         </li>
         <li :class="{'active':actived == 'third'}">
-            <router-link to='/overview' replace>
+            <router-link to='/information' replace>
                 <img v-show="actived == 'third'" src="../../../static/images/3@3x.png" alt="资讯"/>
                 <img v-show="actived != 'third'" src="../../../static/images/32@3x.png" alt="资讯"/>
                 <div>资讯</div>

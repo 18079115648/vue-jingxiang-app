@@ -30,6 +30,8 @@ const shopdetails = r => require.ensure([], () => r(require('../components/shopd
 const reviewList = r => require.ensure([], () => r(require('../components/reviewList.vue')), 'reviewList')
 
 
+const healthRecords = r => require.ensure([], () => r(require('../components/healthRecords.vue')), 'healthRecords')
+
 const health = r => require.ensure([], () => r(require('../components/health.vue')), 'health')
 
 
@@ -115,6 +117,9 @@ export default  [{
 	},{
         path: '/reviewList',
         component: reviewList
+    },{
+        path: '/healthRecords',
+        component: healthRecords
     },{
         path: '/health',
         component: health
