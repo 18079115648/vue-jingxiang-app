@@ -4,21 +4,20 @@
     <Header title="资讯"></Header>
 
     <!-- 资讯列表 -->
-    <div class="msg_title"  v-for="item in banner">
+    <div class="msg_title"  v-for="item in banner" @touchend="goto(item.news_id)">
       <!-- 列表图标 -->
       <div class="img_left">
-        <img src="" >
+        <img :src="item.thumb" >
       </div>
       <!-- 列表文字 -->
       <div class="msg_text">
-        <div>{{item.text}}</div>
-        <div class="teat_info">{{item.data}}</div>
+        <div>{{item.title}}</div>
+        <div class="teat_info">{{item.time_add}}</div>
       </div>
     </div>
 
-  
 
-   
+    <Menu actived="third"></Menu>
 
   </section>
 </template>
@@ -37,27 +36,22 @@ export default {
       ismove: true, // 判断滑动和点击
       imgs: '', // imgs
       items: '', // 内容
-      banner: [
-        {text:"萨达达达溜达溜达啦到啦卡",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"},
-        {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"}
-      ] // banner
+      banner: [] // banner
     }
   },
   created() {
     const self = this
-    axios.get(self.$store.state.uri + 'news/index', {
-      params: {
-        p: self.page
-      }
-    }).then((res) => {
+    this.$api.indexInformation().then(res => {
+        this.banner = res.data
+      
+    }, err => {
         
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    })
+  },
+  methods: {
+    goto(val){
+      this.$router.push({path: '/article', query: {newsId: val}})
+    }
   }
 
 }

@@ -133,6 +133,53 @@ export default {
 	updataUserInfo(params) {
 		return fetchPost('/user/info', params)
 	},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
-    
+	// 资讯
+	indexInformation(params) {
+		return fetchGet('/news/index', params)
+	},
+
+	//资讯内容
+	indexInformationContent(params) {
+		return fetchGet('/news/detail', params)
+	},
+
+	//分类
+	indexClassification(params) {
+		return fetchGet('goods/category', params)
+	},
+
+	
+	
+	
 }

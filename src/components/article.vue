@@ -2,7 +2,7 @@
     <section class="article">
         <Header title="资讯"></Header>
         <!-- 文章内容 -->
-        <article>
+        <article >
             <h1>{{title}}</h1>
             <h5>{{time}}</h5>
             <div class="zhuanyi" v-html="content"></div>
@@ -18,15 +18,15 @@
         </div>
 
         <!-- 文章商品列表 -->
-        <div class="list" >
+        <div class="list" v-for="item in goodList">
             <div class="list_main">
                 <div class="imgs">
-                    <img src="">
+                    <img :src="item.thumb">
                 </div>
                 <div class="info">
-                    <h3>大力丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸</h3>
+                    <h3>{{item.title}}</h3>
                     <p>
-                        <span class="price">￥10000</span>
+                        <span class="price">￥{{item.price_shop}}</span>
                         <span class="button" @click="goto()">去购买</span>
                     </p>
                 </div>
@@ -41,14 +41,35 @@
 export default {
     data() {
         return {
-            title: '大力丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸丸', // 商品名字
-            time: '2010-10-9', // 发布时间
-            content: '哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒哒', // 文章富文本
+            title: '', // 商品名字
+            time: '', // 发布时间
+            content: '', // 文章富文本
             items: '',
             imgs: '', // imgs列表
             shares: false, //
-            url: ''
+            url: '',
+            goodList:[
+                {title:"zcxzxcz",price_shop:'1100'}
+            ],
+        
         }
+    },
+    created() {
+        const self = this
+        this.$api.indexInformationContent(
+            {
+                params: {
+                    id: self.$route.query.newsId
+                }
+            }
+        ).then(res => {
+            this.title = res.title
+            this.content = res.content
+            this.time = res.time_add
+            this.goodList = res.goods
+        }, err => {
+            
+        })
     },
     methods: {
         goto(){
@@ -223,10 +244,13 @@ article {
 }
 
 .zhuanyi {
+    width: 100%;
     font-size: .28rem;
     line-height: .3rem;
     text-indent: .56rem;
 }
-
+.zhuanyi>img{
+    width: 100%;
+}
 
 </style>
