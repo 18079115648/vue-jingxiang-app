@@ -2,17 +2,17 @@
     <div class="app">
     	<div class="user-top">
     		<router-link to="/userInfo" class="to-info" >
-    			<img src="" class="avatar" />
-    			<p class="nick-name">张学友</p>
+    			<img :src="userInfo.img_head" class="avatar" />
+    			<p class="nick-name">{{userInfo.username}}</p>
     		</router-link>
     	</div>
     	<div class="user-nav">
     		<router-link to="/myBalance" class="user-nav-item" >
-    			<p class="amount charge"><span>100</span>元</p>
+    			<p class="amount charge"><span>{{userInfo.user_money}}</span>元</p>
     			<p class="nav-text">余额</p>
     		</router-link>
     		<router-link to="/myIntergal" class="user-nav-item" >
-    			<p class="amount integral"><span>100</span>分</p>
+    			<p class="amount integral"><span>{{userInfo.pay_points}}</span>分</p>
     			<p class="nav-text">积分</p>
     		</router-link>
     	</div>
@@ -25,27 +25,27 @@
     		</div>
     		<div class="order-nav">
     			<router-link to="/userInfo" class="order-nav-item">
-    				<span class="count">1</span>
+    				<span v-if="userInfo.order_check_is_0 > 0" class="count">{{userInfo.order_check_is_0}}</span>
     				<img src="../../static/images/54@3x.png" class="nav-icon" />
     				<p>待审核</p>
     			</router-link>
     			<router-link to="/userInfo" class="order-nav-item">
-    				<span class="count">1</span>
+    				<span v-if="userInfo.order_0 > 0" class="count">{{userInfo.order_0}}</span>
     				<img src="../../static/images/50@3x.png" class="nav-icon" />
     				<p>待付款</p>
     			</router-link>
     			<router-link to="/userInfo" class="order-nav-item">
-    				<span class="count">1</span>
+    				<span v-if="userInfo.order_49 > 0" class="count">{{userInfo.order_49}}</span>
     				<img src="../../static/images/49@3x.png" class="nav-icon" />
     				<p>待发货</p>
     			</router-link>
     			<router-link to="/userInfo" class="order-nav-item">
-    				<span class="count">1</span>
+    				<span v-if="userInfo.order_50 > 0" class="count">{{userInfo.order_50}}</span>
     				<img src="../../static/images/48@3x.png" class="nav-icon" />
     				<p>待收货</p>
     			</router-link>
     			<router-link to="/userInfo" class="order-nav-item">
-    				<span class="count">19</span>
+    				<span v-if="userInfo.order_98 > 0" class="count">{{userInfo.order_98}}</span>
     				<img src="../../static/images/47@3x.png" class="nav-icon" />
     				<p>待评价</p>
     			</router-link>
@@ -79,10 +79,22 @@
 <script>
 
 export default {
-	methods: {
-		back() {
-			this.$router.go(-1)
+	data() {
+		return {
+			userInfo: {}
 		}
+	},
+	created() {
+		this.$api.user().then(res => { 
+			if(res.ret == 1) {
+				this.userInfo = res
+			}
+        }, err => {
+        	
+        })
+	},
+	methods: {
+		
 	}
 }
 </script>

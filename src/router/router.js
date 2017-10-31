@@ -47,7 +47,7 @@ export default  [{
         path: '/searchResult',
         component: searchResult
     },{
-        path: '/productList',
+        path: '/productList/:id',
         component: productList
     },{
         path: '/cart',

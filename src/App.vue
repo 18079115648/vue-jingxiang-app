@@ -54,14 +54,20 @@ input::-webkit-search-cancel-button {
 }
 .none-tip{
 	text-align: center;
-	padding-top: 0.4rem;
-	color: #ccc;
+	padding-top: 0.8rem;
+	color: #aaa;
 }
 
 .mint-switch-input:checked + .mint-switch-core {
     border-color: #3cafb6 !important;
     background-color: #3cafb6 !important;
 }
+
+.pics img{
+	display: block;
+	width: 100%;
+}
+
 .pop-product-img{
 	border: 1px solid #eee;
 }

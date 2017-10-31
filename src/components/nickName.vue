@@ -2,21 +2,23 @@
     <div class="app">
     	<Header title="修改昵称"></Header>
     	<section class="content">
-			<input ref="Input" type="text" placeholder="昵称" v-model="nickName" />
+			<input ref="Input" type="text" maxlength="20" placeholder="昵称" @keyup.enter="save" v-model.trim="userInfo.username" />
 		</section>
-		<div class="save">保存</div>
+		<div class="save" @click="save">保存</div>
     </div>
 </template>
 
 <script>
-
+import qs from 'qs'
+import { Toast } from 'mint-ui'
 export default {
 	data() {
 	    return {
-	    	nickName: '111'
+	    	userInfo: {}
 	    }
 	},
 	mounted() {	
+		this.userInfo = this.$storage.get('user_info')
 		this.$refs.Input.focus()
 		let that = this
 		if(this.$refs.Input.setSelectionRange){
@@ -27,8 +29,28 @@ export default {
 		}
 	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		save() {
+			this.$api.updataUserInfo(qs.stringify(this.userInfo)).then(res => { 
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '修改成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.$router.go(-1)
+				},800)
+	        }, err => {
+	        	
+	        })
 		}
 	}
 }

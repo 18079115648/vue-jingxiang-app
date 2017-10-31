@@ -1,60 +1,79 @@
 <template>
     <div class="app">
     	<div class="search-content">
-    		<span @click="back">取消</span>
+    		<span @click="back" class="back"></span>
     		<div class="search-input">
-    			保健品
+    			{{search_word}}
     		</div>
     		
     	</div>
-    	<div class="pop-product-list">
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
+    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/goods/index">
+			<div class="pop-product-list" v-show="pagination.content.length>0">
+				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
+					<div class="fullEle">
+						<div class="pop-product-img">
+							<img class="fullEle" :src="item.thumb" />
+						</div>
+						<div class="pop-product-desc">
+							<p class="pop-product-name">{{item.title}}</p>
+							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+						</div>
 					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
+					
+				</router-link>
 				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-		</div>
+			</div>
+		</Pagination>
+		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+    		<img class="none-img" src="../../static/images/46@3x.png"  />
+    		<p class="none-tip">没有找到商品单信息</p>
+    	</div>
     </div>
 </template>
 
 <script>
 
 export default {
+	data() {
+		return {
+			search_word: '搜索您要的宝贝',
+			pagination: {
+                content: [],
+                loadEnd: false,
+                data: {
+                	params: {
+						p: 1,
+						wd: null
+					}
+                }
+            },
+		}
+	},
+	created() {
+		this.$storage.get('search_word') && (this.search_word = this.$storage.get('search_word'))
+	},
+	mounted() {
+		this.pagination = {
+            content: [],
+            loadEnd: false,
+            data: {
+            	params: {
+					p: 1,
+					wd: this.$storage.get('search_word')
+				}
+            }
+        }
+		this.$refs.pagination.refresh()
+	},
 	methods: {
 		back() {
 			this.$router.go(-1)
-		}
+		},
+		render(res) {
+            res.data.forEach((item) => {
+            	this.pagination.content.push(item)
+            })
+        }
 	}
 }
 </script>
@@ -62,23 +81,33 @@ export default {
 <style lang="scss" scoped>
 .app{
 	background: #f5f5f9;
+	padding-top: 0.96rem;
 } 
 .search-content{
+	position: fixed;
+	width: 100%;
+	left: 0;
+	top: 0;
 	display: flex;
 	background: #fff;
-	height: 0.96;
+	height: 0.96rem;
 	line-height: 0.6rem;
 	padding: 0.18rem 0.3rem;
 	border-bottom: 1px solid #F5F5F9;
-	& > span{
-		width: 0.9rem;
+	z-index: 10;
+	& > span.back{
+		width: 0.6rem;
+		margin-right: 0.3rem;
 		color: #3cafb6;
+		background: url(../../static/images/com-back.png) no-repeat center;
+		background-size: 80%;
 	}
 	.search-input{
 		flex: 1;
 		background: #F5F5F9;
 		padding: 0 0.15rem;
 		border-radius: 0.08rem;
+		color: #666;
 	}
 }
 .pop-product-list{
@@ -111,5 +140,8 @@ export default {
 .pop-product-price{
 	padding-top: 0.16rem;
 	font-size: 0.3rem;
+}
+.none-img{
+	width: 0.9rem !important;
 }
 </style>
