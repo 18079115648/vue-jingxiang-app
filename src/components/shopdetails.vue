@@ -117,13 +117,6 @@
       return{
       }
     },
-
-
-
-
-
-
-
   }
 
 </script>
@@ -147,7 +140,7 @@
     line-height: .36rem;
   }
   div {
-    font-size: .28rem;
+    font-size: .3rem;
     color: #ff6600;
     line-height: .42rem;
     margin-top: .24rem;
@@ -231,6 +224,7 @@
 }
 .review_body{
     padding-top: .3rem;
+    line-height: .34rem;
 }
 
 .picture {

@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
   data() {
@@ -44,6 +45,19 @@ export default {
         {text:"萨达达达溜达溜达啦到啦卡家德拉吉拉圣诞节啊剋金德拉克嘉陵道街啊来得吉拉圣诞节啊剋金德拉克嘉陵道街啊来得及啊哭了",data:"2017-10-9"}
       ] // banner
     }
+  },
+  created() {
+    const self = this
+    axios.get(self.$store.state.uri + 'news/index', {
+      params: {
+        p: self.page
+      }
+    }).then((res) => {
+        
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
 }
