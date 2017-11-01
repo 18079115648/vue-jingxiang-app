@@ -9,35 +9,55 @@
     
     <div class="field">
         <label for="name">姓名</label>
-        <input type="text" name="name" placeholder="请输入姓名" id="input-test">
+        <input type="text" name="name" placeholder="请输入姓名" id="input-test" v-model="name">
     </div>
    
     <div class="field">
         <span>性别</span>
-        <div>请选择</div>
+        <div v-if="sex_name">请选择</div>
+        <select @change="change" v-model="sex" >
+            <option value="0">保密</option>
+            <option value="1">男</option>
+            <option value="2">女</option>
+        </select>
         <img src="../../static/images/arror.png" >
     </div>
 
     <div class="field">
         <span>关系</span>
-        <div>请选择</div>
+        <div v-if="relationship_name">请选择</div>
+        <select @change="guanxi" v-model="relationship_id">
+            <option>关系</option>
+            <option v-for="op in relationship" :value="op.value">{{op.text}}</option>
+        </select>
         <img src="../../static/images/arror.png" >
-    </div>    
+    </div>
 
-    <div class="field">
+    <div class="field" >
         <span>生日</span>
-        <div>选择生日</div>
-        <img src="../../static/images/arror.png" >
+        <div>{{birth}}</div>
+        <mt-datetime-picker
+            ref="picker"
+            v-model="birthday"
+            type="date"
+            year-format="{value} 年"
+            month-format="{value} 月"
+            date-format="{value} 日"
+            :startDate="startDate"
+            :endDate="endDate"
+            @confirm="handleConfirm">
+        </mt-datetime-picker>
+        <img src="../../static/images/arror.png"  @click="openPicker">
     </div>
 
     <div class="field">
         <label for="name">身高</label>
-        <input type="text" name="name" placeholder="请输入身高" id="input-test">
+        <input type="text" name="name" placeholder="请输入身高" id="input-test" v-model="height">
     </div>
 
     <div class="field" style="border:none;">
         <label for="name">体重</label>
-        <input type="text" name="name" placeholder="请输入体重" id="input-test">
+        <input type="text" name="name" placeholder="请输入体重" id="input-test" v-model="weight">
     </div>
 
     <div class="datum">
@@ -53,7 +73,7 @@
         <div class="kong"></div>
     </div>
 
-    <div class="delete_record">
+    <div class="delete_record" @click="add">
         <span>删除此亲属记录</span>
     </div>
 
@@ -61,13 +81,69 @@
 </template>
 
 <script>
-
+import { DatetimePicker } from 'mint-ui';
 export default {
-  data() {
-    return {
-      
+    data() {
+        return {
+            name: '',
+            weight: '',
+            height: '',
+            sex:'',
+            birthday:'',
+            relationship: [
+                {text:'朋友'}
+            ],
+            relationship_id:'',
+            sex_name:true,
+            relationship_name:true,
+            birth:'',
+            startDate: new Date('1917-1-1'),
+            endDate: new Date()
+        }
+    },
+    methods: {
+        add(){
+            const self = this
+            this.$api.indexHealth(
+                {
+                    params: {
+                        true_name: this.name,
+                        weight: this.weight,
+                        height: this.height,
+                        sex:this.sex,
+                        relationship_id: "1",
+                        is_my: "1",
+                        birthday:"",
+                        data:"1",
+                        
+                    }
+                }
+            ).then(res => {
+                
+            }, err => {
+                
+            })
+        },
+        change() {
+            this.sex_name = false
+            
+        },
+        bian() {
+
+        },
+        guanxi() {
+            this.relationship_name = false
+        },
+        openPicker() {
+            this.$refs.picker.open();
+        },
+        handleConfirm(value) {
+            this.birth  = this.birthday
+            
+        }
+
+        
     }
-  }
 
 }
 </script>
@@ -87,7 +163,6 @@ export default {
     padding: 0 .34rem;
     font-weight: 100;
     color: #999;
-    display: none;
 }
 .field{
     width: 100%;
@@ -124,6 +199,10 @@ export default {
     img{
         width: .15rem;
         height: .25rem;
+    }
+    select{
+        position: absolute;
+        right: .49rem;
     }
 }
 #input-test::-webkit-input-placeholder{

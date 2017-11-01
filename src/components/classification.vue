@@ -3,7 +3,7 @@
     <Header title="分类"></Header>
     <main>
       <div class="left_nav" ref="navtabs">
-        <ul >
+        <ul @touchmove="move(true)" @touchend="move(false)">
           <li v-for="nav in navtab" :class="{iscur: iscurnum === nav.cat_id}" @touchstart="active(nav, nav.cat_id, nav.name)">{{nav.name}}</li>
         </ul>
       </div>
@@ -57,22 +57,18 @@ export default {
     })
   },
   methods: {
+    move(falg) {
+      this.ismove = falg
+    },
     active(item, index, title){
-      
-    const self = this
-    this.$api.indexClassification().then(res => {
-      this.navtab = res
-      for (var i in res.data) {
-        self.navtab.push(res.data[i])
+      var self = this
+      if (!self.ismove) {
+        self.iscurnum = index
+        for (var i in item.data) {
+    		  self.title = item.data[i].name
+        }
+        self.navlist = item.data
       }
-      self.iscurnum = self.navtab[3].cat_id
-      self.navlist = self.navtab[3].data
-      for (var i in self.navtab[3].data) {
-        self.title = self.navtab[3].data[i].name
-      }
-    }, err => {
-        
-    })
     }
   }
   

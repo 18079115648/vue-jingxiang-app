@@ -3,6 +3,20 @@
 
     <Header title="资讯"></Header>
 
+
+    <div class="product-nav">
+			<div class="left">
+					<img :src="bannerCat[0].thumb" class="fullEle" />
+			</div>
+			<!-- <div class="right">
+				<div class="top">
+						<img :src="bannerCat[1].thumb" class="fullEle" />
+				</div>
+				<div class="bottom">
+						<img :src="bannerCat[2].thumb" class="fullEle" />
+				</div>
+			</div> -->
+		</div>
     <!-- 资讯列表 -->
     <div class="msg_title"  v-for="item in banner" @touchend="goto(item.news_id)">
       <!-- 列表图标 -->
@@ -36,14 +50,15 @@ export default {
       ismove: true, // 判断滑动和点击
       imgs: '', // imgs
       items: '', // 内容
-      banner: [] // banner
+      banner: [], // banner
+      bannerCat: [{},{},{}],
     }
   },
   created() {
     const self = this
     this.$api.indexInformation().then(res => {
         this.banner = res.data
-      
+        this.bannerCat = res.banner
     }, err => {
         
     })
@@ -107,4 +122,5 @@ export default {
   bottom: .2rem;
   color: #ccc;
 }
+
 </style>

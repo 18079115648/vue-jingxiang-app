@@ -205,7 +205,7 @@ export default {
 
 
 
-	
+
 	// 资讯
 	indexInformation(params) {
 		return fetchGet('/news/index', params)
@@ -221,7 +221,15 @@ export default {
 		return fetchGet('goods/category', params)
 	},
 
-	
+	//健康档案
+	indexHealthRecords(params) {
+		return fetchGet('health/index', params)
+	},
+
+	//我的健康
+	indexHealth(params) {
+		return fetchGet('health/create', params)
+	},
 	
 	
 }
