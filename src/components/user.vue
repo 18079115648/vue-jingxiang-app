@@ -56,7 +56,7 @@
 				<img src="../../static/images/9@3x.png" class="nav-icon" />
 				我的健康
 			</router-link>
-			<router-link to="/userInfo" class="link-item has-right-arror">
+			<router-link to="/healthRecords" class="link-item has-right-arror">
 				<img src="../../static/images/8@3x.png" class="nav-icon" />
 				健康档案
 			</router-link>

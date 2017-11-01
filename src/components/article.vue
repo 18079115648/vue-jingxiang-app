@@ -49,7 +49,7 @@ export default {
             shares: false, //
             url: '',
             goodList:[
-                {title:"zcxzxcz",price_shop:'1100'}
+                {title:"大力丸",price_shop:'1100'}
             ],
         
         }
@@ -66,7 +66,7 @@ export default {
             this.title = res.title
             this.content = res.content
             this.time = res.time_add
-            this.goodList = res.goods
+            // this.goodList = res.goods
         }, err => {
             
         })
