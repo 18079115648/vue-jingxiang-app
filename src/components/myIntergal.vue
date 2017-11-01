@@ -3,33 +3,26 @@
 		<Header title="我的积分"></Header>
 		<div class="balance-top">
 			<p class="tit">积分余额</p>
-			<p class="balance-amount">0.00</p>
+			<p class="balance-amount">{{points}}</p>
 		</div>
 		<div class="balance-bottom">
 			<div class="integal-nav">
-				<div class="nav-item active"><span>收入记录</span></div>
-				<div class="nav-item"><span>支出记录</span></div>
+				<div class="nav-item" :class="{'active': index == 1}" @click="changeMenu(1)"><span>收入记录</span></div>
+				<div class="nav-item" :class="{'active': index == 2}" @click="changeMenu(2)"><span>支出记录</span></div>
 			</div>
-			<div class="balance-list">
-				<div class="balance-item">
-					<p class="item-name">
-						<span>微信充值</span>
-						<span class="price-color">+50.00</span>
-					</p>
-					<p class="item-time">
-						<span>2017</span>
-					</p>
+			<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/order/points">
+				<div class="balance-list">
+					<div class="balance-item">
+						<p class="item-name">
+							<span>微信充值</span>
+							<span class="price-color">+50.00</span>
+						</p>
+						<p class="item-time">
+							<span>2017</span>
+						</p>
+					</div>
 				</div>
-				<div class="balance-item">
-					<p class="item-name">
-						<span>微信充值</span>
-						<span class="price-color">+50.00</span>
-					</p>
-					<p class="item-time">
-						<span>2017</span>
-					</p>
-				</div>
-			</div>
+			</Pagination>
 		</div>
 			
 	</section>
@@ -39,17 +32,57 @@
 	export default {
 		data() {
 			return {
-				
+				points: null,
+				index: 1,
+				pagination: {
+	                content: [],
+	                loadEnd: false,
+	                data: {
+	                	params: {
+							p: 1,
+							typePoints: 1
+						}
+	                }
+	            },
 			}
 		},
 		created() {
 			
+			this.$api.userPoints().then(res => { 
+				if(res.ret == 1) {
+					this.points = parseFloat(res.data.integral).toFixed(2)
+				}
+	        }, err => {
+	        	
+	        })
+			
 		},
 		mounted() {
-
+			this.changeMenu(1)
 		},
 		methods: {
-			
+			changeMenu(index){
+				if(this.index == index) {
+					return
+				}
+				this.index = index
+				this.pagination = {
+                    content: [],
+	                loadEnd: false,
+	                data: {
+	                	params: {
+							p: 1,
+							typePoints: index
+						}
+	                }
+				}
+				this.$refs.pagination.refresh()
+			},
+			render(res) {
+				res.data.forEach((item) => {
+	            	this.pagination.content.push(item)
+	            })
+			}
 		}
 	}
 </script>

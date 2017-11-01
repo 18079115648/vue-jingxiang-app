@@ -100,10 +100,10 @@ export default  [{
         path: '/recharge',
         component: recharge
     },{
-        path: '/allOrders',
+        path: '/allOrders/:status',
         component: allOrders
     },{
-        path: '/orderDetail',
+        path: '/orderDetail/:id',
         component: orderDetail
     },{
         path: '/evaluate',
@@ -112,7 +112,7 @@ export default  [{
         path: '/addressList',
         component: addressList
     },{
-        path: '/addressDetail',
+        path: '/addressDetail/:id',
         component: addressDetail
 	},{
         path: '/reviewList',

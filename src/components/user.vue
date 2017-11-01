@@ -19,32 +19,32 @@
     	<div class="user-order">
     		<div class="order-top ">
     			<span>我的订单</span>
-    			<router-link to="/allOrders" class="more-order has-right-arror" >
+    			<router-link to="/allOrders/-1" class="more-order has-right-arror" >
 	    			查看全部订单
 	    		</router-link>
     		</div>
     		<div class="order-nav">
-    			<router-link to="/userInfo" class="order-nav-item">
+    			<router-link to="/allOrders/9" class="order-nav-item">
     				<span v-if="userInfo.order_check_is_0 > 0" class="count">{{userInfo.order_check_is_0}}</span>
     				<img src="../../static/images/54@3x.png" class="nav-icon" />
     				<p>待审核</p>
     			</router-link>
-    			<router-link to="/userInfo" class="order-nav-item">
+    			<router-link to="/allOrders/0" class="order-nav-item">
     				<span v-if="userInfo.order_0 > 0" class="count">{{userInfo.order_0}}</span>
     				<img src="../../static/images/50@3x.png" class="nav-icon" />
     				<p>待付款</p>
     			</router-link>
-    			<router-link to="/userInfo" class="order-nav-item">
+    			<router-link to="/allOrders/49" class="order-nav-item">
     				<span v-if="userInfo.order_49 > 0" class="count">{{userInfo.order_49}}</span>
     				<img src="../../static/images/49@3x.png" class="nav-icon" />
     				<p>待发货</p>
     			</router-link>
-    			<router-link to="/userInfo" class="order-nav-item">
+    			<router-link to="/allOrders/50" class="order-nav-item">
     				<span v-if="userInfo.order_50 > 0" class="count">{{userInfo.order_50}}</span>
     				<img src="../../static/images/48@3x.png" class="nav-icon" />
     				<p>待收货</p>
     			</router-link>
-    			<router-link to="/userInfo" class="order-nav-item">
+    			<router-link to="/allOrders/98" class="order-nav-item">
     				<span v-if="userInfo.order_98 > 0" class="count">{{userInfo.order_98}}</span>
     				<img src="../../static/images/47@3x.png" class="nav-icon" />
     				<p>待评价</p>
@@ -88,6 +88,7 @@ export default {
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res
+				this.$storage.set('user_money', this.userInfo.user_money)
 			}
         }, err => {
         	

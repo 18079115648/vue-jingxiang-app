@@ -2,133 +2,251 @@
     <div class="app">
     	<Header title="订单详情"></Header>
     	<div class="order-status">
-    		<img src="../../static/images/54@3x.png" class="addr-icon" />
+    		<img v-if="orderDetail.icon == 1" src="../../static/images/54@3x.png" class="addr-icon" />
+    		<img v-else-if="orderDetail.icon == 2" src="../../static/images/50@3x.png" class="addr-icon" />
+    		<img v-else-if="orderDetail.icon == 3" src="../../static/images/49@3x.png" class="addr-icon" />
+    		<img v-else-if="orderDetail.icon == 4" src="../../static/images/48@3x.png" class="addr-icon" />
+    		<img v-else src="../../static/images/47@3x.png" class="addr-icon" />
     		<div class="order-status-info">
-    			<p class="price-color">等待审核</p>
-    			<p class="tip">拉矿大的</p>
-    			<p class="number">订单号：1888888888</p>
+    			<p class="price-color">{{orderDetail.status_name}}</p>
+    			<p class="tip">{{orderDetail.tip}}</p>
+    			<p class="number">订单号：{{orderDetail.order_no}}</p>
     		</div>
     	</div>
     	<div class="order-addr">
     		<img src="../../static/images/52@3x.png" class="addr-icon" />
     		<div class="addr-detail">
     			<div class="addr-contact">
-    				<span>收货人：张三</span>
-    				<span>18079115648</span>
+    				<span>收货人：{{orderDetail.customer}}</span>
+    				<span>{{orderDetail.mobile}}</span>
     			</div>
-    			<div class="addr-text">阿里山</div>
-    			<div class="id-card">身份证：360127</div>
+    			<div class="addr-text">{{orderDetail.address_all}}</div>
+    			<div class="id-card">身份证：{{orderDetail.id_card}}</div>
     		</div>
     		<!--<img src="../../static/images/arror.png" class="more-icon" />-->
     	</div>
-    	<div class="recipe-content">
+    	<div class="recipe-content" v-if="orderDetail.type_order == 902">
     		<img src="../../static/images/51@3x.png" class="addr-icon" />
     		<div class="recipe-info">
     			<p>处方资料及联系方式</p>
-    			<p class="phone">18079115648</p>
+    			<p class="phone">{{orderDetail.check_phone_user}}</p>
     		</div>
-    		<img src="" class="recipe-img" />
+    		<img v-if="orderDetail.recipe_img" :src="orderDetail.recipe_img" class="recipe-img" />
+    		<span class="none-recipe-img" v-if="!orderDetail.recipe_img">暂无处方图片</span>
     	</div>
     	<div class="product-list">
-    		<div class="product-item">
-    			<img src="" class="product-img" />
+    		<div class="product-item" v-for="(obj, key) in orderDetail.goods" :key="key">
+    			<img :src="obj.thumb" class="product-img" />
     			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
+    				<div class="product-name">{{obj.title}}</div>
     				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
+    					<span class="price-color">&yen;{{obj.price_shop}}</span>
+    					<span class="count">x{{obj.num}}</span>
     				</div>
     			</div>
     		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
+    		
     	</div>
     	<div class="order-total">
     		<div class="cell-item">
     			<span>商品合计</span>
-    			<span>&yen;111</span>
+    			<span>&yen;{{orderDetail.amount_goods}}</span>
     		</div>
     		<div class="cell-item">
     			<span>运费</span>
-    			<span>&yen;111</span>
+    			<span>&yen;{{orderDetail.freight}}</span>
     		</div>
     	</div>
     	<div class="total-price">
     		<div class="price">
     			<span>实付款</span>
-    			<span class="price-color">&yen;11</span>
+    			<span class="price-color">&yen;{{orderDetail.amount_payment}}</span>
     		</div>
-    		<p class="time">下单时间：2017</p>
+    		<p class="time">下单时间：{{orderDetail.add_time}}</p>
     	</div>
 		<div class="order-operate">
-    		<span>取消订单</span>
-    		<span class="other">立即付款</span>
+    		<span @click="orderCancel" v-if="orderDetail.status === 0 || orderDetail.status === 9">取消订单</span>
+    		<span @click="payWx" v-if="orderDetail.status === 0 || orderDetail.status === 10" class="other">立即付款</span>
+    		<span @click="orderReceipt" v-if="orderDetail.status === 50" class="other">确认收货</span>
+    		<span v-if="orderDetail.status === 60 || orderDetail.status === 98" class="other">立即评价</span>
+    		<span @click="orderDelete" v-if="orderDetail.status === 60 || orderDetail.status === 98 || orderDetail.status === 99 || orderDetail.status === 100 || orderDetail.status === 110" class="other">删除订单</span>
     	</div>
     </div>
 </template>
 
 <script>
-
+import qs from 'qs'
+import { Toast } from 'mint-ui'
 export default {
 	data() {
 	    return {
-	    	editStatus: false,
-		    selected: [],
-		    aa: 1,
-		    bb: 2
+	    	orderDetail:{}
 	    }
 	},
+	created() {
+		this.initData()
+	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		initData() {
+			window.scrollTo(0,0)
+			this.$api.orderDetail({
+				params: {
+					id: this.$route.params.id
+				}
+			}).then(res => {
+				if(res.ret == 1){
+					this.orderDetail = res
+					
+					//处方图片
+					this.orderDetail.recipe_img = (this.orderDetail.img_user || this.orderDetail.img_check)
+					switch (res.status) {
+		                case 9:
+		                    // 待审核
+		                    this.orderDetail.icon = 1
+		                    this.orderDetail.tip = '等待药师审核或者电话咨询'
+		                    break
+		                case 0:
+		                    // 待付款
+		                    this.orderDetail.icon = 2
+		                    this.orderDetail.tip = '请及时付款，超时将关闭订单'
+		                    break
+		                case 10:
+		                    // 已审核
+		                    this.orderDetail.icon = 2
+		                    this.orderDetail.tip = '审核已通过，请立即付款'
+		                    break
+		                case 49:
+		                    // 待发货
+		                    this.orderDetail.icon = 3
+		                    this.orderDetail.tip = '已付款,等待卖家发货'
+		                    break
+		                case 1:
+		                    // 已付款
+		                    this.orderDetail.icon = 3
+		                    this.orderDetail.tip = '已付款,等待卖家发货'
+		                    break
+		                case 60:
+		                    // 待收货
+		                    this.orderDetail.icon = 4
+		                    this.orderDetail.tip = '已收货'
+		                    break
+		                case 50:
+		                    // 已收货
+		                    this.orderDetail.icon = 4
+		                    this.orderDetail.tip = '已发货,等待确认收货'
+		                    break
+		                case 100:
+		                    // 交易关闭
+		                    this.orderDetail.icon = 5
+		                    this.orderDetail.tip = '订单已关闭'
+		                    break
+		                case 11:
+		                    // 审核不通过
+		                    this.orderDetail.icon = 5
+		                    this.orderDetail.tip = '审核未通过，订单已关闭'
+		                    break
+		                case 98:
+		                    // 待评价
+		                    this.orderDetail.icon = 5
+		                    this.orderDetail.tip = '感谢您在本平台购物,欢迎再次光临'
+		                    break
+		                case 99:
+		                    // 已评价
+		                    this.orderDetail.icon = 5
+		                    this.orderDetail.tip = '感谢您在本平台购物,欢迎再次光临'
+		                    break
+		            }
+				}
+					
+	        }, err => {
+	        	
+	        })
+		},
+		
+		//取消订单
+		orderCancel() {
+			this.$api.orderCancel(qs.stringify({
+				id: this.$route.params.id
+			})).then(res => {
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '订单取消成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.initData()
+				},500)
+	        }, err => {
+	        	
+	        })
+		},
+		
+		//支付
+		payWx(){
+			window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + this.$route.params.id
+		},
+		
+		//确认收货
+		orderReceipt(){
+			this.$api.orderReceipt(qs.stringify({
+				id: this.$route.params.id
+			})).then(res => {
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '操作成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.initData()
+				},500)
+		    }, err => {
+		    	
+		    })
+		},
+		
+		//删除订单
+		orderDelete() {
+			this.$api.orderDelete(qs.stringify({
+				id: this.$route.params.id
+			})).then(res => {
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '订单删除成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.$router.go(-1)
+				},800)
+	        }, err => {
+	        	
+	        })
 		}
 	}
 }
@@ -149,13 +267,16 @@ export default {
 	align-items: flex-start;
 	margin-bottom: 0.2rem;
 	.addr-icon{
-		width: 0.28rem;
+		width: 0.32rem;
 		margin-right: 0.34rem;
-		margin-top: 0.06rem;
+		margin-top: 0.08rem;
 	}
 	.order-status-info{
 		flex: 1;
 		overflow: hidden;
+		.price-color{
+			font-size: 0.3rem;
+		}
 		.tip{
 			padding: 0.14rem 0;
 			color: #999;
@@ -188,6 +309,12 @@ export default {
 	.recipe-img{
 		width: 1rem;
 		height: 1rem;
+	}
+	.none-recipe-img{
+		height: 1rem;
+		line-height: 1rem;
+		color: #999;
+		font-size: 0.24rem;
 	}
 }
 .order-addr{
@@ -238,6 +365,7 @@ export default {
 			width: 1.4rem;
 			height: 1.4rem;
 			margin-right: 0.2rem;
+			border: 1px solid #eee;
 		}
 		.product-info{
 			flex: 1;
@@ -298,7 +426,7 @@ export default {
 		height: 0.6rem;
 		line-height: 0.56rem;
 		border-radius: 0.28rem;
-		padding: 0 0.35rem;
+		padding: 0 0.3rem;
 		border: 1px solid #ddd;
 		margin-left: 0.24rem;
 		color: #888;
