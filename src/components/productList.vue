@@ -1,78 +1,72 @@
 <template>
     <div class="app">
-    	<Header title="处方药"></Header>
-    	<div class="pop-product-list">
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
+    	<Header :title="title"></Header>
+    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/activity/goods">
+			<div class="pop-product-list">
+				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
+					<div class="fullEle">
+						<div class="pop-product-img">
+							<img class="fullEle" :src="item.thumb" />
+						</div>
+						<div class="pop-product-desc">
+							<p class="pop-product-name">{{item.title}}</p>
+							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+						</div>
 					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
+					
+				</router-link>
 				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-			<router-link to="" class="pop-product-item">
-				<div class="fullEle">
-					<div class="pop-product-img">
-						<img class="fullEle" src="" />
-					</div>
-					<div class="pop-product-desc">
-						<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-						<p class="pop-product-price price-color">&yen; 111</p>
-					</div>
-				</div>
-				
-			</router-link>
-		</div>
+			</div>
+		</Pagination>
+	    	
     </div>
 </template>
 
 <script>
 
 export default {
-	methods: {
-		back() {
-			this.$router.go(-1)
+	data() {
+		return {
+			title: '',
+			pagination: {
+                content: [],
+                loadEnd: false,
+                data: {
+                	params: {
+						p: 1,
+						id: null
+					}
+                }
+            },
 		}
+	},
+	created() {
+		
+	},
+	mounted() {
+		this.pagination = {
+            content: [],
+            loadEnd: false,
+            data: {
+            	params: {
+					p: 1,
+					id: this.$route.params.id
+				}
+            }
+        }
+		this.$refs.pagination.refresh()
+	},
+	methods: {
+		render(res) {
+			if(res.data.length>0) {
+				this.title = res.data[0].name
+			}else {
+				this.title = '分类商品'
+			}
+            res.data.forEach((item) => {
+            	this.pagination.content.push(item)
+            })
+        }
 	}
 }
 </script>
@@ -115,8 +109,8 @@ export default {
 	padding: 0.16rem;
 }
 .pop-product-img{
-	width: 3.15rem;
-	height: 3.15rem;
+	width: 3.23rem;
+	height: 3.23rem;
 }
 .pop-product-desc{
 	padding-top: 0.3rem;

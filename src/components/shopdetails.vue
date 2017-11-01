@@ -1,47 +1,46 @@
 <template>
-  <section class="shopdetails">
-    <Header title="详情"></Header>
+  <section class="app">
+    <section class="product-banner">
+    	<img src="../../static/images/23@3x.png" class="icon-img back" @click="back" />
+    	<img src="../../static/images/22@3x.png" class="icon-img share" @click="show = true" />
+		<mt-swipe :auto="0">
+			<mt-swipe-item v-for="(item, index) in banner" :key="index">
+				<img :src="item.file" class="fullEle" />
+			</mt-swipe-item>
+		</mt-swipe>
+	</section>
 
     <div class="shopdetails_title">
-      <h3>超级无敌神奇的大补丸可活络筋骨、延年益寿、滋阴壮阳、上天入地就此一家</h3>
-      <div>¥ <span>999.00</span></div>
+      <h3>{{goodsDetail.title}}</h3>
+      <div>&yen; <span>{{goodsDetail.price_shop}}</span></div>
     </div>
 
     <!-- 评价 -->
     <div class="evaluate">
       <div class="evaluate_title">
         <div class="evaluate_left">
-          <span>评价(<span>666</span>)</span>
+          <span>评价(<span>{{goodsDetail.comment_total_count}}</span>)</span>
         </div>
         <div class="evaluate_right">
-          <span>好评度</span><span class="money">90</span><span class="money">%</span>
+          <span>好评度</span><span class="money">{{goodsDetail.comment_total_score}}</span><span class="money">%</span>
           <div class="icon">
           </div>
         </div>
       </div>
       <hr>
     </div>
-
-    <div class="review">
-      <div class="review_info">
+	<div class="review" v-if="comment.length>0">
+      <div class="review_info" v-for="(item, index) in comment" :key="index">
         <div class="review_portrait">
-          <img src="../../static/images/图/1-13.png">
-          <h4>萨达萨达</h4>
+          <img :src="item.img_head">
+          <h4>{{item.uid_username}}</h4>
         </div>
-
-
         <div class="review_grade">
-          <img src="../../static/images/28@3x.png">
-          <img src="../../static/images/28@3x.png">
-          <img src="../../static/images/28@3x.png">
-          <img src="../../static/images/27@3x.png">
-          <img src="../../static/images/27@3x.png">
+          <img src="../../static/images/28@3x.png" v-for="n in item.score">
+          <img src="../../static/images/27@3x.png" v-for="n in 5-item.score">
         </div>
       </div>
-
-      <div class="review_body">
-        萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达
-      </div>
+      <div class="review_body" v-html="item.content"></div>
     </div>
 
 
@@ -50,8 +49,7 @@
     <!-- 详情内容 -->
     <div class="picture">
       <h4>图文介绍</h4>
-      <div class="pics"  style="font-size: .28rem;">
-        <img src="../../static/images/图/1-13.png">
+      <div class="pics"  style="font-size: .28rem;" v-html="goodsDetail.content">
       </div>
     </div>
     
@@ -70,6 +68,7 @@
       <div class="desired">
         <img src="../../static/images/20@3x.png" style="width:auto;">
         <div>购物车</div>
+        <span class="count">199</span>
       </div>
       <div class="operation">
         <div class="pay" >立即购买</div>
@@ -104,7 +103,7 @@
       </div>
     </div>
 
-
+	<share-tip v-show="show" @shareCancel="show = false"></share-tip>
   </section>
 </template>
 
@@ -113,31 +112,73 @@
 <script>
 
   export default {
-    data (){
-      return{
-      }
-    },
+    data() {
+		return {
+			show: false,
+			goodsDetail: {},
+			banner: [],
+			comment: []
+		}
+	},
+	created() {
+		window.scrollTo(0,0)
+		this.$api.goodsDetail({
+			params: {
+				id: this.$route.params.id
+			}
+		}).then(res => {
+			this.goodsDetail = res
+			this.banner = res.thumb_more
+			this.comment = res.comment.slice(0,1)
+        }, err => {
+        	
+        })
+	},
+	mounted() {
+		
+	},
+	methods: {
+		back() {
+			this.$router.go(-1)
+		},
+		
+	}
   }
 
 </script>
 
 <style lang="scss" scoped>
-.shopdetails{
-  width: 100%;
-  height: 100vh;
-  background-color: #f5f5f9;
-  color: #444;
+.app{
+	background: #f5f5f9;
+	font-size: 0.26rem;
+	padding-bottom: 1rem;
+} 
+.product-banner{
+	height: 7.5rem;
+	position: relative;
+	.icon-img{
+		position: absolute;
+		width: 0.6rem;
+		height: 0.6rem;
+		top: 0.5rem;
+		z-index: 10;
+	}
+	.icon-img.share{
+		right: 0.3rem;
+	}
+	.icon-img.back{
+		left: 0.3rem;
+	}
 }
 .shopdetails_title{
   width: 100%;
   height: 1.8rem;
   background-color: #fff;
-  padding: .24rem .24rem;
+  padding: .3rem;
   margin-bottom: .2rem;
   h3 {
-    font-size: .30rem;
-    color: #444;
     line-height: .36rem;
+    font-size: 0.28rem;
   }
   div {
     font-size: .3rem;
@@ -153,26 +194,26 @@
   width: 100%;
   height: auto;
   background-color: #fff;
-  padding-left: .24rem;
+  padding-left: .3rem;
   hr{
-    border-top: #ccc;
+    border-top: #f9f9f9;
     margin: 0 auto;
   }
   .evaluate_title{
     width: 100%;
     height: .8rem;
     line-height: .8rem;
-    padding-right: .24rem;
+    padding-right: .3rem;
     display: flex;
     justify-content: space-between;
     align-self: center;
     .evaluate_left{
-      color: #999;
+      color: #666;
     }
     .evaluate_right{
       display: flex;
       align-items: center;
-      color: #999;
+      color: #666;
       justify-content: space-between;
     }
   }
@@ -180,11 +221,11 @@
     color: #ff6600;
   }
   .icon{
-    width: .4rem;
+    width: .3rem;
     height: .3rem;
-    background: url('../../static/image/arror.png') no-repeat;
-    background-size: .2rem .3rem;
-    background-position-x: .2rem;
+    margin-top: -0.04rem;
+    background: url('../../static/image/arror.png') no-repeat right center;
+    background-size: .16rem .24rem;
     
   }
 }
@@ -192,23 +233,19 @@
   width: 100%;
   height: auto;
   background-color: #fff;
-  padding: .24rem;
-  margin-bottom: .2rem;
+  padding: .3rem;
 }
 .review_info{
   display: flex;
 }
 .review_portrait{
   display: flex;
+  align-items: center;
   img{
-    width: .8rem;
-    height: .8rem;
-    border-radius: .4rem;
-    margin-right: .24rem;
-  }
-  h4{
-    display: flex;
-    line-height: .8rem;
+    width: .5rem;
+    height: .5rem;
+    border-radius: .25rem;
+    margin-right: .15rem;
   }
 }
 .review_grade{
@@ -224,41 +261,30 @@
 }
 .review_body{
     padding-top: .3rem;
-    line-height: .34rem;
+    line-height: 1.4;
+    font-size: 0.26rem;
+    color: #666;
 }
 
 .picture {
     width: 100%;
     height: auto;
     background-color: #fff;
-
+	margin-top: 0.2rem;
     padding-bottom: .3rem;
     h4 {
-        height: .8rem;
+        height: .9rem;
         font-size: .26rem;
-        color: #999;
-        line-height: .8rem;
-        padding: 0rem .34rem
+        color: #666;
+        line-height: .9rem;
+        padding: 0rem .3rem
     }
     .pics {
         width: 100%;
         height: auto;
-        min-height: 3.6rem;
-        padding: 0rem .14rem;
-        p,
-        i,
-        em,
-        li,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        strong {
-            font-size: .28rem !important;
-            line-height: .32rem !important
-        }
+        padding: 0rem .3rem;
+        font-size: .28rem;
+        line-height: 1.5;
         img {
             width: 100% !important;
             height: auto !important
@@ -269,8 +295,9 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: .98rem;
+  height: 1rem;
   background-color: #fff;
+  border-top: 1px solid #dedede;
   display: flex;
   .desired{
     width: 1.5rem;
@@ -278,16 +305,31 @@
     color: #999;
     line-height: .24rem;
     text-align: center;
+    position: relative;
     img{
       width: .29rem;
       height: .36rem;
-      margin-top: .15rem; 
+      margin-top: .18rem; 
       color: #666;
     }
     div{
       font-size: .2rem;
       line-height: .24rem;
-      margin-top: .14rem;
+      margin-top: .1rem;
+    }
+    span.count{
+    	position: absolute;
+    	height: 0.34rem;
+    	min-width: 0.34rem;
+    	text-align: center;
+    	line-height: 0.36rem;
+    	background: rgba(55,55,55, 0.7);
+    	left: 50%;
+    	top: 0.1rem;
+    	color: #fff;
+    	font-size: 0.2rem;
+    	border-radius: 50%;
+    	padding: 0 0.04rem;
     }
   }
   .commit{
@@ -304,6 +346,7 @@
     text-align: center;
     line-height: .98rem;
     color: #fff;
+    font-size: 0.3rem;
     .pay{
       flex: 1;
       background-color: #F8B62D;

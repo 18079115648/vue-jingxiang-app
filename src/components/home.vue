@@ -40,14 +40,14 @@
 				<div class="tit"><span class="pop-icon"></span>人气热销</div>
 			</div>
 			<div class="pop-product-list">
-				<router-link to="" class="pop-product-item">
+				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in hotList" :key="index">
 					<div class="fullEle">
 						<div class="pop-product-img">
-							<img class="fullEle" src="" />
+							<img class="fullEle" :src="item.thumb" />
 						</div>
 						<div class="pop-product-desc">
-							<p class="pop-product-name">参苓健脾胃颗粒（无蔗糖）8袋参苓健脾胃颗粒（无蔗糖）8袋</p>
-							<p class="pop-product-price price-color">&yen; 111</p>
+							<p class="pop-product-name">{{item.title}}</p>
+							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
 						</div>
 					</div>
 					
@@ -64,7 +64,8 @@ export default {
 	data() {
 		return {
 			bannerList: [],
-			bannerCat: [{},{},{}]
+			bannerCat: [{},{},{}],
+			hotList: []
 		}
 	},
 	created() {
@@ -86,6 +87,14 @@ export default {
         }, err => {
         	
         })
+		this.$api.indexHot().then(res => {   
+			res.forEach((item) => {
+            	this.hotList.push(item.goods)
+            })
+        }, err => {
+        	
+        })
+		
 		
 	}
 }
@@ -207,8 +216,8 @@ export default {
 	padding: 0.16rem;
 }
 .pop-product-img{
-	width: 3.15rem;
-	height: 3.15rem;
+	width: 3.23rem;
+	height: 3.23rem;
 }
 .pop-product-desc{
 	padding-top: 0.3rem;

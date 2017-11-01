@@ -85,7 +85,10 @@ export function fetchGet(url, params) {
     })
 }
 export default {
-	
+    //分页
+	page(url, params) {
+		return fetchGet(url, params)
+	},
 	//首页轮播
 	indexBanner(params) {
 		return fetchGet('/search/banner', params)
@@ -94,6 +97,41 @@ export default {
 	//首页快捷分类
 	indexBannerCat(params) {
 		return fetchGet('/activity/index', params)
+	},
+	
+	//首页热门商品
+	indexHot(params) {
+		return fetchPost('/search/hot', params)
+	},
+	
+	//搜索历史
+	searchHistory(params) {
+		return fetchGet('/search/history', params)
+	},
+	
+	//猜你想找
+	searchGuess(params) {
+		return fetchGet('/search/guess', params)
+	},
+	
+	//清除搜索历史
+	historyClear(params) {
+		return fetchGet('/search/historyClear', params)
+	},
+	
+	//商品详情
+	goodsDetail(params) {
+		return fetchGet('/goods/detail', params)
+	},
+	
+	//我的页面
+	user(params) {
+		return fetchGet('/user/info', params)
+	},
+	
+	//更新用户信息
+	updataUserInfo(params) {
+		return fetchPost('/user/info', params)
 	},
 
 
@@ -150,5 +188,6 @@ export default {
 	indexHealth(params) {
 		return fetchGet('health/create', params)
 	},
+	
 	
 }

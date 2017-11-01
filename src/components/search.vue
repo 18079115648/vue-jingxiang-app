@@ -4,7 +4,7 @@
     		<div class="search-input">
     			<img src="../../static/images/search-icon.png" />
     			<form action="#" onsubmit="return false">
-					<input class="input" ref="Input" type="search"   placeholder="搜索你要的宝贝" />
+					<input class="input" ref="Input" type="search" v-model.trim="word" @keyup.enter="searchProduct(word)"   placeholder="搜索你要的宝贝" />
 				</form>
     		</div>
     		<span @click="back">取消</span>
@@ -12,34 +12,83 @@
     	<section class="search-history">
 			<div class="search-history-tit">
 				<span class="tit">最近搜索</span>
-				<span class="delete-icon"></span>
+				<span class="delete-icon" @click="historyClear"></span>
 			</div>
 			<div class="search-history-list">
-				<span class="search-history-item" >
-					处方药
+				<span class="search-history-item" @click="searchProduct(item.wd)" v-for="(item, index) in historyWord" :key="index">
+					{{item.wd}}
 				</span>
 			</div>
 			<div class="search-history-tit" style="padding-top: 0.6rem;" >
 				<span class="tit">猜你想找</span>
 			</div>
 			<div class="search-history-list">
-				<span class="search-history-item" >
-					处方药
+				<span class="search-history-item" @click="searchProduct(item.name)" v-for="(item, index) in guessWord" :key="index">
+					{{item.name}}
 				</span>
 			</div>
 		</section>
+		<confirm-modal :show="show" @confirm_modal="confirm_modal" @closeModal="show = false" message="确定删除历史记录?"></confirm-modal>	
     </div>
 </template>
 
 <script>
-
+import { Toast } from 'mint-ui';
 export default {
+	data() {
+		return {
+			show: false,
+			historyWord:[],
+			guessWord: [],
+			word: ''
+		}
+	},
+	created() {
+		this.$api.searchHistory().then(res => { 
+			if(res.ret == 1) {
+				this.historyWord = res.data
+			}
+        }, err => {
+        	
+        })
+		
+		this.$api.searchGuess().then(res => { 
+			if(res.ret == 1) {
+				this.guessWord = res.data
+			}
+        }, err => {
+        	
+        })
+	},
 	mounted() {	
 		this.$refs.Input.focus()
 	},
 	methods: {
 		back() {
 			this.$router.go(-1)
+		},
+		confirm_modal() {
+			this.$api.historyClear().then(res => { 
+				if(res.ret == 1) {
+					this.historyWord = []
+					Toast({
+					  message: '删除成功',
+					  position: 'bottom',
+					  duration: 1500
+					});
+				}
+	        }, err => {
+	        	
+	        })
+			
+			
+		},
+		historyClear() {
+			this.show = true
+		},
+		searchProduct(word) {
+			this.$storage.set('search_word', word)
+			this.$router.push('/searchResult')
 		}
 	}
 }

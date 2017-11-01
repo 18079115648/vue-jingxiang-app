@@ -4,31 +4,59 @@
     	<div class="user-info">
 			<div class="link-item">
 				<span>姓名</span>
-				<input type="text" placeholder="您的真实姓名" />
+				<input ref="Input" type="text" v-model.trim="userInfo.true_name" maxlength="20" placeholder="您的真实姓名" />
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" maxlength="18" placeholder="您的身份证号" />
+				<input type="tel" v-model.trim="userInfo.id_card" maxlength="18" placeholder="您的身份证号" />
 			</div>
     	</div>
-		<div class="save">保存</div>
+		<div class="save" @click="save">保存</div>
     </div>
 </template>
-
 <script>
-
+import qs from 'qs'
+import { Toast } from 'mint-ui'
 export default {
 	data() {
 	    return {
-
+	    	userInfo: {}
 	    }
 	},
 	mounted() {	
-		
+		this.userInfo = this.$storage.get('user_info')
+		this.$refs.Input.focus()
+		let that = this
+		if(this.$refs.Input.setSelectionRange){
+			setTimeout(function() { 
+				that.$refs.Input.setSelectionRange(that.nickName.length, that.nickName.length)
+			}, 0); 
+			
+		}
 	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		save() {
+			this.$api.updataUserInfo(qs.stringify(this.userInfo)).then(res => { 
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '修改成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.$router.go(-1)
+				},800)
+	        }, err => {
+	        	
+	        })
 		}
 	}
 }

@@ -4,38 +4,40 @@
     	<div class="avatar-content has-right-arror">
     		<span>头像</span>
     		<div class="avatar">
-    			<img src="../../static/images/10@3x.png" />
+    			<img :src="userInfo.img_head" />
     		</div>
     	</div>
     	<div class="user-info">
-    		<router-link to="/nickName" class="link-item  has-right-arror">
+    		<div @click="editNickName" class="link-item  has-right-arror">
 				<span>昵称</span>
-				<span>一味去</span>
-			</router-link>
+				<span>{{userInfo.username}}</span>
+			</div>
 			<div class="link-item">
 				<span>手机号</span>
-				<span>18079115648</span>
+				<span>{{userInfo.mobile}}</span>
 			</div>
-			<div class="link-item">
+			<div class="link-item" v-if="userInfo.cardno">
 				<span>会员卡绑定</span>
-				<span>18079115648</span>
+				<span>{{userInfo.cardno}}</span>
 			</div>
-			<router-link to="/bindMemberCard" class="link-item  has-right-arror">
+			<router-link v-if="!userInfo.cardno" to="/bindMemberCard" class="link-item  has-right-arror">
 				<span>会员卡绑定</span>
 				<span class="grey">未绑定</span>
 			</router-link>
     	</div>
     	<div class="identify-aouth">
     		<p class="tit">实名认证</p>
-    		<div class="user-info" style="margin-top: 0;">
-	    		<router-link to="/identyAouth" class="link-item  has-right-arror">
+    		<div class="user-info" style="margin-top: 0;" @click="editAouth">
+	    		<div  class="link-item  has-right-arror">
 					<span>姓名</span>
-					<span class="grey">您的真实姓名</span>
-				</router-link>
-				<router-link to="/identyAouth" class="link-item  has-right-arror">
+					<span v-if="!userInfo.true_name" class="grey">您的真实姓名</span>
+					<span v-if="userInfo.true_name">{{userInfo.true_name}}</span>
+				</div>
+				<div  class="link-item  has-right-arror">
 					<span>身份证号</span>
-					<span>18079115648</span>
-				</router-link>
+					<span v-if="!userInfo.id_card" class="grey">您的身份证号</span>
+					<span v-if="userInfo.id_card">{{userInfo.id_card}}</span>
+				</div>
 	    	</div>
     	</div>
     </div>
@@ -44,9 +46,46 @@
 <script>
 
 export default {
+	data() {
+		return {
+			userInfo: {}
+		}
+	},
+	created() {
+		this.$api.user().then(res => { 
+			if(res.ret == 1) {
+				this.userInfo = res
+			}
+        }, err => {
+        	
+        })
+	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		editNickName() {
+			let info = {
+				username: this.userInfo.username,
+				true_name: this.userInfo.true_name,
+				province: this.userInfo.province,
+				city: this.userInfo.city,
+				district: this.userInfo.district,
+				address: this.userInfo.address,
+				id_card: this.userInfo.id_card
+			}
+			this.$storage.set('user_info', info)
+			this.$router.push('/nickName')
+		},
+		editAouth() {
+			let info = {
+				username: this.userInfo.username,
+				true_name: this.userInfo.true_name,
+				province: this.userInfo.province,
+				city: this.userInfo.city,
+				district: this.userInfo.district,
+				address: this.userInfo.address,
+				id_card: this.userInfo.id_card
+			}
+			this.$storage.set('user_info', info)
+			this.$router.push('/identyAouth')
 		}
 	}
 }

@@ -15,11 +15,19 @@ import VueScroller from 'vue-scroller'
 
 import api from '@/fetch/api'
 Vue.prototype.$api = api
+import storage from '@/fetch/storage'
+Vue.prototype.$storage = storage
 
 import Menu from '@/components/common/tabBar'
 Vue.component('Menu', Menu)
 import Header from '@/components/common/Header'
 Vue.component('Header', Header)
+import Pagination from '@/components/common/Pagination'
+Vue.component('Pagination', Pagination)
+import confirmModal from '@/components/common/confirmModal'
+Vue.component('confirmModal', confirmModal)
+import shareTip from '@/components/common/shareTip'
+Vue.component('shareTip', shareTip)
 
 Vue.use(VueScroller)
 
