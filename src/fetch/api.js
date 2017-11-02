@@ -248,9 +248,9 @@ export default {
 		return fetchGet('health/index', params)
 	},
 
-	//创建健康档案
+	//跟新自己的健康档案
 	indexHealth(params) {
-		return fetchGet('health/create', params)
+		return fetchGet('health/updateMy', params)
 	},
 
 	//删除健康档案
@@ -271,6 +271,11 @@ export default {
 	//创建病情标签
 	indexAddHealthTag(params) {
 		return fetchGet('health/tagCreate', params)
+	},
+
+	//删除病情标签
+	indexDeleteHealthTag(params) {
+		return fetchGet('health/tagDelete', params)
 	},
 
 	//关系选择

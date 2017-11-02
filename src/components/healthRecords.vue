@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         add_disease() {
-            this.$router.push({path: '/health'})
+            this.$router.push({path: '/OthersHealth'})
         }
     }
 

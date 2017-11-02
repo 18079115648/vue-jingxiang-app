@@ -52,7 +52,7 @@
     		</div>
     	</div>
     	<div class="user-link">
-    		<router-link to="/userInfo" class="link-item has-right-arror">
+    		<router-link to="/Myhealth" class="link-item has-right-arror">
 				<img src="../../static/images/9@3x.png" class="nav-icon" />
 				我的健康
 			</router-link>
