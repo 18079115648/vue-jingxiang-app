@@ -1,18 +1,23 @@
 <template>
   <section class="classification">
-    <Header title="分类"></Header>
+    <div class="search-content">
+			<a href="#/search" class="search-input">
+				<img src="../../static/images/search-icon.png" />
+				<span>搜索你要的宝贝</span>
+			</a>
+		</div>
     <main>
       <div class="left_nav" ref="navtabs">
-        <ul @touchmove="move(true)" @touchend="move(false)">
-          <li v-for="nav in navtab" :class="{iscur: iscurnum === nav.cat_id}" @touchstart="active(nav, nav.cat_id, nav.name)">{{nav.name}}</li>
+        <ul >
+          <li v-for="nav in navtab" :class="{iscur: currNavId === nav.cat_id}" @click="changeNav(nav)">{{nav.name}}</li>
         </ul>
       </div>
       <div class="right_main_warp">
         <div class="right_main">
-          <div class="two" v-for="lists in navlist" >
+          <div class="two" v-for="lists in currNavlist" >
             <div class="nav_main">
             	<h3>{{lists.name}}</h3>
-	            <div class="nav_main_list" v-for="list in lists.data">
+	            <div class="nav_main_list" @click="goList(list.cat_id, list.name)" v-for="list in lists.data">
                 <img :src="list.thumb">
 	              <p>{{list.name}}</p>
 	            </div>
@@ -32,44 +37,35 @@
 export default {
   data (){
     return {
-      iscurnum: 0, // 选中的nav
-      title: '', // nav标题
-      ismove: true, // 判断滑动和点击
-      navtab: [], // nav 分类
-      navlist: [],
-      searchContent: '' // 搜索内容
+      navtab: [],
+      currNavId: 0, 
+      currNavlist: []
     }
   },
   created() {
     const self = this
     this.$api.indexClassification().then(res => {
       this.navtab = res
-      for (var i in res.data) {
-        self.navtab.push(res.data[i])
-      }
-      self.iscurnum = self.navtab[0].cat_id
-      self.navlist = self.navtab[0].data
-      for (var i in self.navtab[0].data) {
-        self.title = self.navtab[0].data[i].name
-      }
+      this.currNavId = res[0].cat_id
+      this.currNavlist = res[0].data
     }, err => {
         
     })
   },
   methods: {
-    move(falg) {
-      this.ismove = falg
-    },
-    active(item, index, title){
-      var self = this
-      if (!self.ismove) {
-        self.iscurnum = index
-        for (var i in item.data) {
-    		  self.title = item.data[i].name
-        }
-        self.navlist = item.data
-      }
-    }
+  	changeNav(nav){
+  		this.navtab.forEach((item) => {
+  			if(item.cat_id == nav.cat_id) {
+  				this.currNavId = item.cat_id
+  				 this.currNavlist = item.data
+  				 return
+  			}
+  		})
+  	},
+  	goList(id, name){
+  		this.$storage.set('product_cat', name)
+  		this.$router.push('/productList/goods/' + id)
+  	}
   }
   
 
@@ -84,24 +80,43 @@ export default {
 .classification {
   height: 100vh;
   background-color: #F5F5F9;
-  
+  position: relative;
+}
+.search-content{
+	padding: 0.18rem 0.35rem ;
+	background: #3cafb6;
+	position: fixed;
+	left: 0;
+	width: 100%;
+	top: 0;
+	z-index: 10;
+}
+.search-input{
+	width: 100%;
+	height: 0.56rem;
+	background: #FFFFFF;
+	border-radius: 0.08rem;
+	display: flex;
+	align-items: center;
+	img{
+		width: 0.32rem;
+		margin-left: 0.2rem;
+		margin-right: 0.2rem;
+	}
+	span{
+		color: #777;
+	}
 }
 
-header {
-  width: 100%;
-  background-color: #3CAFB6;
-  padding: .16rem .34rem;
-  overflow: hidden
-}
 
 main {
+	position: absolute;
+	left: 0;
+	top: 0.92rem;
+	bottom: 1rem;
   width: 100%;
   overflow: hidden;
-  background-color: #F5F5F9;
   display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center
 }
 
 .left_nav {
@@ -113,18 +128,16 @@ main {
 ul {
   width: 1.88rem; 
   height: auto;
-  font-size: .24rem;
-  color: #222;
+  font-size: .26rem;
+  color: #333;
   background-color: #fff;
-  position: fixed;
-  top: .92rem;
 }
 
 li {
   height: 1rem;
   line-height: 1rem;
   text-align: center;
-  border-bottom: 2px solid #F5F5F9
+  border-bottom: 1px solid #F5F5F9
 }
 
 .iscur {
@@ -135,13 +148,13 @@ li {
 .right_main_warp {
   flex: 1;
   height: 100%;
-  padding: 0rem .36rem 0rem .34rem
+  padding: 0rem .3rem;
 }
 
 h3 {
   width: 100%;
   height: .9rem;
-  line-height: .9rem;
+  line-height: 1rem;
   font-size: .24rem;
   color: #222;
   text-align: center;
@@ -150,9 +163,11 @@ h3 {
 .right_main {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  
   overflow-y: auto;
-  // padding-bottom: .36rem
+}
+.two{
+	background-color: #fff;
 }
 .two h3{
 	background: #F5F5F9;
@@ -174,7 +189,7 @@ h3 {
 }
 
 .nav_main_list {
-  width: 33%;
+  width: 33.33%;
   height: 1.84rem;
   text-align: center;
   img {
@@ -185,6 +200,7 @@ h3 {
     
   }
   p {
+  	padding-top: 0.08rem;
     line-height: .36rem;
     white-space: nowrap;
     text-overflow: ellipsis;

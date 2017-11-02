@@ -7,27 +7,30 @@
     		</div>
     		
     	</div>
-    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/goods/index">
-			<div class="pop-product-list" v-show="pagination.content.length>0">
-				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
-					<div class="fullEle">
-						<div class="pop-product-img">
-							<img class="fullEle" :src="item.thumb" />
+    	<div class="content">
+    		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/goods/index">
+				<div class="pop-product-list" v-show="pagination.content.length>0">
+					<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
+						<div class="fullEle">
+							<div class="pop-product-img">
+								<img class="fullEle" :src="item.thumb" />
+							</div>
+							<div class="pop-product-desc">
+								<p class="pop-product-name">{{item.title}}</p>
+								<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+							</div>
 						</div>
-						<div class="pop-product-desc">
-							<p class="pop-product-name">{{item.title}}</p>
-							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
-						</div>
-					</div>
+						
+					</router-link>
 					
-				</router-link>
-				
-			</div>
-		</Pagination>
-		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-    		<img class="none-img" src="../../static/images/46@3x.png"  />
-    		<p class="none-tip">没有找到商品单信息</p>
+				</div>
+			</Pagination>
+			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<img class="none-img" src="../../static/images/46@3x.png"  />
+	    		<p class="none-tip">没有找到商品单信息</p>
+	    	</div>
     	</div>
+		
     </div>
 </template>
 
@@ -41,10 +44,8 @@ export default {
                 content: [],
                 loadEnd: false,
                 data: {
-                	params: {
-						p: 1,
-						wd: null
-					}
+                	p: 1,
+					wd: null
                 }
             },
 		}
@@ -57,10 +58,8 @@ export default {
             content: [],
             loadEnd: false,
             data: {
-            	params: {
-					p: 1,
-					wd: this.$storage.get('search_word')
-				}
+            	p: 1,
+				wd: this.$storage.get('search_word')
             }
         }
 		this.$refs.pagination.refresh()
@@ -83,6 +82,14 @@ export default {
 	background: #f5f5f9;
 	padding-top: 0.96rem;
 } 
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 0.96rem;
+	bottom: 0;
+	overflow-y: auto;
+}
 .search-content{
 	position: fixed;
 	width: 100%;

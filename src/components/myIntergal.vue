@@ -38,10 +38,8 @@
 	                content: [],
 	                loadEnd: false,
 	                data: {
-	                	params: {
-							p: 1,
-							typePoints: 1
-						}
+	                	p: 1,
+										typePoints: 1
 	                }
 	            },
 			}
@@ -70,10 +68,8 @@
                     content: [],
 	                loadEnd: false,
 	                data: {
-	                	params: {
-							p: 1,
-							typePoints: index
-						}
+	                	p: 1,
+										typePoints: index
 	                }
 				}
 				this.$refs.pagination.refresh()

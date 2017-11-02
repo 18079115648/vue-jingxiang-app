@@ -36,7 +36,7 @@ export default {
 	},
 	methods: {
 		save() {
-			this.$api.updataUserInfo(qs.stringify(this.userInfo)).then(res => { 
+			this.$api.updataUserInfo(this.userInfo).then(res => { 
 				if(res.ret !== 1) {
 					Toast({
 					  message: res.msg,
@@ -78,11 +78,10 @@ export default {
 		padding-right: 0.3rem;
 		border-bottom: 1px solid #f3f3f3;
 		span{
-			width: 2rem;
+			width: 2.3rem;
 		}
 		input{
 			flex: 1;
-			text-align: right;
 		}
 	}
 }

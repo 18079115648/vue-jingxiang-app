@@ -58,9 +58,7 @@ export default {
         const self = this
         this.$api.indexInformationContent(
             {
-                params: {
-                    id: self.$route.query.newsId
-                }
+                id: self.$route.query.newsId
             }
         ).then(res => {
             this.title = res.title

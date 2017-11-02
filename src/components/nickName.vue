@@ -30,7 +30,7 @@ export default {
 	},
 	methods: {
 		save() {
-			this.$api.updataUserInfo(qs.stringify(this.userInfo)).then(res => { 
+			this.$api.updataUserInfo(this.userInfo).then(res => { 
 				if(res.ret !== 1) {
 					Toast({
 					  message: res.msg,

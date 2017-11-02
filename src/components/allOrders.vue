@@ -63,10 +63,8 @@ export default {
 	        content: [],
 	        loadEnd: false,
 	        data: {
-	        	params: {
-							p: 1,
-							status: 0
-						}
+	        	p: 1,
+				status: 0
 	        }
 	    },
     }
@@ -74,15 +72,13 @@ export default {
 	created() {
 		this.status = Number(this.$route.params.status)
 		this.pagination = {
-									        content: [],
-									        loadEnd: false,
-									        data: {
-									        	params: {
-															p: 1,
-															status: this.status
-														}
-									        }
-									    }
+					        content: [],
+					        loadEnd: false,
+					        data: {
+					        	p: 1,
+							    status: this.status
+					        }
+					    }
 		switch (this.status) {
 			case -1:
 			  this.title = '我的订单'
@@ -118,9 +114,9 @@ export default {
 				this.cancelShow = true
 			},
 			orderCancel() {
-				this.$api.orderCancel(qs.stringify({
+				this.$api.orderCancel({
 					id: this.currId
-				})).then(res => {
+				}).then(res => {
 					if(res.ret !== 1) {
 						Toast({
 						  message: res.msg,
@@ -140,24 +136,22 @@ export default {
 									        content: [],
 									        loadEnd: false,
 									        data: {
-									        	params: {
-															p: 1,
-															status: this.status
-														}
+									        	p: 1,
+												status: this.status
 									        }
 									    }
 						this.$refs.pagination.refresh()
 					},500)
-        }, err => {
-        	
-        })
+		        }, err => {
+		        	
+		        })
 			},
 			
 			//确认收货
 			orderReceipt(id){
-				this.$api.orderReceipt(qs.stringify({
+				this.$api.orderReceipt({
 					id: id
-				})).then(res => {
+				}).then(res => {
 					if(res.ret !== 1) {
 						Toast({
 						  message: res.msg,
@@ -177,17 +171,15 @@ export default {
 									        content: [],
 									        loadEnd: false,
 									        data: {
-									        	params: {
-															p: 1,
-															status: this.status
-														}
+									        	p: 1,
+												status: this.status
 									        }
 									    }
 						this.$refs.pagination.refresh()
 					},500)
-        }, err => {
-        	
-        })
+		        }, err => {
+		        	
+		        })
 			},
 			
 			//支付
@@ -202,9 +194,9 @@ export default {
 				this.deleteShow = true
 			},
 			orderDelete() {
-				this.$api.orderDelete(qs.stringify({
+				this.$api.orderDelete({
 					id: this.currId
-				})).then(res => {
+				}).then(res => {
 					if(res.ret !== 1) {
 						Toast({
 						  message: res.msg,
@@ -222,9 +214,9 @@ export default {
 					setTimeout(() => {
 						this.pagination.content.splice(this.currIndex, 1)
 					},500)
-        }, err => {
-        	
-        })
+		        }, err => {
+		        	
+		        })
 			}
 	}
 }

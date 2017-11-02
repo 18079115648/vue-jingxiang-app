@@ -106,17 +106,14 @@ export default {
             const self = this
             this.$api.indexHealth(
                 {
-                    params: {
-                        true_name: this.name,
-                        weight: this.weight,
-                        height: this.height,
-                        sex:this.sex,
-                        relationship_id: "1",
-                        is_my: "1",
-                        birthday:"",
-                        data:"1",
-                        
-                    }
+                    true_name: this.name,
+                    weight: this.weight,
+                    height: this.height,
+                    sex:this.sex,
+                    relationship_id: "1",
+                    is_my: "1",
+                    birthday:"",
+                    data:"1",
                 }
             ).then(res => {
                 

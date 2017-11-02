@@ -67,7 +67,7 @@
 			
     	</div>
     	<div class="user-link" style="margin-bottom: 0.8rem;">
-    		<router-link to="/userInfo" class="link-item has-right-arror">
+    		<router-link to="/aboutUs" class="link-item has-right-arror">
 				<img src="../../static/images/6@3x.png" class="nav-icon" />
 				关于我们
 			</router-link>

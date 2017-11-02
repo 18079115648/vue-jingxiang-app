@@ -67,6 +67,12 @@ input::-webkit-search-cancel-button {
 	display: block;
 	width: 100%;
 }
+.html-content img{
+	display: block;
+	max-width: 100%;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
+}
 
 .pop-product-img{
 	border: 1px solid #eee;

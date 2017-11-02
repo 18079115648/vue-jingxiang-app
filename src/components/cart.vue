@@ -64,7 +64,7 @@
 					<span>合计：</span>
 					<span class="price-color">&yen;111</span>
 				</div>
-				<div class="btn-operate" v-show="!editStatus">去结算(6)</div>
+				<div class="btn-operate" v-show="!editStatus" @click="paySubmit">去结算(6)</div>
 				<div class="btn-delete" v-show="editStatus">删除</div>
 			</div>
 		</div>
@@ -84,8 +84,8 @@ export default {
 	    }
 	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		paySubmit() {
+			this.$router.push('/orderSubmit')
 		}
 	}
 }

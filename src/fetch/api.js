@@ -35,7 +35,7 @@ axios.interceptors.request.use((config) => {
 
 export function fetchPost(url, params) {
     return new Promise((resolve, reject) => {
-        axios.post(url, params)
+        axios.post(url, qs.stringify(params))
             .then(response => {
             	if(response.status == 200) {
             		resolve(response.data)  
@@ -61,8 +61,9 @@ export function fetchPost(url, params) {
 }
 export function fetchGet(url, params) {
     return new Promise((resolve, reject) => {
-        axios.get(url, params)
-            .then(response => {
+        axios.get(url, {
+        	params: params
+        }).then(response => {
             	if(response.status == 200) {
             		resolve(response.data)  
             	}else {
@@ -89,6 +90,8 @@ export default {
 	page(url, params) {
 		return fetchGet(url, params)
 	},
+	
+	
 	//首页轮播
 	indexBanner(params) {
 		return fetchGet('/search/banner', params)
@@ -173,9 +176,25 @@ export default {
 		return fetchGet('/address/detail', params)
 	},
 	
+	//删除地址
+	deleteAddr(params) {
+		return fetchPost('/address/delete', params)
+	},
+	
+	//新增地址
+	createAddr(params) {
+		return fetchPost('/address/create', params)
+	},
+	
 	//获取省市区
 	cityList(params) {
 		return fetchGet('/api/city', params)
+	},
+	
+	
+	//关于我们
+	about(params) {
+		return fetchGet('/about/index', params)
 	},
 
 

@@ -90,9 +90,7 @@ export default {
 		initData() {
 			window.scrollTo(0,0)
 			this.$api.orderDetail({
-				params: {
-					id: this.$route.params.id
-				}
+				id: this.$route.params.id
 			}).then(res => {
 				if(res.ret == 1){
 					this.orderDetail = res
@@ -165,9 +163,9 @@ export default {
 		
 		//取消订单
 		orderCancel() {
-			this.$api.orderCancel(qs.stringify({
+			this.$api.orderCancel({
 				id: this.$route.params.id
-			})).then(res => {
+			}).then(res => {
 				if(res.ret !== 1) {
 					Toast({
 					  message: res.msg,
@@ -197,9 +195,9 @@ export default {
 		
 		//确认收货
 		orderReceipt(){
-			this.$api.orderReceipt(qs.stringify({
+			this.$api.orderReceipt({
 				id: this.$route.params.id
-			})).then(res => {
+			}).then(res => {
 				if(res.ret !== 1) {
 					Toast({
 					  message: res.msg,
@@ -224,9 +222,9 @@ export default {
 		
 		//删除订单
 		orderDelete() {
-			this.$api.orderDelete(qs.stringify({
+			this.$api.orderDelete({
 				id: this.$route.params.id
-			})).then(res => {
+			}).then(res => {
 				if(res.ret !== 1) {
 					Toast({
 					  message: res.msg,

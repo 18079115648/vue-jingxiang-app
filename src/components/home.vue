@@ -18,20 +18,20 @@
 		</section>
 		<section class="product-nav">
 			<div class="left">
-				<router-link :to="'/productList/' + bannerCat[0].activity_id" class="fullEle">
+				<div @click="goList(bannerCat[0].activity_id, bannerCat[0].name)" class="fullEle">
 					<img :src="bannerCat[0].thumb" class="fullEle" />
-				</router-link>
+				</div>
 			</div>
 			<div class="right">
 				<div class="top">
-					<router-link :to="'/productList/' + bannerCat[1].activity_id" class="fullEle">
+					<div @click="goList(bannerCat[1].activity_id, bannerCat[1].name)" class="fullEle">
 						<img :src="bannerCat[1].thumb" class="fullEle" />
-					</router-link>
+					</div>
 				</div>
 				<div class="bottom">
-					<router-link :to="'/productList/' + bannerCat[2].activity_id" class="fullEle">
+					<div @click="goList(bannerCat[2].activity_id, bannerCat[2].name)"  class="fullEle">
 						<img :src="bannerCat[2].thumb" class="fullEle" />
-					</router-link>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -69,6 +69,7 @@ export default {
 		}
 	},
 	created() {
+		window.scrollTo(0,0)
 		this.$api.indexBanner().then(res => {   
             res.forEach((item) => {
             	let obj = {
@@ -94,8 +95,12 @@ export default {
         }, err => {
         	
         })
-		
-		
+	},
+	methods: {
+		goList(id, name){
+	  		this.$storage.set('activity_cat', name)
+	  		this.$router.push('/productList/active/' + id)
+	  	}
 	}
 }
 </script>
