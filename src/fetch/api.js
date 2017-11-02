@@ -142,8 +142,7 @@ export default {
 
 
 
-
-
+	
 
 
 
@@ -184,10 +183,38 @@ export default {
 		return fetchGet('health/index', params)
 	},
 
-	//我的健康
+	//创建健康档案
 	indexHealth(params) {
 		return fetchGet('health/create', params)
 	},
+
+	//删除健康档案
+	indexDeleteHealth(params) {
+		return fetchGet('health/delete', params)
+	},
+	
+	//自己健康的档案
+	indexDetailMy(params) {
+		return fetchGet('health/detailMy', params)
+	},
+
+	//常用标签
+	indexHealthTag(params) {
+		return fetchGet('health/healthTag', params)
+	},
+	
+	//创建病情标签
+	indexAddHealthTag(params) {
+		return fetchGet('health/tagCreate', params)
+	},
+
+	//关系选择
+	indexGetRelation(params) {
+		return fetchGet('health/getRelationship', params)
+	},
+
+	
+	
 	
 	
 }
