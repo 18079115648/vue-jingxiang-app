@@ -24,12 +24,12 @@
         <img src="../../static/images/arror.png" >
     </div>
 
-    <div class="field" >
+    <div class="field" v-if="is_my == 1">
         <span>关系</span>
         <div v-if="relationship_name">请选择</div>
         <select @change="guanxi" v-model="relationship_id">
             <option>关系</option>
-            <option v-for="op in relationship" :value="op.value">{{op.text}}</option>
+            <option v-for="list in relationship" :value="list.value">{{list.value}}</option>
         </select>
         <img src="../../static/images/arror.png" >
     </div>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="condition">
-        <div class="illness" v-for="item in HealthTag">{{item}}</div>
+        <div  class="illness"  v-for="item in HealthTag"  @click="cut">{{item}}</div>
         <div class="add_illness" @click="add_label">+添加</div>
         <div class="kong"></div>
         <div class="kong"></div>
@@ -104,14 +104,29 @@ export default {
             id :'',
             startDate: new Date('1917-1-1'),
             endDate: new Date(),
-            
+            tag: '', // 常用健康标签
+            is_my:'',
         }
     },
     created() {
         const self = this
         //自己的健康档案
         this.$api.indexDetailMy().then(res => {
-            
+            this.birth = res.birthday
+            this.weight = res.weight
+            this.height = res.height
+            this.name = res.true_name
+            this.sex = res.sex
+            this.id = res.health_id
+            if(res.sex){
+                this.sex_name = false
+            }
+             if(res.relationship_id_name){
+                this.relationship_name = false
+            }
+             if(res.birthday){
+                this.birth_time = false
+            }
         }, err => {
             
         })
@@ -129,6 +144,7 @@ export default {
         }, err => {
             
         })
+        
 
 
         
@@ -140,25 +156,32 @@ export default {
             const self = this
             this.$api.indexHealth(
                 {
-                        true_name: this.name,
-                        weight: this.weight,
-                        height: this.height,
-                        sex:this.sex,
-                        relationship_id: "1",
-                        is_my: "1",
-                        birthday:"",
-                        data:"1",
-                    
+                    id:this.id,
+                    true_name: this.name,
+                    weight: this.weight,
+                    height: this.height,
+                    sex:this.sex,
+                    relationship_id: 0,
+                    birthday:this.birth,
                 }
             ).then(res => {
-                Toast({
-				  message: '保存成功',
-				  position: 'bottom',
-				  duration: 1000
-				})
-				setTimeout(() => {
-					// this.$router.go(-1)
-				},800)
+                if(res.ret == 1) {
+                    Toast({
+                        message: '保存成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                    setTimeout(() => {
+                        this.$router.go(-1)
+                    },800)
+                }else {
+                    Toast({
+                        message: res.msg,
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+                
             }, err => {
                 
             })
@@ -185,6 +208,10 @@ export default {
             this.birth  = value.toString();
             
         },
+        //切换标签
+        cut() {
+            
+        },
         //添加疾病标签
         add_label() {
             MessageBox.prompt('慢性病','').then(({ value, action }) => {
@@ -192,13 +219,21 @@ export default {
                     {
                         health_id: this.id,
                         name: value
-                }
+                    }
                 ).then(res => {
-                    Toast({
-                        message: '添加成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
+                    if(res.ret == 1) {
+                        Toast({
+                            message: '添加成功',
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                    }else if(res.ret == 0){
+                        Toast({
+                            message: res.msg,
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                    }
                 }, err => {
                     
                 })
@@ -211,14 +246,41 @@ export default {
             const self = this
             this.$api.indexDeleteHealth(
                 {
-                        id: this.id
+                    id: this.id
+                }
+            ).then(res => {
+                if(res.ret == 1){
+                    Toast({
+                        message: '添加成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }else if(res.ret == 0) {
+                    Toast({
+                        message: res.msg,
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+            }, err => {
+                
+            })
+        },
+
+        //删除标签
+        deleteTag() {
+            const self = this
+            this.$api.indexDeleteHealthTag(
+                {
+                    health_tag_id: id,
+                    health_id: id
                 }
             ).then(res => {
                 
             }, err => {
                 
             })
-        },
+        }
         
 
         
@@ -294,11 +356,14 @@ export default {
     select{
         position: absolute;
         right: .49rem;
+        font-size: .28rem;
     }
     .birth{
         position: absolute;
         right: .49rem;
         color: black;
+        font-size: .28rem;        
+        font-weight:400; 
     }
 }
 
@@ -324,6 +389,11 @@ export default {
     border-radius: 5px;
     margin:.2rem .3rem;
 }
+.illness:active{
+    border: solid 1px #ccc;
+    color: #ccc;
+}
+
 .add_illness{
     width: 1.8rem;
     height: .58rem;
