@@ -1,38 +1,41 @@
 <template>
     <div class="app">
     	<Header title="收货地址"></Header>
-    	<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-    		<img class="none-img" src="../../static/images/19@3x.png"  />
-    		<p class="none-tip">暂无收货地址</p>
-    	</div>
-    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/address/index">
-			<div class="address-list" v-show="pagination.content.length>0">
-	    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
-	    			<div>
-	    				<div class="addr-contact">
-		    				<span>{{item.contact}}</span>
-		    				<span>{{item.mobile}}</span>
-		    			</div>
-		    			<div class="addr-detail">
-		    				{{item.province_name}}{{item.city_name}}{{item.district_name}}{{item.address}}
-		    			</div>
-	    			</div>
-		    			
-	    			<div class="addr-operate">
-	    				<div class="addr-default" @click="setDefault(item)">
-	    					<img v-show="!item.is_default" src="../../static/images/44@3x.png" class="default-icon" />
-	    					<img v-show="item.is_default" src="../../static/images/43@3x.png" class="default-icon" />
-	    					<span v-show="!item.is_default">设为默认</span>
-	    					<span v-show="item.is_default">默认地址</span>
-	    				</div>
-	    				<div class="addr-op">
-	    					<span @click="editAddr(item.address_id)">编辑</span>
-	    					<span @click="selectDelete(item.address_id, index)">删除</span>
-	    				</div>
-	    			</div>
-	    		</div>
+    	<div class="content">
+    		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<img class="none-img" src="../../static/images/19@3x.png"  />
+	    		<p class="none-tip">暂无收货地址</p>
 	    	</div>
-		</Pagination>
+	    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/address/index">
+				<div class="address-list" v-show="pagination.content.length>0">
+		    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
+		    			<div>
+		    				<div class="addr-contact">
+			    				<span>{{item.contact}}</span>
+			    				<span>{{item.mobile}}</span>
+			    			</div>
+			    			<div class="addr-detail">
+			    				{{item.province_name}}{{item.city_name}}{{item.district_name}}{{item.address}}
+			    			</div>
+		    			</div>
+			    			
+		    			<div class="addr-operate">
+		    				<div class="addr-default" @click="setDefault(item)">
+		    					<img v-show="!item.is_default" src="../../static/images/44@3x.png" class="default-icon" />
+		    					<img v-show="item.is_default" src="../../static/images/43@3x.png" class="default-icon" />
+		    					<span v-show="!item.is_default">设为默认</span>
+		    					<span v-show="item.is_default">默认地址</span>
+		    				</div>
+		    				<div class="addr-op">
+		    					<span @click="editAddr(item.address_id)">编辑</span>
+		    					<span @click="selectDelete(item.address_id, index)">删除</span>
+		    				</div>
+		    			</div>
+		    		</div>
+		    	</div>
+			</Pagination>
+    	</div>
+	    	
     	<div class="btn-default add-addr" @click="createAddr">新增收货地址</div>
     	<confirm-modal :show="deleteShow" @confirm_modal="addrDelete" @closeModal="deleteShow = false" message="确定删除该地址?"></confirm-modal>	
     </div>
@@ -152,6 +155,14 @@ export default {
 	padding-top: 0.3rem;
 	padding-bottom: 1.6rem;
 } 
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 0.92rem;
+	bottom: 1.6rem;
+	overflow-y: auto;
+}
 .address-item{
 	background: #fff;
 	margin-bottom: 0.3rem;

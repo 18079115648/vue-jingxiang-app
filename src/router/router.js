@@ -81,7 +81,7 @@ export default  [{
         path: '/openMember',
         component: openMember
     },{
-        path: '/article',
+        path: '/article/:id',
         component: article
     },{
         path: '/classification',
@@ -90,7 +90,7 @@ export default  [{
         path: '/information',
         component: information
     },{
-        path: '/shopdetails/:id/:type',
+        path: '/shopdetails/:id',
         component: shopdetails
     },{
         path: '/myBalance',
@@ -123,7 +123,7 @@ export default  [{
         path: '/aboutUs',
         component: aboutUs
 	},{
-        path: '/reviewList',
+        path: '/reviewList/:id',
         component: reviewList
     },{
         path: '/healthRecords',

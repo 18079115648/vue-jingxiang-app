@@ -290,9 +290,10 @@ input::-webkit-search-cancel-button {
 	.user-kind-select .mint-radio-input:checked + .mint-radio-core::after{
 		background-color: #39B382;
 	}
-	.article img{
+	.zhuanyi img{
 		display: block;
 		width: 100%;
+		margin: 0.2rem 0;
 	}
 	
 	

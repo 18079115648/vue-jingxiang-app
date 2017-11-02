@@ -21,7 +21,7 @@
         <div class="evaluate_left">
           <span>评价(<span>{{goodsDetail.comment_total_count}}</span>)</span>
         </div>
-        <a href="#/reviewList" class="evaluate_right">
+        <a :href="'#/reviewList/' + goodsId" class="evaluate_right">
           <span>好评度</span><span class="money">{{goodsDetail.comment_total_score}}</span><span class="money">%</span>
           <div class="icon">
           </div>
@@ -117,11 +117,14 @@
 			show: false,
 			goodsDetail: {},
 			banner: [],
-			comment: []
+			comment: [],
+			
+			goodsId: null
 		}
 	},
 	created() {
 		window.scrollTo(0,0)
+		this.goodsId = this.$route.params.id
 		this.$api.goodsDetail({
 			id: this.$route.params.id
 		}).then(res => {

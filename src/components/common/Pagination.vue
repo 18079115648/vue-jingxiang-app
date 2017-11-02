@@ -56,7 +56,8 @@ export default {
             let self = this
             self.param.loadEnd = false
             setTimeout(function() {
-                self.$api.page(self.uri, self.param.data).then((response) => {
+            	let Promise = self.param.type === 'post' ? self.$api.pagePost(self.uri, self.param.data) : self.$api.pageGet(self.uri, self.param.data)
+                Promise.then((response) => {
                     if (isRefresh) {
                         self.param.data.p = 1
                         self.param.content = []
