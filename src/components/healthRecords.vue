@@ -50,9 +50,7 @@ export default {
     const self = this
     this.$api.indexHealthRecords(
             {
-                params:{
-                    p: this.page
-                }
+                p: this.page
             }
         ).then(res => {
             

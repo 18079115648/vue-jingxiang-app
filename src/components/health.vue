@@ -148,6 +148,7 @@ export default {
                         is_my: "1",
                         birthday:"",
                         data:"1",
+                    
                 }
             ).then(res => {
                 Toast({

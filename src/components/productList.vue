@@ -1,23 +1,26 @@
 <template>
     <div class="app">
     	<Header :title="title"></Header>
-    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/activity/goods">
-			<div class="pop-product-list">
-				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
-					<div class="fullEle">
-						<div class="pop-product-img">
-							<img class="fullEle" :src="item.thumb" />
+    	<div class="content">
+    		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" :uri="uri">
+				<div class="pop-product-list">
+					<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
+						<div class="fullEle">
+							<div class="pop-product-img">
+								<img class="fullEle" :src="item.thumb" />
+							</div>
+							<div class="pop-product-desc">
+								<p class="pop-product-name">{{item.title}}</p>
+								<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+							</div>
 						</div>
-						<div class="pop-product-desc">
-							<p class="pop-product-name">{{item.title}}</p>
-							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
-						</div>
-					</div>
+						
+					</router-link>
 					
-				</router-link>
-				
-			</div>
-		</Pagination>
+				</div>
+			</Pagination>
+    	</div>
+    	
 	    	
     </div>
 </template>
@@ -28,41 +31,39 @@ export default {
 	data() {
 		return {
 			title: '',
+			uri: '',
 			pagination: {
                 content: [],
                 loadEnd: false,
                 data: {
-                	params: {
-						p: 1,
-						id: null
-					}
+                	p: 1,
+					id: null
                 }
             },
 		}
 	},
 	created() {
-		
+		if(this.$route.params.type === 'active') {
+			this.uri = '/activity/goods'
+			this.title = this.$storage.get('activity_cat')
+		}else if(this.$route.params.type === 'goods') {
+			this.uri = '/goods/index'
+			this.title = this.$storage.get('product_cat')
+		}
 	},
 	mounted() {
 		this.pagination = {
             content: [],
             loadEnd: false,
             data: {
-            	params: {
-					p: 1,
-					id: this.$route.params.id
-				}
+            	p: 1,
+				id: this.$route.params.id
             }
         }
 		this.$refs.pagination.refresh()
 	},
 	methods: {
 		render(res) {
-			if(res.data.length>0) {
-				this.title = res.data[0].name
-			}else {
-				this.title = '分类商品'
-			}
             res.data.forEach((item) => {
             	this.pagination.content.push(item)
             })
@@ -74,7 +75,16 @@ export default {
 <style lang="scss" scoped>
 .app{
 	background: #f5f5f9;
+	position: relative;
 } 
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 0.92rem;
+	bottom: 0;
+	overflow-y: auto;
+}
 .search-content{
 	display: flex;
 	background: #fff;

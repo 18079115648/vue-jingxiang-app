@@ -21,11 +21,11 @@
         <div class="evaluate_left">
           <span>评价(<span>{{goodsDetail.comment_total_count}}</span>)</span>
         </div>
-        <div class="evaluate_right">
+        <a href="#/reviewList" class="evaluate_right">
           <span>好评度</span><span class="money">{{goodsDetail.comment_total_score}}</span><span class="money">%</span>
           <div class="icon">
           </div>
-        </div>
+        </a>
       </div>
       <hr>
     </div>
@@ -123,9 +123,7 @@
 	created() {
 		window.scrollTo(0,0)
 		this.$api.goodsDetail({
-			params: {
-				id: this.$route.params.id
-			}
+			id: this.$route.params.id
 		}).then(res => {
 			this.goodsDetail = res
 			this.banner = res.thumb_more

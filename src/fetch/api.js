@@ -35,7 +35,7 @@ axios.interceptors.request.use((config) => {
 
 export function fetchPost(url, params) {
     return new Promise((resolve, reject) => {
-        axios.post(url, params)
+        axios.post(url, qs.stringify(params))
             .then(response => {
             	if(response.status == 200) {
             		resolve(response.data)  
@@ -61,8 +61,9 @@ export function fetchPost(url, params) {
 }
 export function fetchGet(url, params) {
     return new Promise((resolve, reject) => {
-        axios.get(url, params)
-            .then(response => {
+        axios.get(url, {
+        	params: params
+        }).then(response => {
             	if(response.status == 200) {
             		resolve(response.data)  
             	}else {
@@ -89,6 +90,8 @@ export default {
 	page(url, params) {
 		return fetchGet(url, params)
 	},
+	
+	
 	//首页轮播
 	indexBanner(params) {
 		return fetchGet('/search/banner', params)
@@ -133,8 +136,66 @@ export default {
 	updataUserInfo(params) {
 		return fetchPost('/user/info', params)
 	},
-
-
+	
+	
+	//积分总额
+	userPoints(params) {
+		return fetchGet('/user/points', params)
+	},
+	
+	
+	//订单详情
+	orderDetail(params) {
+		return fetchGet('/order/detail', params)
+	},
+		
+	//取消订单
+	orderCancel(params) {
+		return fetchPost('/order/cancel', params)
+	},
+	
+	
+	//删除订单
+	orderDelete(params) {
+		return fetchPost('/order/delete', params)
+	},
+	
+	//订单确认收货
+	orderReceipt(params) {
+		return fetchPost('/order/receipt', params)
+	},
+	
+	//更新地址
+	updataAddr(params) {
+		return fetchPost('/address/update', params)
+	},
+	
+	
+	//地址详情
+	detailAddr(params) {
+		return fetchGet('/address/detail', params)
+	},
+	
+	//删除地址
+	deleteAddr(params) {
+		return fetchPost('/address/delete', params)
+	},
+	
+	//新增地址
+	createAddr(params) {
+		return fetchPost('/address/create', params)
+	},
+	
+	//获取省市区
+	cityList(params) {
+		return fetchGet('/api/city', params)
+	},
+	
+	
+	//关于我们
+	about(params) {
+		return fetchGet('/about/index', params)
+	},
 
 
 

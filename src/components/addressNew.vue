@@ -1,37 +1,37 @@
 <template>
     <div class="app">
-    	<Header title="编辑服务地址"></Header>
+    	<Header title="添加服务地址"></Header>
     	<div class="user-info">
 			<div class="link-item">
 				<span>收货人</span>
-				<input type="text" v-model.trim="addrDetail.contact" placeholder="请输入姓名" />
+				<input type="text" v-model.trim="contact" placeholder="请输入姓名" />
 			</div>
 			<div class="link-item">
 				<span>联系电话</span>
-				<input type="tel" v-model.trim="addrDetail.mobile" maxlength="11" placeholder="请输入联系电话" />
+				<input type="tel" v-model.trim="mobile" maxlength="11" placeholder="请输入联系电话" />
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" v-model.trim="addrDetail.id_card" maxlength="18" placeholder="请输入身份证号" />
+				<input type="tel" v-model.trim="id_card" maxlength="18" placeholder="请输入身份证号" />
 			</div>
 			<div class="link-item">
 				<span>所在地区</span>
 				<div class="area-select">
-					<select v-model="addrDetail.province" @change="changeProvince">
+					<select v-model="province" @change="changeProvince">
 						<option disabled value="disabled">省份</option>
                         <option v-for="item in provinceList" :value="item.id">{{item.name}}</option>
                     </select>
-                    <select v-model="addrDetail.city" @change="changeCity">
+                    <select v-model="city" @change="changeCity">
                         <option disabled value="disabled">城市</option>
                         <option v-for="item in cityList" :value="item.id">{{item.name}}</option>
                     </select>
-                    <select v-model="addrDetail.district">
+                    <select v-model="district">
                         <option disabled value="disabled">县区</option>
                         <option v-for="item in areaList" :value="item.id">{{item.name}}</option>
                     </select>
 				</div>
 			</div>
-			<textarea class="addr-detail" v-model.trim="addrDetail.address" placeholder="请填写详细地址"></textarea>
+			<textarea class="addr-detail" v-model.trim="address" placeholder="请填写详细地址"></textarea>
     	</div>
     	<div class="default-content">
     		<div class="left">
@@ -39,11 +39,11 @@
     			<p class="tip">注：每次下单时会使用该地址</p>
     		</div>
     		<div class="right">
-    			<mt-switch v-model="addrDetail.is_default"></mt-switch>
+    			<mt-switch v-model="is_default"></mt-switch>
     		</div>
     		
     	</div>
-		<div class="save" @click="updataAddr">保存</div>
+		<div class="save" @click="createAddr">添加</div>
     </div>
 </template>
 
@@ -53,34 +53,23 @@ import { Toast, Indicator } from 'mint-ui'
 export default {
 	data() {
 	    return {
-			addressId: null,
-			addrDetail: {},
+			contact: '',
+			mobile: '',
+			id_card: '',
+			province: 'disabled',
+			city: 'disabled',
+			district: 'disabled',
+			
 			provinceList: [],
-			provinceId: 0,
 			cityList: [],
-			cityId: 0,
 			areaList: [],
-			areaId: 0,
+			
+			address: '',
+			is_default: false
 	    }
 	},
 	created() {
-		this.addressId = this.$route.params.id
-		Indicator.open()
-		this.$api.detailAddr({
-			id: this.addressId
-		}).then(res => {
-			if(res.ret == 1){
-				Indicator.close()
-				this.addrDetail = res
-				this.addrDetail.is_default = (this.addrDetail.is_default ? true : false)
-				this.getCity(1, 0)
-				this.getCity(res.province, 1)
-				this.getCity(res.city, 2)
-			}
-				
-        }, err => {
-        	
-        })
+		this.getCity(1, 0)
 	},
 	methods: {
 		getCity(id, index) {
@@ -101,10 +90,10 @@ export default {
 		},
 		changeProvince() {
 			this.$api.cityList({
-				parent_id: this.addrDetail.province
+				parent_id: this.province
 			}).then(res => { 
 				this.cityList = res
-				this.addrDetail.city = res[0].id
+				this.city = res[0].id
 				this.changeCity()
 	        }, err => {
 	        	
@@ -112,25 +101,24 @@ export default {
 		},
 		changeCity() {
 			this.$api.cityList({
-				parent_id: this.addrDetail.city
+				parent_id: this.city
 			}).then(res => { 
 				this.areaList = res
-				this.addrDetail.district = res[0].id
+				this.district = res[0].id
 	        }, err => {
 	        	
 	        })
 		},
-		updataAddr() {
-			this.$api.updataAddr({
-				id:  this.addressId,
-			    contact: this.addrDetail.contact,
-			    mobile: this.addrDetail.mobile, 
-			    id_card: this.addrDetail.id_card,
-			    province: this.addrDetail.province,
-			    city: this.addrDetail.city,  
-			    district: this.addrDetail.district,
-			    address:  this.addrDetail.address,
-			    is_default: this.addrDetail.is_default ? 1 : 0
+		createAddr() {
+			this.$api.createAddr({
+			    contact: this.contact,
+			    mobile: this.mobile, 
+			    id_card: this.id_card,
+			    province: this.province,
+			    city: this.city,  
+			    district: this.district,
+			    address:  this.address,
+			    is_default: this.is_default ? 1 : 0
 			}).then(res => {
 				if(res.ret !== 1) {
 					Toast({
@@ -141,7 +129,7 @@ export default {
 					return
 				}
 				Toast({
-				  message: '修改成功',
+				  message: '添加成功',
 				  position: 'middle',
 				  iconClass: 'toast-icon icon-success',
 				  duration: 1000

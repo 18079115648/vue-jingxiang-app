@@ -19,6 +19,8 @@ const orderDetail = r => require.ensure([], () => r(require('../components/order
 const evaluate = r => require.ensure([], () => r(require('../components/evaluate.vue')), 'evaluate')
 const addressList = r => require.ensure([], () => r(require('../components/addressList.vue')), 'addressList')
 const addressDetail = r => require.ensure([], () => r(require('../components/addressDetail.vue')), 'addressDetail')
+const addressNew = r => require.ensure([], () => r(require('../components/addressNew.vue')), 'addressNew')
+const aboutUs = r => require.ensure([], () => r(require('../components/aboutUs.vue')), 'aboutUs')
 
 
 
@@ -49,7 +51,7 @@ export default  [{
         path: '/searchResult',
         component: searchResult
     },{
-        path: '/productList/:id',
+        path: '/productList/:type/:id',
         component: productList
     },{
         path: '/cart',
@@ -100,10 +102,10 @@ export default  [{
         path: '/recharge',
         component: recharge
     },{
-        path: '/allOrders',
+        path: '/allOrders/:status',
         component: allOrders
     },{
-        path: '/orderDetail',
+        path: '/orderDetail/:id',
         component: orderDetail
     },{
         path: '/evaluate',
@@ -112,8 +114,14 @@ export default  [{
         path: '/addressList',
         component: addressList
     },{
-        path: '/addressDetail',
+        path: '/addressDetail/:id',
         component: addressDetail
+	},{
+        path: '/addressNew',
+        component: addressNew
+	},{
+        path: '/aboutUs',
+        component: aboutUs
 	},{
         path: '/reviewList',
         component: reviewList

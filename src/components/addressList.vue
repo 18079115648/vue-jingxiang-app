@@ -1,48 +1,144 @@
 <template>
     <div class="app">
     	<Header title="收货地址"></Header>
-    	<!--<div class="none-data">
+    	<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
     		<img class="none-img" src="../../static/images/19@3x.png"  />
     		<p class="none-tip">暂无收货地址</p>
-    	</div>-->
-    	<div class="address-list">
-    		<div class="address-item">
-    			<router-link to="/addressDetail">
-    				<div class="addr-contact">
-	    				<span>张三</span>
-	    				<span>18079115648</span>
-	    			</div>
-	    			<div class="addr-detail">
-	    				哈市的房价和打卡机多哈空间
-	    			</div>
-    			</router-link>
-	    			
-    			<div class="addr-operate">
-    				<div class="addr-default">
-    					<img src="../../static/images/44@3x.png" class="default-icon" />
-    					<!--<img src="../../static/images/43@3x.png" class="default-icon" />-->
-    					<span>设为默认</span>
-    					<!--<span>默认地址</span>-->
-    				</div>
-    				<div class="addr-op">
-    					<span>编辑</span>
-    					<span>删除</span>
-    				</div>
-    			</div>
-    		</div>
-
-    		
     	</div>
-    	<div class="btn-default add-addr">新增收货地址</div>
+    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/address/index">
+			<div class="address-list" v-show="pagination.content.length>0">
+	    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
+	    			<div>
+	    				<div class="addr-contact">
+		    				<span>{{item.contact}}</span>
+		    				<span>{{item.mobile}}</span>
+		    			</div>
+		    			<div class="addr-detail">
+		    				{{item.province_name}}{{item.city_name}}{{item.district_name}}{{item.address}}
+		    			</div>
+	    			</div>
+		    			
+	    			<div class="addr-operate">
+	    				<div class="addr-default" @click="setDefault(item)">
+	    					<img v-show="!item.is_default" src="../../static/images/44@3x.png" class="default-icon" />
+	    					<img v-show="item.is_default" src="../../static/images/43@3x.png" class="default-icon" />
+	    					<span v-show="!item.is_default">设为默认</span>
+	    					<span v-show="item.is_default">默认地址</span>
+	    				</div>
+	    				<div class="addr-op">
+	    					<span @click="editAddr(item.address_id)">编辑</span>
+	    					<span @click="selectDelete(item.address_id, index)">删除</span>
+	    				</div>
+	    			</div>
+	    		</div>
+	    	</div>
+		</Pagination>
+    	<div class="btn-default add-addr" @click="createAddr">新增收货地址</div>
+    	<confirm-modal :show="deleteShow" @confirm_modal="addrDelete" @closeModal="deleteShow = false" message="确定删除该地址?"></confirm-modal>	
     </div>
 </template>
 
 <script>
-
+import qs from 'qs'
+import { Toast, Indicator } from 'mint-ui'
 export default {
+	data() {
+		return {
+			deleteShow: false,
+			pagination: {
+                content: [],
+                loadEnd: false,
+                data: {
+                	p: 1
+                }
+            },
+		}
+	},
+	created() {
+
+	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		render(res) {
+			res.data.forEach((item) => {
+            	this.pagination.content.push(item)
+            })
+		},
+		
+		//设置默认地址
+		setDefault(item){
+			if(item.is_default) {
+				return
+			}
+			Indicator.open()
+			this.$api.updataAddr({
+				id:  item.address_id,
+			    contact: item.contact,
+			    mobile: item.mobile, 
+			    id_card: item.id_card,
+			    province: item.province,
+			    city: item.city,  
+			    district: item.district,
+			    address:  item.address,
+			    is_default: 1
+			}).then(res => {
+				Indicator.close()
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				this.pagination.content.forEach((obj) => {
+					obj.is_default = (item.address_id == obj.address_id)
+				})
+				
+	        }, err => {
+	        	
+	        })
+		},
+		
+		//编辑地址
+		editAddr(id){
+			this.$router.push('/addressDetail/' + id)
+		},
+		
+		//删除地址
+		selectDelete(id, index){
+			this.currIndex = index
+			this.currId = id
+			this.deleteShow = true
+		},
+		addrDelete() {
+			Indicator.open()
+			this.$api.deleteAddr({
+				id:  this.currId
+			}).then(res => {
+				Indicator.close()
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.msg,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '删除成功',
+				  position: 'bottom',
+				  duration: 1000
+				});
+				this.pagination.content.splice(this.currIndex, 1)
+				
+	        }, err => {
+	        	
+	        })
+		},
+		
+		//新建地址
+		createAddr() {
+			this.$router.push('/addressNew')
 		}
 	}
 }
