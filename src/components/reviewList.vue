@@ -1,78 +1,53 @@
 <template>
-  <section class="reviewList">
+  <section class="app">
 
     <Header title="评论列表"></Header>
 
     <!-- 评价 -->
-    <div class="evaluate">
+    <div class="evaluate" v-show="pagination.content.length>0">
         <div class="evaluate_title">
             <div class="evaluate_left">
-                <span>评价(<span>666</span>)</span>
+                <span>评价(<span>{{total}}</span>)</span>
             </div>
             <div class="evaluate_right">
                 <span>好评度</span><span class="money">90</span><span class="money">%</span>
-                
-                <div class="icon">
-                </div>
             </div>
-        </div>
-        <hr>
-    </div>
-
-    <div class="review">
-        <div class="review_info">
-            <div class="review_portrait">
-                <img src="../../static/images/图/1-13.png">
-                <h4>萨达萨达</h4>
-            </div>
-
-
-            <div class="review_grade">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/27@3x.png">
-                <img src="../../static/images/27@3x.png">
-            </div>
-        </div>
-
-        <div class="review_data">
-            2017-10-10
-        </div>
-        <div class="review_body">
-            萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达
         </div>
     </div>
-
-    <div class="review">
-        <div class="review_info">
-            <div class="review_portrait">
-                <img src="../../static/images/图/1-13.png">
-                <h4>萨达萨达</h4>
-            </div>
-
-
-            <div class="review_grade">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/28@3x.png">
-                <img src="../../static/images/27@3x.png">
-                <img src="../../static/images/27@3x.png">
-            </div>
-        </div>
-
-        <div class="review_data">
-            2017-10-10
-        </div>
-        <div class="review_body">
-            萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达萨达
-        </div>
-    </div>
-
-    
-  
-
-   
+	<div class="content">
+		<Pagination :render="render" :param="pagination" ref="pagination" uri="/goods/comment">
+			<div class="review-list" v-show="pagination.content.length>0">
+				<div class="review" v-for="(item, index) in pagination.content" :key="index">
+			        <div class="review_info">
+			            <div class="review_portrait">
+			                <img :src="item.img_head">
+			                <h4>{{item.uid_username}}</h4>
+			            </div>
+			
+			
+			            <div class="review_grade">
+			                <img src="../../static/images/28@3x.png" v-for="n in item.score">
+          					<img src="../../static/images/27@3x.png" v-for="n in 5-item.score">
+			            </div>
+			        </div>
+			
+			        <div class="review_data">
+			            {{item.time_make}}
+			        </div>
+			        <div class="review_body" v-html="item.content">
+			        </div>
+			    </div>
+			</div>
+		</Pagination>
+		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+    		<img class="none-img" src="../../static/images/26@3x.png"  />
+    		<p class="none-tip">该商品暂无评价</p>
+    	</div>
+		
+			
+	</div>
+	    
+ 
 
   </section>
 </template>
@@ -80,30 +55,52 @@
 <script>
 
 export default {
-  data() {
-    return {
-
+    data() {
+	    return {
+	    	total: 0,
+			pagination: {
+	            content: [],
+	            loadEnd: false,
+	            type: 'post',
+	            data: {
+	            	p: 1,
+	            	id: this.$route.params.id
+	            }
+	        },
+	    }
+    },
+    methods: {
+  	    render(res) {
+  	    	this.total = res.total
+            res.data.forEach((item) => {
+            	this.pagination.content.push(item)
+            })
+        }
     }
-  }
 
 }
 </script>
 
 <style lang="scss" scoped>
-.reviewList{
-    width: 100vw;
-    height: 100vh;
-    background-color: #f5f5f5;
+.app{
+    background-color: #f5f5f9;
+    font-size: 0.26rem;
+    position: relative;
+}
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 1.72rem;
+	bottom: 0;
+	overflow-y: auto;
 }
 .evaluate{
     width: 100%;
     height: auto;
     background-color: #fff;
     padding-left: .24rem;
-    hr{
-        border-top: #ccc;
-        margin: 0 auto;
-    }
+    
     .evaluate_title{
         width: 100%;
         height: .8rem;
@@ -112,26 +109,19 @@ export default {
         display: flex;
         justify-content: space-between;
         align-self: center;
+        border-bottom: 1px solid #f6f6f6;
         .evaluate_left{
-        color: #999;
+        color: #666;
         }
         .evaluate_right{
         display: flex;
         align-items: center;
-        color: #999;
+        color: #666;
         justify-content: space-between;
         }
     }
     .money{
         color: #ff6600;
-    }
-    .icon{
-        width: .4rem;
-        height: .3rem;
-        background: url('../../static/image/arror.png') no-repeat;
-        background-size: .2rem .3rem;
-        background-position-x: .2rem;
-        
     }
 
 }
@@ -142,20 +132,21 @@ export default {
     background-color: #fff;
     margin-bottom: .24rem;
 }
+.review-list .review:last-child{
+	margin-bottom: 0;
+}
 .review_info{
     display: flex;
+    align-items: center;
 }
 .review_portrait{
     display: flex;
+    align-items: center;
     img{
-    width: .8rem;
-    height: .8rem;
-    border-radius: .4rem;
-    margin-right: .24rem;
-    }
-    h4{
-    display: flex;
-    line-height: .8rem;
+	    width: .5rem;
+	    height: .5rem;
+	    border-radius: .25rem;
+	    margin-right: .24rem;
     }
 }
 .review_grade{
@@ -164,20 +155,22 @@ export default {
     justify-content: flex-end;
     align-items: center;
     img{
-    width: .3rem;
-    height: .3rem;
-    margin-left: .1rem;
+	    width: .3rem;
+	    height: .3rem;
+	    margin-left: .1rem;
     }
 }
 .review_data{
-    padding-top: .24rem;
-    font-size: .28rem;
+    padding-top: .26rem;
+    font-size: .24rem;
     color: #999;
     
 }
 .review_body{
-    padding-top: .24rem;
+    padding-top: .2rem;
     line-height: .34rem;
+    font-size: 0.26rem;
+    color: #666;
 }
 
 </style>

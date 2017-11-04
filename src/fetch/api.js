@@ -87,8 +87,12 @@ export function fetchGet(url, params) {
 }
 export default {
     //分页
-	page(url, params) {
+	pageGet(url, params) {
 		return fetchGet(url, params)
+	},
+	
+	pagePost(url, params) {
+		return fetchPost(url, params)
 	},
 	
 	

@@ -3,8 +3,8 @@
     	<Header :title="title"></Header>
     	<div class="content">
     		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" :uri="uri">
-				<div class="pop-product-list">
-					<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
+				<div class="pop-product-list" v-show="pagination.content.length>1">
+					<router-link :to="'/shopdetails/' + item.goods_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
 						<div class="fullEle">
 							<div class="pop-product-img">
 								<img class="fullEle" :src="item.thumb" />
@@ -19,6 +19,10 @@
 					
 				</div>
 			</Pagination>
+			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<img class="none-img" src="../../static/images/42@3x.png"  />
+	    		<p class="none-tip">没有找到商品单信息</p>
+	    	</div>
     	</div>
     	
 	    	
@@ -36,30 +40,41 @@ export default {
                 content: [],
                 loadEnd: false,
                 data: {
-                	p: 1,
-					id: null
+                	p: 1
                 }
             },
 		}
 	},
 	created() {
+		
+	},
+	mounted() {
+		
 		if(this.$route.params.type === 'active') {
 			this.uri = '/activity/goods'
+			this.pagination = {
+	            content: [],
+	            loadEnd: false,
+	            data: {
+	            	p: 1,
+					id: this.$route.params.id
+	            }
+	        }
 			this.title = this.$storage.get('activity_cat')
 		}else if(this.$route.params.type === 'goods') {
 			this.uri = '/goods/index'
+			this.pagination = {
+	            content: [],
+	            loadEnd: false,
+	            type: 'post',
+	            data: {
+	            	p: 1,
+					cat_id: this.$route.params.id
+	            }
+	        }
 			this.title = this.$storage.get('product_cat')
 		}
-	},
-	mounted() {
-		this.pagination = {
-            content: [],
-            loadEnd: false,
-            data: {
-            	p: 1,
-				id: this.$route.params.id
-            }
-        }
+		
 		this.$refs.pagination.refresh()
 	},
 	methods: {

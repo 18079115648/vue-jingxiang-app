@@ -1,34 +1,34 @@
 <template>
-  <section class="information">
+  <section class="app">
 
-    <Header title="资讯"></Header>
+    <Header title="资讯" back="hidden"></Header>
 
-
-    <div class="product-nav">
-			<div class="left">
-					<img :src="bannerCat[0].thumb" class="fullEle" />
+	<div class="content">
+		<Pagination :render="render" :param="pagination" ref="pagination" uri="/news/index">
+			<div class="product-nav" v-show="pagination.loadEnd">
+				<mt-swipe :auto="0">
+					<mt-swipe-item v-for="(item,index) in bannerCat" :key="index">
+						<img :src="item.thumb" />
+					</mt-swipe-item>
+				</mt-swipe>
 			</div>
-			<!-- <div class="right">
-				<div class="top">
-						<img :src="bannerCat[1].thumb" class="fullEle" />
-				</div>
-				<div class="bottom">
-						<img :src="bannerCat[2].thumb" class="fullEle" />
-				</div>
-			</div> -->
-		</div>
-    <!-- 资讯列表 -->
-    <div class="msg_title"  v-for="item in banner" @touchend="goto(item.news_id)">
-      <!-- 列表图标 -->
-      <div class="img_left">
-        <img :src="item.thumb" >
-      </div>
-      <!-- 列表文字 -->
-      <div class="msg_text">
-        <div>{{item.title}}</div>
-        <div class="teat_info">{{item.time_add}}</div>
-      </div>
-    </div>
+		    <!-- 资讯列表 -->
+		    <div class="msg_title"  v-for="(item, index) in pagination.content" :key="index" @click="goDetail(item.news_id)">
+		      <!-- 列表图标 -->
+		      <div class="img_left">
+		        <img :src="item.thumb" >
+		      </div>
+		      <!-- 列表文字 -->
+		      <div class="msg_text">
+		        <div class="title">{{item.title}}</div>
+		        <div class="msg-content" v-html="item.content"></div>
+		        <div class="teat_info">{{item.time_add}}</div>
+		      </div>
+		    </div>
+		</Pagination>
+			
+	</div>
+	    
 
 
     <Menu actived="third"></Menu>
@@ -37,35 +37,40 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   data() {
     return {
-      loading: false,
-      scroller: null,
-      per_page: 20, // 每页条数
-      page: 1, // 当前页
-      last_page: 1, // 总页数
-      ismove: true, // 判断滑动和点击
-      imgs: '', // imgs
-      items: '', // 内容
-      banner: [], // banner
-      bannerCat: [{},{},{}],
+        bannerCat: [], // banner
+        pagination: {
+            content: [],
+            loadEnd: false,
+            data: {
+            	p: 1
+            }
+        },
     }
   },
   created() {
-    const self = this
-    this.$api.indexInformation().then(res => {
-        this.banner = res.data
-        this.bannerCat = res.banner
-    }, err => {
-        
-    })
+    
   },
   methods: {
-    goto(val){
-      this.$router.push({path: '/article', query: {newsId: val}})
+  	HTMLDecode(text) {
+        var temp = document.createElement("div"); 
+        temp.innerHTML = text; 
+        var output = temp.innerText || temp.textContent; 
+        temp = null; 
+        return output; 
+    },
+    render(res) {
+    	this.bannerCat = res.banner
+        res.data.forEach((item) => {
+        	item.content =  this.HTMLDecode(item.content)
+        	this.pagination.content.push(item)
+        })
+    },
+    goDetail(id){
+      this.$router.push('/article/' + id)
     }
   }
 
@@ -73,16 +78,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-* {
-    line-height: .28rem
-  }
-
-.information {
-  width: 100vw;
-  height: 100vh;
-  background-color: #f5f5f9
+.app {
+  background-color: #f5f5f9;
+  position: relative;
 }
-
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 0.92rem;
+	bottom: 1rem;
+	overflow-y: auto;
+}
+.product-nav{
+	width: 100%;
+	height: 3rem;
+	overflow: hidden;
+}
+.product-nav img{
+	display: block;
+	width: 100%;
+}
 .msg_title{
   width: 100%;
   height: 1.8rem;
@@ -96,10 +112,16 @@ export default {
 .img_left{
   width: 1.4rem;
   height: 1.4rem;
-  
+  border: 1px solid #eee;
+  position: relative;
+  overflow: hidden;
   img{
-    width: 100%;
-    height: 100%;
+  	position: absolute;
+    height: 100%!important;
+    width: auto!important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
   }
 }
 .msg_text{
@@ -109,18 +131,29 @@ export default {
   flex: 1;
   flex-wrap: wrap;
   padding-left: .2rem;
-  div{
-    line-height: .34rem;
-    font-weight: 400;
+  overflow: hidden;
+  .title{
+  	color: #222;
+  	text-overflow: ellipsis;
+  	white-space: nowrap;
+  	overflow: hidden;
+  }
+  .msg-content{
+  	font-size: 0.24rem;
+  	color: #888;
+  	overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 0.3rem;
+    margin: 0.14rem 0;
   }
 }
 .teat_info{
-  width: auto;
   height: .24rem;
-  font-size: .9em;
-  position: absolute;
-  bottom: .2rem;
-  color: #ccc;
+  font-size: .24rem;
+  color: #888;
 }
 
 </style>

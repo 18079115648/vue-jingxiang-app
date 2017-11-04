@@ -8,7 +8,7 @@
 		</div>
 		<div class="content">
 			<Pagination :render="render" :param="pagination" ref="pagination" uri="/order/recharge">
-				<div class="balance-list" style="margin-bottom: 1.5rem;" v-show="pagination.content.length>0">
+				<div class="balance-list" v-show="pagination.content.length>0">
 					<div class="balance-item" v-for="(item, index) in pagination.content" :key="index">
 						<p class="item-name">
 							<span>{{item.description}}</span>
@@ -23,11 +23,12 @@
 					</div>
 				</div>
 			</Pagination>
+			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<p class="none-tip">暂无数据信息</p>
+	    	</div>
 		</div>
 		
-		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-    		<p class="none-tip">暂无数据信息</p>
-    	</div>
+		
 	</div>
 </template>
 

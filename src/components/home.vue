@@ -10,7 +10,7 @@
     	<section class="product-banner">
 			<mt-swipe :auto="0">
 				<mt-swipe-item v-for="(item,index) in bannerList" :key="index">
-					<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="fullEle">
+					<router-link :to="'/shopdetails/' + item.goods_id " class="fullEle">
 						<img :src="item.thumb" class="fullEle" />
 					</router-link>
 				</mt-swipe-item>
@@ -40,7 +40,7 @@
 				<div class="tit"><span class="pop-icon"></span>人气热销</div>
 			</div>
 			<div class="pop-product-list">
-				<router-link :to="'/shopdetails/' + item.goods_id + '/' + item.type_id" class="pop-product-item" v-for="(item, index) in hotList" :key="index">
+				<router-link :to="'/shopdetails/' + item.goods_id " class="pop-product-item" v-for="(item, index) in hotList" :key="index">
 					<div class="fullEle">
 						<div class="pop-product-img">
 							<img class="fullEle" :src="item.thumb" />

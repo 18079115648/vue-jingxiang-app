@@ -1,15 +1,18 @@
 <template>
-    <section class="article">
+    <section class="app">
         <Header title="资讯"></Header>
         <!-- 文章内容 -->
+        <div class="img-content">
+        	<img :src="detail.thumb"  />
+        </div>
         <article >
-            <h1>{{title}}</h1>
-            <h5>{{time}}</h5>
-            <div class="zhuanyi" v-html="content"></div>
+            <h1>{{detail.title}}</h1>
+            <h5>{{detail.time}}</h5>
+            <div class="zhuanyi" v-html="detail.content"></div>
         </article>
 
         <!-- 文章商品标题 -->
-        <div class="warp">
+        <div class="warp" v-if="goodsList.length>0">
             <h2>
                 <hr>
                 <span>文章商品</span>
@@ -18,7 +21,7 @@
         </div>
 
         <!-- 文章商品列表 -->
-        <div class="list" v-for="item in goodList">
+        <div class="list" v-if="goodsList.length>0" v-for="item in goodsList" @click="goDetail(item.goods_id)">
             <div class="list_main">
                 <div class="imgs">
                     <img :src="item.thumb">
@@ -26,8 +29,8 @@
                 <div class="info">
                     <h3>{{item.title}}</h3>
                     <p>
-                        <span class="price">￥{{item.price_shop}}</span>
-                        <span class="button" @click="goto()">去购买</span>
+                        <span class="price price-color">&yen;{{item.price_shop}}</span>
+                        <span class="button">去购买</span>
                     </p>
                 </div>
             </div>
@@ -41,16 +44,18 @@
 export default {
     data() {
         return {
-            title: '', // 商品名字
-            time: '', // 发布时间
-            content: '', // 文章富文本
-            items: '',
-            imgs: '', // imgs列表
-            shares: false, //
-            url: '',
-            goodList:[
-                {title:"大力丸",price_shop:'1100'}
-            ],
+            detail: {},
+            goodsList:[{
+            	goods_id: 83,
+            	title: 11111,
+            	thumb: '/uploads/attachment/20170930/3aa6b3d5c0a2a5063fa6b08c5d1b302a.jpg',
+            	price_shop: 1444
+            },{
+            	goods_id: 83,
+            	title: 11111,
+            	thumb: '/uploads/attachment/20170930/3aa6b3d5c0a2a5063fa6b08c5d1b302a.jpg',
+            	price_shop: 1444
+            }]
         
         }
     },
@@ -58,20 +63,18 @@ export default {
         const self = this
         this.$api.indexInformationContent(
             {
-                id: self.$route.query.newsId
+                id: self.$route.params.id
             }
         ).then(res => {
-            this.title = res.title
-            this.content = res.content
-            this.time = res.time_add
-            // this.goodList = res.goods
+        	this.detail = res
+//      	this.goodsList = res.goods
         }, err => {
             
         })
     },
     methods: {
-        goto(){
-            this.$router.push({path: '/shopdetails'})
+        goDetail(id){
+            this.$router.push('/shopdetails/' + id)
         }
     }
    
@@ -80,16 +83,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.article {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+.app {
     background-color: #F5F5F9;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative
+    position: relative;
+    padding-bottom: 0.3rem;
 }
-
+.img-content{
+	width: 100%;
+	height: 5.5rem;
+	overflow: hidden;
+	position: relative;
+	background: #fff;
+	img{
+		position: absolute;
+	    height: 100%!important;
+	    width: auto!important;
+	    left: 50%;
+	    top: 50%;
+	    transform: translate(-50%,-50%);
+	}
+}
 
 
 .shopdetails_main {
@@ -115,28 +128,19 @@ export default {
 article {
     width: 100%;
     height: auto;
-    padding: .5rem .2rem;
+    padding: .4rem .3rem;
     background-color: #fff;
     h1 {
-        font-size: .36rem;
-        color: #222;
-        margin: 0;
+        font-size: .32rem;
+        color: #333;
+        font-weight: 700;
         line-height: .42rem
     }
     h5 {
         font-size: .24rem;
-        line-height: .24rem;
+        line-height: .3rem;
         color: #999;
-        margin: .5rem 0;
-    }
-    p {
-        font-size: .3rem;
-        line-height: .42rem
-    }
-    img {
-        width: 100%;
-        height: auto;
-        margin: .5rem 0
+        margin: .3rem 0;
     }
 }
 
@@ -161,7 +165,9 @@ article {
     width: 1.4rem;
     height: 1.4rem;
     margin-right: .2rem;
+    border: 1px solid #eee;
     img {
+    	display: block;
         width: 100%;
         height: 100%
     }
@@ -173,34 +179,33 @@ article {
     flex: auto;
     h3 {
         color: #222;
-        font-size: .3rem;
+        font-size: .26rem;
+        line-height: 0.36rem;
         overflow: hidden;
         text-overflow: ellipsis;
-        // display: -webkit-box;
-        // -webkit-line-clamp: 2;
-        // -webkit-box-orient: vertical;
-        height: .88rem;
-        line-height: .34rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        height: .72rem;
     }
     p {
         color: #999;
-        font-size: .22rem;
-        line-height: .3rem;
+        font-size: .24rem;
         display: flex;
         align-items: flex-end;
-        align-content: center;
-        align-self: center;
         justify-content: space-between;
+        padding-top: 0.1rem;
+        /*height: 0.5rem;*/
         .price {
             color: #ff6600;
-            font-size: .34rem;
+            font-size: .3rem;
         }
         .button {
             width: 1.5rem;
-            height: .53rem;
-            line-height: .53rem;
+            height: .5rem;
+            line-height: .5rem;
             color: #fff;
-            font-size: .3rem;
+            font-size: .26rem;
             background-color: #3cafb6;
             text-align: center;
             border-radius: 60px
