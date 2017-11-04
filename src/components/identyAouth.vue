@@ -29,7 +29,7 @@ export default {
 		let that = this
 		if(this.$refs.Input.setSelectionRange){
 			setTimeout(function() { 
-				that.$refs.Input.setSelectionRange(that.nickName.length, that.nickName.length)
+				that.$refs.Input.setSelectionRange(that.userInfo.true_name.length, that.userInfo.true_name.length)
 			}, 0); 
 			
 		}
@@ -41,7 +41,7 @@ export default {
 					Toast({
 					  message: res.msg,
 					  position: 'bottom',
-					  duration: 1000
+					  duration: 10000
 					});
 					return
 				}

@@ -3,7 +3,7 @@
     	<Header :title="title"></Header>
     	<div class="content">
     		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" :uri="uri">
-				<div class="pop-product-list" v-show="pagination.content.length>1">
+				<div class="pop-product-list" v-show="pagination.content.length>0">
 					<router-link :to="'/shopdetails/' + item.goods_id" class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
 						<div class="fullEle">
 							<div class="pop-product-img">

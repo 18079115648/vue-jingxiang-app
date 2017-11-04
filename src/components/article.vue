@@ -1,9 +1,10 @@
 <template>
     <section class="app">
-        <Header title="资讯"></Header>
         <!-- 文章内容 -->
         <div class="img-content">
-        	<img :src="detail.thumb"  />
+        	<img src="../../static/images/23@3x.png" class="icon-img back" @click="back" />
+    		<img src="../../static/images/22@3x.png" class="icon-img share" @click="show = true" />
+        	<img class="banner" :src="detail.thumb"  />
         </div>
         <article >
             <h1>{{detail.title}}</h1>
@@ -35,8 +36,9 @@
                 </div>
             </div>
         </div>
-        
+       <share-tip v-show="show" @shareCancel="show = false"></share-tip> 
     </section>
+    
 </template>
 
 <script>
@@ -44,22 +46,14 @@
 export default {
     data() {
         return {
+        	show: false,
             detail: {},
-            goodsList:[{
-            	goods_id: 83,
-            	title: 11111,
-            	thumb: '/uploads/attachment/20170930/3aa6b3d5c0a2a5063fa6b08c5d1b302a.jpg',
-            	price_shop: 1444
-            },{
-            	goods_id: 83,
-            	title: 11111,
-            	thumb: '/uploads/attachment/20170930/3aa6b3d5c0a2a5063fa6b08c5d1b302a.jpg',
-            	price_shop: 1444
-            }]
+            goodsList:[]
         
         }
     },
     created() {
+    	window.scrollTo(0,0)
         const self = this
         this.$api.indexInformationContent(
             {
@@ -67,7 +61,7 @@ export default {
             }
         ).then(res => {
         	this.detail = res
-//      	this.goodsList = res.goods
+        	this.goodsList = res.goods
         }, err => {
             
         })
@@ -75,7 +69,10 @@ export default {
     methods: {
         goDetail(id){
             this.$router.push('/shopdetails/' + id)
-        }
+        },
+        back() {
+			this.$router.go(-1)
+		},
     }
    
 
@@ -94,13 +91,26 @@ export default {
 	overflow: hidden;
 	position: relative;
 	background: #fff;
-	img{
+	img.banner{
 		position: absolute;
 	    height: 100%!important;
 	    width: auto!important;
 	    left: 50%;
 	    top: 50%;
 	    transform: translate(-50%,-50%);
+	}
+	.icon-img{
+		position: fixed;
+		width: 0.6rem;
+		height: 0.6rem;
+		top: 0.5rem;
+		z-index: 10;
+	}
+	.icon-img.share{
+		right: 0.3rem;
+	}
+	.icon-img.back{
+		left: 0.3rem;
 	}
 }
 

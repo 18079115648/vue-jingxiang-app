@@ -9,7 +9,7 @@
 	    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/address/index">
 				<div class="address-list" v-show="pagination.content.length>0">
 		    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
-		    			<div>
+		    			<div @click="selectAddr(item.address_id)">
 		    				<div class="addr-contact">
 			    				<span>{{item.contact}}</span>
 			    				<span>{{item.mobile}}</span>
@@ -55,10 +55,11 @@ export default {
                 	p: 1
                 }
             },
+            status: ''
 		}
 	},
 	created() {
-
+		this.status = this.$route.params.status
 	},
 	methods: {
 		render(res) {
@@ -142,6 +143,16 @@ export default {
 		//新建地址
 		createAddr() {
 			this.$router.push('/addressNew')
+		},
+		
+		
+		//确认订单页选择地址
+		selectAddr(id){
+			if(this.status == 'list') {
+				return
+			}
+			this.$storage.set('order_addr_id',id)
+			this.$router.go(-1)
 		}
 	}
 }

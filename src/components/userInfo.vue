@@ -3,9 +3,10 @@
     	<Header title="个人中心"></Header>
     	<div class="avatar-content has-right-arror">
     		<span>头像</span>
-    		<div class="avatar">
+    		<div class="avatar" @click="previewAvatar">
     			<img :src="userInfo.img_head" />
     		</div>
+    		<div class="changeAvatar" @click="changeAvatar"></div>
     	</div>
     	<div class="user-info">
     		<div @click="editNickName" class="link-item  has-right-arror">
@@ -44,7 +45,7 @@
 </template>
 
 <script>
-
+import wx from 'weixin-js-sdk'
 export default {
 	data() {
 		return {
@@ -59,8 +60,61 @@ export default {
         }, err => {
         	
         })
+		this.wxJssdk()
 	},
 	methods: {
+		wxJssdk() {
+			let self = this
+			this.$api.wxShare({
+				url: window.location.href.split('#')[0]
+			}).then((res) => {
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: res.appId, // 必填，公众号的唯一标识
+					timestamp: parseInt(res.timestamp), // 必填，生成签名的时间戳
+					nonceStr: res.noncestr, // 必填，生成签名的随机串
+					signature: res.signature, // 必填，签名，见附录1
+					jsApiList: ['getLocation', 'chooseImage', 'previewImage', 'uploadImage', 'scanQRCode', 'chooseWXPay', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				})
+//				wx.ready(function() {
+//					
+//				})
+			}).catch((err) => {
+				console.log(err)
+			})
+		},
+		previewAvatar() {
+			wx.previewImage({
+			    current: this.userInfo.img_head, // 当前显示图片的http链接
+			    urls: [this.userInfo.img_head] // 需要预览的图片http链接列表
+			});
+		},
+		changeAvatar() {
+			let self = this
+			wx.chooseImage({
+			    count: 1, // 默认9
+			    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+			    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+			    success: function (res) {
+			    	console.log(res)
+			        wx.uploadImage({
+					    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+					    isShowProgressTips: 1, // 默认为1，显示进度提示
+					    success: function (res) {
+					        self.$api.wxUploadImg({
+					        	media_id: res.serverId
+					        }).then(res => {
+								if(res.ret == 1) {
+									self.userInfo.img_head = res.img_head
+								}
+					        }, err => {
+					        	
+					        })
+					    }
+					});
+			    }
+			});
+		},
 		editNickName() {
 			let info = {
 				username: this.userInfo.username,
@@ -108,6 +162,7 @@ export default {
 	.avatar{
 		width: 1rem;
 		height: 1rem;
+		margin-right: 0.2rem;
 		overflow: hidden;
 		border-radius: 50%;
 		position: relative;
@@ -119,6 +174,14 @@ export default {
 			height: 100%;
 			max-width: 100%;
 		}
+	}
+	.changeAvatar{
+		position: absolute;
+		width: 0.7rem;
+		height: 1rem;
+		right: 0.1rem;
+		top: 0.2rem;
+		z-index: 10;
 	}
 }
 .user-info{

@@ -1,4 +1,4 @@
-const home = r => require.ensure([], () => r(require('../components/home.vue')), 'home')
+const selected = r => require.ensure([], () => r(require('../components/home.vue')), 'selected')
 const search = r => require.ensure([], () => r(require('../components/search.vue')), 'search')
 const searchResult = r => require.ensure([], () => r(require('../components/searchResult.vue')), 'searchResult')
 const productList = r => require.ensure([], () => r(require('../components/productList.vue')), 'productList')
@@ -21,6 +21,7 @@ const addressList = r => require.ensure([], () => r(require('../components/addre
 const addressDetail = r => require.ensure([], () => r(require('../components/addressDetail.vue')), 'addressDetail')
 const addressNew = r => require.ensure([], () => r(require('../components/addressNew.vue')), 'addressNew')
 const aboutUs = r => require.ensure([], () => r(require('../components/aboutUs.vue')), 'aboutUs')
+const login = r => require.ensure([], () => r(require('../components/login.vue')), 'login')
 
 
 
@@ -41,10 +42,10 @@ const OthersHealth = r => require.ensure([], () => r(require('../components/Othe
 
 export default  [{ 
     	path: '/',
-    	redirect: '/home'
+    	redirect: '/selected'
     },{
-        path: '/home',
-        component: home
+        path: '/selected',
+        component: selected
     },{
         path: '/search',
         component: search
@@ -56,16 +57,25 @@ export default  [{
         component: productList
     },{
         path: '/cart',
-        component: cart
+        component: cart,
+        meta: {
+            requireAuth: true
+        }
     },{
-        path: '/orderSubmit',
+        path: '/orderSubmit/:type/:status',  //type 901： 普通药 ， 902： 处方药   。   status订单来源    0：立即购买， 1： 购物车， 2：需求清单
         component: orderSubmit
     },{
         path: '/demandSubmit',
         component: demandSubmit
     },{
         path: '/user',
-        component: user
+        component: user,
+        meta: {
+            requireAuth: true
+        }
+    },{
+        path: '/login',
+        component: login
     },{
         path: '/userInfo',
         component: userInfo
@@ -97,7 +107,7 @@ export default  [{
         path: '/myBalance',
         component: myBalance
     },{
-        path: '/myIntergal',
+        path: '/myIntergal/:status',  // status 是否绑定会员卡    0：未绑定， 1： 已绑定
         component: myIntergal
     },{
         path: '/recharge',
@@ -112,7 +122,7 @@ export default  [{
         path: '/evaluate',
         component: evaluate
     },{
-        path: '/addressList',
+        path: '/addressList/:status',  //status 地址列表来源    'select': 确认订单页切换地址      'list': 个人中心
         component: addressList
     },{
         path: '/addressDetail/:id',

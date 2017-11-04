@@ -1,77 +1,31 @@
 <template>
     <div class="app">
     	<Header title="确认订单"></Header>
-    	<div class="order-addr">
+    	<router-link to="/addressList/select" class="order-addr" v-if="addrDetail.address_id">
     		<img src="../../static/images/line.png" class="bg-line" />
     		<img src="../../static/images/52@3x.png" class="addr-icon" />
     		<div class="addr-detail">
     			<div class="addr-contact">
-    				<span>收货人：张三</span>
-    				<span>18079115648</span>
+    				<span>收货人：{{addrDetail.contact}}</span>
+    				<span>{{addrDetail.mobile}}</span>
     			</div>
-    			<div class="addr-text">阿里山</div>
-    			<div class="id-card">身份证：360127</div>
+    			<div class="addr-text">{{addrDetail.area}} {{addrDetail.address}}</div>
+    			<div class="id-card">身份证：{{addrDetail.id_card}}</div>
     		</div>
     		<img src="../../static/images/arror.png" class="more-icon" />
-    	</div>
+    	</router-link>
+    	<router-link to="/addressList/select" class="order-addr" v-if="!addrDetail.address_id">
+    		<img src="../../static/images/line.png" class="bg-line" />
+    		<div class="none-addr">选择收货地址</div>
+    	</router-link>
     	<div class="product-list">
-    		<div class="product-item">
-    			<img src="" class="product-img" />
+    		<div class="product-item" v-for="(item, index) in goodsList" :key="index">
+    			<img :src="item.thumb" class="product-img" />
     			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
+    				<div class="product-name">{{item.title}}</div>
     				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="product-item">
-    			<img src="" class="product-img" />
-    			<div class="product-info">
-    				<div class="product-name">阿大口大利空</div>
-    				<div class="product-amount">
-    					<span class="price-color">&yen;111</span>
-    					<span class="count">x1</span>
+    					<span class="price-color">&yen;{{item.price_shop}}</span>
+    					<span class="count">x{{item.num}}</span>
     				</div>
     			</div>
     		</div>
@@ -79,23 +33,23 @@
     	<div class="order-total">
     		<div class="cell-item">
     			<span>商品合计</span>
-    			<span>&yen;111</span>
+    			<span>&yen;{{orderDetail.amount_goods}}</span>
     		</div>
     		<div class="cell-item">
     			<span>运费</span>
-    			<span>&yen;111</span>
+    			<span>&yen;{{orderDetail.freight}}</span>
     		</div>
     	</div>
-    	<div class="points">
+    	<div class="points" v-if="orderDetail.points > 0">
     		<span class="point-icon">积分</span>
-    		<span>返200积分</span>
+    		<span>返{{orderDetail.points}}积分</span>
     	</div>
     	<div class="pay-content">
     		<div class="total-num">
-    			共<span class="price-color"> 5 </span>件， 
-    			实付 <span class="price-color"> &yen; 111</span>
+    			共<span class="price-color"> {{orderDetail.total}} </span>件， 
+    			实付 <span class="price-color"> &yen; {{orderDetail.amount_order}}</span>
     		</div>
-    		<div class="pay-btn">微信支付</div>
+    		<div class="pay-btn" @click="payWx">微信支付</div>
     	</div>
     </div>
 </template>
@@ -105,15 +59,115 @@
 export default {
 	data() {
 	    return {
-	    	editStatus: false,
-		    selected: [],
-		    aa: 1,
-		    bb: 2
+	    	num: 0,
+	    	goods_id: null,
+	    	type_id: null,
+	    	address_id: null, // 默认地址
+	    	order_addr_id: null, //选择的地址
+	    	status: null, // status订单来源    0：立即购买， 1： 购物车， 2：需求清单
+	    	
+	    	addrDetail: {},
+	    	goodsList: [],
+	    	orderDetail: {}
 	    }
 	},
+	created() {
+		this.status = this.$route.params.status
+		this.type_id = this.$route.params.type
+		this.address_id = this.$storage.get('default_addr_id')
+		this.order_addr_id = this.$storage.get('order_addr_id')
+		this.$storage.remove('order_addr_id')
+		if(this.status === '0') {
+			this.goods_id = [this.$route.query.goods_id]
+			this.num = this.$route.query.num
+			this.$api.checkOutBuy({
+				type_id: this.type_id,
+				goods_id: this.goods_id[0],
+				address_id: this.order_addr_id || this.address_id,
+				num: this.num
+			}).then(res => {
+				if(res.ret == 1) {
+					this.orderDetail = res
+					this.addrDetail = res.address
+					this.goodsList = res.data
+				}
+			}, err => {
+	
+			})
+		}else if(this.status === '1') {
+			this.goods_id = this.$storage.get('select_goods_arr')
+//			this.$storage.remove('select_goods_arr')
+			this.$api.checkOut({
+				type_id: this.type_id,
+				goods_ids: this.goods_id,
+				address_id: this.order_addr_id || this.address_id,
+			}).then(res => {
+				if(res.ret == 1) {
+					this.orderDetail = res
+					this.addrDetail = res.address
+					this.goodsList = res.data
+				}
+			}, err => {
+	
+			})
+		}
+		
+		
+		
+		
+			
+	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		payWx() {
+//			this.$api.checkOut({
+//				type_id: this.type_id,
+//				goods_ids: [this.goods_id],
+//				address_id: this.order_addr_id || this.address_id,
+//			}).then(res => {
+//				if(res.ret == 1) {
+//					this.$api.createOrder({
+//						type_id: this.type_id,
+//						goods_ids: [this.goods_id],
+//						address_id: this.order_addr_id || this.address_id,
+//						customer: this.addrDetail.contact,
+//						id_card: this.addrDetail.id_card,
+//						mobile: this.addrDetail.mobile,
+//						province: this.addrDetail.province,
+//						city: this.addrDetail.city,
+//						district: this.addrDetail.district,
+//						address: this.addrDetail.address,
+//						check_phone_user: ''
+//					}).then(res => {
+//						if(res.ret == 1) {
+//							window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_id
+//						}
+//					}, err => {
+//			
+//					})
+//				}
+//			}, err => {
+//	
+//			})
+			this.$api.createOrder({
+				type_id: this.type_id,
+				goods_ids: this.goods_id,
+				address_id: this.order_addr_id || this.address_id,
+				customer: this.addrDetail.contact,
+				id_card: this.addrDetail.id_card,
+				mobile: this.addrDetail.mobile,
+				province: this.addrDetail.province,
+				city: this.addrDetail.city,
+				district: this.addrDetail.district,
+				address: this.addrDetail.address,
+				check_phone_user: ''
+			}).then(res => {
+				if(res.ret == 1) {
+					window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_id
+				}
+			}, err => {
+	
+			})
+				
 		}
 	}
 }
@@ -129,9 +183,16 @@ export default {
 .order-addr{
 	position: relative;
 	background: #FFFFFF;
-	padding: 0.16rem 0.3rem;
+	padding: 0.16rem 0.3rem 0.26rem;
 	display: flex;
 	align-items: center;
+	height: 1.76rem;
+	.none-addr{
+		text-align: center;
+		width: 100%;
+		color: #3cafb6;
+		font-size: 0.3rem;
+	}
 	.bg-line{
 		position: absolute;
 		left: 0;
@@ -246,7 +307,7 @@ export default {
 		font-size: 0.32rem;
 	}
 	.total-num{
-		padding-left: 0.3rem;
+		padding-left: 0.5rem;
 		padding-right: 0.2rem;
 	}
 }

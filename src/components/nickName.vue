@@ -23,7 +23,7 @@ export default {
 		let that = this
 		if(this.$refs.Input.setSelectionRange){
 			setTimeout(function() { 
-				that.$refs.Input.setSelectionRange(that.nickName.length, that.nickName.length)
+				that.$refs.Input.setSelectionRange(that.userInfo.username.length, that.userInfo.username.length)
 			}, 0); 
 			
 		}
