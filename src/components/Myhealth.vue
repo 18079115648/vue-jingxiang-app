@@ -24,15 +24,6 @@
         <img src="../../static/images/arror.png" >
     </div>
 
-    <div class="field" v-if="is_my == 1">
-        <span>关系</span>
-        <div v-if="relationship_name">请选择</div>
-        <select @change="guanxi" v-model="relationship_id">
-            <option>关系</option>
-            <option v-for="list in relationship" :value="list.value">{{list.value}}</option>
-        </select>
-        <img src="../../static/images/arror.png" >
-    </div>
 
     <div class="field" >
         <span>生日</span>
@@ -67,18 +58,18 @@
     </div>
 
     <div class="condition">
-        <div  class="illness"  v-for="item in HealthTag"  @click="cut">{{item}}</div>
+        <div :class="{illness: pitch , illnessing: noPitch}"  v-for="(item,index) in HealthTag"  @click="cut">{{item}}</div>
         <div class="add_illness" @click="add_label">+添加</div>
         <div class="kong"></div>
         <div class="kong"></div>
     </div>
 
-    <div class="delete_record" @click="deleteHealth">
+    <div class="delete_record" @click="deleteHealth" v-if="is_my == 1">
         <span>删除此亲属记录</span>
     </div>
-    
 
-    
+
+
   </section>
 </template>
 
@@ -89,13 +80,13 @@ import { Toast } from 'mint-ui'
 export default {
     data() {
         return {
-            name: '',
-            weight: '',
-            height: '',
-            sex: '',
-            birthday: '',
-            relationship: [],
-            HealthTag:[],
+            name: '',   //姓名
+            weight: '', //体重
+            height: '', //身高
+            sex: '',    //性别
+            birthday: '',      //生日
+            relationship: [],  //关系
+            HealthTag:[],      //常用健康标签
             relationship_id:'',
             sex_name: true,
             relationship_name: true,
@@ -104,11 +95,16 @@ export default {
             id :'',
             startDate: new Date('1917-1-1'),
             endDate: new Date(),
-            tag: '', // 常用健康标签
-            is_my:'',
+            is_my:'',   //是否是自己
+            //样式
+            pitch: true,
+            noPitch: false,
+            
         }
     },
     created() {
+                
+        
         const self = this
         //自己的健康档案
         this.$api.indexDetailMy().then(res => {
@@ -118,13 +114,14 @@ export default {
             this.name = res.true_name
             this.sex = res.sex
             this.id = res.health_id
+            this.relationship_id = res.relationship_id
             if(res.sex){
                 this.sex_name = false
             }
-             if(res.relationship_id_name){
+            if(res.relationship_id_name){
                 this.relationship_name = false
             }
-             if(res.birthday){
+            if(res.birthday){
                 this.birth_time = false
             }
         }, err => {
@@ -139,11 +136,11 @@ export default {
         })
 
         //获取关系列表
-        this.$api.indexGetRelation().then(res => {
-            this.relationship = res.form_relationship
-        }, err => {
+        // this.$api.indexGetRelation().then(res => {
+        //     this.relationship = res.form_relationship
+        // }, err => {
             
-        })
+        // })
         
 
 
@@ -154,15 +151,16 @@ export default {
         //保存健康档案
         save(){
             const self = this
+
             this.$api.indexHealth(
                 {
-                    id:this.id,
-                    true_name: this.name,
-                    weight: this.weight,
+                    id: this.id,
+                    sex: this.sex,
                     height: this.height,
-                    sex:this.sex,
-                    relationship_id: 0,
-                    birthday:this.birth,
+                    weight: this.weight,
+                    true_name: this.name,
+                    birthday: this.birth,
+                    relationship_id: this.relationship_id,
                 }
             ).then(res => {
                 if(res.ret == 1) {
@@ -198,22 +196,29 @@ export default {
             this.relationship_name = false
             
         },
-        //打开时间选择器
+        //打开生日选择器
         openPicker() {
             this.$refs.picker.open();
         },
-        //点击时间选择器上的确定
+        //点击生日选择器上的确定
         handleConfirm(value) {
             this.birth_time = false
-            this.birth  = value.toString();
+            var time = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate()
+            this.birth  = time
             
+
         },
         //切换标签
         cut() {
-            
+            if(this.noPitch == false){
+                this.noPitch = true
+            }else if( this.noPitch == true){
+                this.noPitch = false
+            }
         },
         //添加疾病标签
         add_label() {
+            
             MessageBox.prompt('慢性病','').then(({ value, action }) => {
                 this.$api.indexAddHealthTag(
                     {
@@ -382,16 +387,18 @@ export default {
 }
 .illness{
     width: 1.8rem;
-    border: solid 1px #3cafb6;
-    color: #3cafb6;
+    border: solid 1px #efefef;
+    color: #999;
+    background-color: #efefef;
     text-align: center;
     line-height: .58rem;
     border-radius: 5px;
     margin:.2rem .3rem;
 }
-.illness:active{
-    border: solid 1px #ccc;
-    color: #ccc;
+.illnessing{
+    border: solid 1px #3cafb6;
+    color: #3cafb6;
+    background-color: #fff;
 }
 
 .add_illness{

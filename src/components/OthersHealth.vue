@@ -1,7 +1,7 @@
 <template>
   <section class="health">
 
-    <Header title="我的健康"></Header>
+    <Header title="健康档案"></Header>
     <div class="save" @click="save">保存</div>
 
     <div class="datum">
@@ -29,7 +29,7 @@
         <div v-if="relationship_name">请选择</div>
         <select @change="guanxi" v-model="relationship_id">
             <option>关系</option>
-            <option v-for="list in relationship" :value="list.value">{{list.value}}</option>
+            <option v-for="list in relationship" :value="list.value">{{list.text}}</option>
         </select>
         <img src="../../static/images/arror.png" >
     </div>
@@ -73,7 +73,7 @@
         <div class="kong"></div>
     </div>
 
-    <div class="delete_record" @click="deleteHealth">
+    <div class="delete_record" @click="deleteHealth" >
         <span>删除此亲属记录</span>
     </div>
     
@@ -94,9 +94,9 @@ export default {
             height: '',
             sex: '',
             birthday: '',
-            relationship: [],
             HealthTag:[],
-            relationship_id:'',
+            relationship: [], // 关系
+            relationship_id: '', // 选中的关系id
             sex_name: true,
             relationship_name: true,
             birth_time: true,
@@ -112,12 +112,19 @@ export default {
         const self = this
         //自己的健康档案
         this.$api.indexDetailMy().then(res => {
-            this.birth = res.birthday
+            this.sex = res.sex
             this.weight = res.weight
             this.height = res.height
-            this.name = res.true_name
-            this.sex = res.sex
             this.id = res.health_id
+            this.name = res.true_name
+            this.birth = res.birthday
+            this.relationship_id = res.relationship_id
+            var option = $(res.data.form_relationship).children('option')
+                // console.log(option)
+            option.each(function () {
+                self.relationship.push({ value: $(this).val(), text: $(this).text() })
+                // console.log(self.relationship)
+            })
             if(res.sex){
                 this.sex_name = false
             }
@@ -140,12 +147,10 @@ export default {
 
         //获取关系列表
         this.$api.indexGetRelation().then(res => {
-            this.relationship = res.form_relationship
+            // this.relationship = res.form_relationship
         }, err => {
             
         })
-        
-
 
         
     },
@@ -156,13 +161,13 @@ export default {
             const self = this
             this.$api.indexHealth(
                 {
-                    id:this.id,
-                    true_name: this.name,
-                    weight: this.weight,
-                    height: this.height,
-                    sex:this.sex,
-                    relationship_id: 0,
-                    birthday:this.birth,
+                    id: self.id,
+                    sex: self.sex,
+                    height: self.height,
+                    weight: self.weight,
+                    birthday:self.birth,
+                    true_name: self.name,
+                    relationship_id: self.relationship_id,
                 }
             ).then(res => {
                 if(res.ret == 1) {
@@ -205,7 +210,8 @@ export default {
         //点击时间选择器上的确定
         handleConfirm(value) {
             this.birth_time = false
-            this.birth  = value.toString();
+            var time = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate()
+            this.birth  = time
             
         },
         //切换标签

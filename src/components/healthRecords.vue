@@ -2,7 +2,7 @@
   <section class="healthRecords">
     <Header title="健康档案"></Header>
     
-    <div class="recordsList" v-for="(item, index) in items">
+    <div class="recordsList" v-for="(item, index) in items" @click="edit">
         <div class="records">
             <span class="records_label">{{item.relationship_id_name}}</span>
             <span class="records_name">{{item.true_name}}</span>
@@ -43,13 +43,15 @@ export default {
               {name:'健康'}
           ]}
       ], // 内容
-      banner: [] // banner
+      banner: [], // banner
+      wd:'',
     }
   },
   created() {
     const self = this
     this.$api.indexHealthRecords(
             {
+                wd:this.wd,
                 p: this.page
             }
         ).then(res => {
@@ -59,6 +61,9 @@ export default {
         })
     },
     methods: {
+        edit() {
+            this.$router.push({path: '/OthersHealth'})
+        },
         add_disease() {
             this.$router.push({path: '/OthersHealth'})
         }
