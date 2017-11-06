@@ -11,7 +11,7 @@
     			<p class="amount charge"><span>{{userInfo.user_money}}</span>元</p>
     			<p class="nav-text">余额</p>
     		</router-link>
-    		<router-link to="/myIntergal" class="user-nav-item" >
+    		<router-link :to="'/myIntergal/' + bindMenber" class="user-nav-item" >
     			<p class="amount integral"><span>{{userInfo.pay_points}}</span>分</p>
     			<p class="nav-text">积分</p>
     		</router-link>
@@ -60,7 +60,7 @@
 				<img src="../../static/images/8@3x.png" class="nav-icon" />
 				健康档案
 			</router-link>
-			<router-link to="/addressList" class="link-item  has-right-arror">
+			<router-link to="/addressList/list" class="link-item  has-right-arror">
 				<img src="../../static/images/7@3x.png" class="nav-icon addr" />
 				收货地址
 			</router-link>
@@ -81,13 +81,15 @@
 export default {
 	data() {
 		return {
-			userInfo: {}
+			userInfo: {},
+			bindMenber: 0
 		}
 	},
 	created() {
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res
+				this.bindMenber = res.bind
 				this.$storage.set('user_money', this.userInfo.user_money)
 			}
         }, err => {

@@ -3,7 +3,7 @@
     <div class="menu-blank"></div>
     <ul class="nav_bottm">
         <li :class="{'active':actived == 'first'}">
-            <router-link to='/home' replace>
+            <router-link to='/selected' replace>
                 <img v-show="actived == 'first'" src="../../../static/images/34@3x.png" alt="精选"/>
                 <img v-show="actived != 'first'" src="../../../static/images/4@3x.png" alt="精选"/>
                 <div>精选</div>

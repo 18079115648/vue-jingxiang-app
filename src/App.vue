@@ -295,6 +295,15 @@ input::-webkit-search-cancel-button {
 		width: 100%;
 		margin: 0.2rem 0;
 	}
-	
+	.pics, .zhuanyi{
+		overflow: hidden;
+	}
+	.pics *, .zhuanyi *{
+		max-width: 100% !important;
+	}
+	.pics img{
+		display: block;
+		width: 100%;
+	}
 	
 </style>

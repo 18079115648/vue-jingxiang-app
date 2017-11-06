@@ -1,91 +1,197 @@
 <template>
     <div class="app">
     	<Header title="购物车" back="hidden"></Header>
-    	<div class="edit-status" @click="editStatus = !editStatus">
+    	<div class="edit-status" v-show="cartData.length>0" @click="editStatus = !editStatus">
     		<span v-show="!editStatus">编辑</span>
     		<span v-show="editStatus">完成</span>
     	</div>
-    	<div class="product-list">
-			<div class="product-item">
-				<div class="select-status">
-					<input id="1" class="checkbox" type="checkbox" :value="aa" v-model="selected" />
-					<label class="fullEle" for="1">
-						<span class="checkbox-icon"></span>
+    	<div class="none-data" v-show="cartData.length<1">
+    		<img class="none-img" src="../../static/images/42@3x.png"  />
+    		<p class="none-tip">购物车瘪瘪的 ~ ~</p>
+    	</div>
+    	<div class="product-list" v-show="cartData.length>0">
+			<div class="product-item" v-for="(item, index) in cartData" :key="index">
+				<div class="select-status" @click="item.active = !item.active">
+					<label class="fullEle">
+						<span class="checkbox-icon " :class="{'active': item.active}"></span>
 					</label>
 				</div>
 				<div class="product-detail">
-					<img src="" class="product-img" />
+					<img :src="item.thumb" class="product-img" />
 					<div class="product-info">
-						<div class="product-name">打哈卡的哈卡的哈空间</div>
+						<div class="product-name">{{item.title}}</div>
 						<div class="product-amount">
-							<span class="price-color">&yen;111</span>
+							<span class="price-color">&yen;{{item.price_shop}}</span>
 							<div class="count-content">
-								<span>-</span>
-								<input class="count" maxlength="3" type="tel" value="1" />
-								<span>+</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="product-item">
-				<div class="select-status">
-					<input id="1" class="checkbox" type="checkbox" :value="aa" v-model="selected" />
-					<label class="fullEle" for="1">
-						<span class="checkbox-icon"></span>
-					</label>
-				</div>
-				<div class="product-detail">
-					<img src="" class="product-img" />
-					<div class="product-info">
-						<div class="product-name">打哈卡的哈卡的哈空间</div>
-						<div class="product-amount">
-							<span class="price-color">&yen;111</span>
-							<div class="count-content">
-								<span>-</span>
-								<input class="count" maxlength="3" type="tel" value="1" />
-								<span>+</span>
+								<span @click="minus(item)">-</span>
+								<span class="count">{{item.num}}</span>
+								<span @click="plus(item)">+</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="total-content">
-			<div class="select-status">
-				<input id="1" class="checkbox" type="checkbox" :value="aa" v-model="selected" />
-				<label class="fullEle" for="1">
-					<span class="checkbox-icon"></span>
+		<div class="total-content" v-show="cartData.length>0">
+			<div class="select-status" @click="toggleAllCheck">
+				<label class="fullEle">
+					<span class="checkbox-icon" :class="{'active': checkAll}"></span>
 				</label>
 			</div>
 			<div class="total-text">
 				<span>全选</span>
 				<div class="total-price" v-show="!editStatus">
 					<span>合计：</span>
-					<span class="price-color">&yen;111</span>
+					<span class="price-color">&yen;{{checkTotalPrice}}</span>
 				</div>
-				<div class="btn-operate" v-show="!editStatus" @click="paySubmit">去结算(6)</div>
-				<div class="btn-delete" v-show="editStatus">删除</div>
+				<div class="btn-operate disabled" v-show="!editStatus && checkNum<1">去结算</div>
+				<div class="btn-operate" v-show="!editStatus && checkNum>0" @click="paySubmit">去结算({{checkNum}})</div>
+				<div class="btn-delete" v-show="editStatus" @click="deleteGoods">删除</div>
 			</div>
 		</div>
 		<Menu actived="four"></Menu>
+		<confirm-modal :show="deleteShow" @confirm_modal="cartDelete" @closeModal="deleteShow = false" message="确定删除该商品?"></confirm-modal>	
     </div>
 </template>
 
 <script>
-
+import { Indicator } from 'mint-ui'
 export default {
 	data() {
 	    return {
+	    	deleteShow: false,
 	    	editStatus: false,
-		    selected: [],
-		    aa: 1,
-		    bb: 2
+		    cartData: [],
 	    }
 	},
+	created() {
+		this.initData()
+	},
+	computed: {
+		  checkAll: function() {
+		  	let all = true
+		  	this.cartData.forEach((item) => {
+		  		if(!item.active) {
+		  			all = false
+		  			return
+		  		}
+		  	})
+		  	return all
+		  },
+		  checkNum: function() {
+		  	let num = 0
+		  	this.cartData.forEach((item) => {
+		  		if(item.active) {
+		  			num+=1
+		  		}
+		  	})
+		  	return num
+		  },
+		  checkTotalPrice: function() {
+		  	let price = 0
+		  	this.cartData.forEach((item) => {
+		  		if(item.active) {
+		  			price+=(parseFloat(item.price_shop) * item.num)
+		  		}
+		  	})
+		  	return parseFloat(price).toFixed(2)
+		  },
+		  checkGoodsId: function() {
+		  	let arr = []
+		  	this.cartData.forEach((item) => {
+		  		if(item.active) {
+		  			arr.push(item.goods_id)
+		  		}
+		  	})
+		  	return arr
+		  }
+	},
 	methods: {
+		initData() {
+			this.$api.getCartData({
+				type_id: 901
+			}).then(res => {
+				if(res.ret == 1) {
+					Indicator.close()
+					this.cartData = []
+					res.data.forEach((item) => {
+						item.active = false
+						this.cartData.push(item)
+					})
+				}
+		    }, err => {
+		    	
+		    })
+		},
+		minus(item){
+			if(item.num < 2) {
+				return
+			}
+			item.num--
+			this.$api.updataCartData({
+				type_id: 901,
+				goods_id: item.goods_id,
+				num: item.num
+			}).then(res => {
+				if(res.ret == 1) {
+					
+				}
+		    }, err => {
+		    	
+		    })
+		},
+		plus(item){
+			item.num++
+			this.$api.updataCartData({
+				type_id: 901,
+				goods_id: item.goods_id,
+				num: item.num
+			}).then(res => {
+				if(res.ret == 1) {
+					
+				}
+		    }, err => {
+		    	
+		    })
+		},
+		toggleAllCheck() {
+			if(this.checkAll) {
+				this.cartData.forEach((item) => {
+		  		item.active = false
+		  	})
+			}else {
+				this.cartData.forEach((item) => {
+		  		item.active = true
+		  	})
+			}
+		},
 		paySubmit() {
-			this.$router.push('/orderSubmit')
+			this.$storage.set('select_goods_arr', this.checkGoodsId)
+			this.$router.push({
+				path: '/orderSubmit/' + 901 + '/' + 1
+			})
+		},
+		deleteGoods() {
+			this.deleteShow = true
+		},
+		cartDelete() {
+			Indicator.open()
+			let str = ''
+			this.checkGoodsId.forEach((value) => {
+				str+=(',' + value)
+			})
+			this.$api.deleteCartData({
+				type_id: 901,
+				goods_ids: str.substr(1)
+			}).then(res => {
+				if(res.ret == 1) {
+					this.deleteShow = false
+			    	this.editStatus = false
+					this.initData()
+				}
+		    }, err => {
+		    	
+		    })
 		}
 	}
 }
@@ -155,11 +261,12 @@ export default {
 			border: 1px solid #666;
 			border-radius: 50%;
 		}
+		.checkbox-icon.active{
+			border-color: #3cafb6;
+			background: url(../../static/images/43@3x.png) no-repeat center;
+			background-size: 100% 100%;
+		}
 	}
-}
-.checkbox:checked+label .checkbox-icon{
-	border: none;
-	background: #3cafb6;
 }
 .product-detail{
 	flex: 1;
@@ -198,7 +305,7 @@ export default {
 					width: 0.6rem;
 					font-size: 0.36rem;
 				}
-				& > input{
+				& > span.count{
 					width: 0.7rem;
 					font-size: 0.32rem;
 				}
@@ -227,7 +334,7 @@ export default {
 		.total-price{
 			flex: 1;
 			text-align: right;
-			padding: 0 0.2rem;
+			padding: 0 0.35rem 0 0.3rem;
 			display: flex;
 			justify-content: flex-end;
 			.price-color{
@@ -237,10 +344,15 @@ export default {
 			}
 		}
 		.btn-operate{
-			width: 2rem;
+			width: 2.2rem;
 			text-align: center;
 			background: #3cafb6;
 			color: #fff;
+		}
+		.btn-operate.disabled{
+			color: #999;
+    		background: #d7d7d7;
+    		letter-spacing: 1px;
 		}
 	}
 }
@@ -251,7 +363,7 @@ export default {
     align-self: center;
     line-height: 0.66rem;
     font-size: 0.28rem;
-    padding: 0 0.45rem;
+    padding: 0 0.5rem;
     margin-right: 0.4rem;
     border-radius: 0.08rem;
 }

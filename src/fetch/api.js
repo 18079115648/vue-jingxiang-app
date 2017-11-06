@@ -3,7 +3,7 @@ import qs from 'qs'
 import { Toast } from 'mint-ui'
 import store from '@/vuex/store.js'
 import { Autho } from '../../static/js/app.js'
-
+import storage from '@/fetch/storage'
 
 
 
@@ -38,7 +38,26 @@ export function fetchPost(url, params) {
         axios.post(url, qs.stringify(params))
             .then(response => {
             	if(response.status == 200) {
-            		resolve(response.data)  
+            		if(response.data.ret === 0 && response.data.msg !== '用户 未登录') {
+            			reject(response.data)
+            			Toast({
+						  message: response.data.msg || '数据错误',
+						  position: 'bottom',
+						  duration: 1500
+						});
+            		}else if(response.data.ret === 0 && response.data.msg === '用户 未登录'){
+            			resolve(response.data)
+            			Toast({
+						  message: response.data.msg || '数据错误',
+						  position: 'bottom',
+						  duration: 1500
+						});
+						storage.set('history_uri', window.location.hash.substr(1))
+            			window.location.href = store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.hash.substr(1))
+            			
+            		}else {
+            			resolve(response.data) 
+            		} 
             	}else {
             		reject(error)
 	               	Toast({
@@ -65,9 +84,32 @@ export function fetchGet(url, params) {
         	params: params
         }).then(response => {
             	if(response.status == 200) {
-            		resolve(response.data)  
+            		if(response.data.ret === 0 && response.data.msg !== '用户 未登录') {
+            			reject(response.data)
+            			Toast({
+						  message: response.data.msg || '数据错误',
+						  position: 'bottom',
+						  duration: 1500
+						});
+            		}else if(response.data.ret === 0 && response.data.msg === '用户 未登录'){
+            			reject(response.data)
+            			if(/shopdetails/.test(window.location.hash)) {
+            				return
+            			}
+            			Toast({
+						  message: response.data.msg || '数据错误',
+						  position: 'bottom',
+						  duration: 1500
+						});
+						storage.set('history_uri', window.location.hash.substr(1))
+            			window.location.href = store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.hash.substr(1))
+            			
+            		}else {
+            			resolve(response.data) 
+            		}
+            		
             	}else {
-            		reject(error)
+            		reject(response)
 	               	Toast({
 					  message: '网络错误',
 					  position: 'bottom',
@@ -200,8 +242,83 @@ export default {
 	about(params) {
 		return fetchGet('/about/index', params)
 	},
-
-
+	
+	//获取购物车或需求清单数据
+	getCartData(params) {
+		return fetchGet('/cart/index', params)
+	},
+	
+	//添加商品到购物车
+	addCartData(params) {
+		return fetchPost('/cart/add', params)
+	},
+	
+	//微信分享
+	wxShare(params) {
+		return fetchPost('/api/shareWeiXin', params)
+	},
+	
+	//判断微信是否已登录
+	loginAouth(params) {
+		return fetchPost('/api/auth', params)
+	},
+	
+	
+	//收货地址列表
+	addressList(params) {
+		return fetchGet('/address/index', params)
+	},
+	
+	//立即购买确认订单
+	checkOutBuy(params) {
+		return fetchPost('/cart/checkOutBuy', params)
+	},
+	
+	//确认订单
+	checkOut(params) {
+		return fetchPost('/cart/checkOut', params)
+	},
+	
+	//创建订单
+	createOrder(params) {
+		return fetchPost('/cart/createOrder', params)
+	},
+		
+	//购物车
+	getCartData(params) {
+		return fetchGet('/cart/index', params)
+	},
+	
+	//购物车商品数量更新
+	updataCartData(params) {
+		return fetchPost('/cart/update', params)
+	},
+	
+	//购物车商品数量更新
+	deleteCartData(params) {
+		return fetchPost('/cart/deleteAll', params)
+	},
+	
+	//登陆短信令牌获取
+	getTokenSms(params) {
+		return fetchPost('/api/token_sms', params)
+	},
+	
+	//登陆获取验证码
+	getCodeSms(params) {
+		return fetchPost('/api/smsSend', params)
+	},
+	
+	//注册
+	registerUser(params) {
+		return fetchPost('/register/index', params)
+	},
+	
+	
+	//微信多媒体上传图片
+	wxUploadImg(params) {
+		return fetchPost('/user/img_head2', params)
+	},
 
 
 

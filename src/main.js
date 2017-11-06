@@ -17,6 +17,12 @@ import api from '@/fetch/api'
 Vue.prototype.$api = api
 import storage from '@/fetch/storage'
 Vue.prototype.$storage = storage
+import { loadJssdk } from '@/fetch/tool'
+Vue.prototype.$loadJssdk = loadJssdk
+
+import aouth from '@/fetch/wxAouth'
+Vue.prototype.$wxAouth = aouth.wxAouth
+//console.log(aouth.wxAouth().then(()))
 
 import Menu from '@/components/common/tabBar'
 Vue.component('Menu', Menu)
@@ -44,6 +50,24 @@ const router = new VueRouter({
     strict: process.env.NODE_ENV !== 'production'
 })
 
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth) {
+    	aouth.wxAouth().then(res => {
+    		if(res.ret == 1) {
+    			next()
+    		}else {
+    			storage.set('history_uri', to.fullPath)
+    			window.location.href = store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(to.fullPath)
+//  			next()
+    		}
+    		
+    	})
+    }else {
+    	next()
+    }
+
+    
+})
 
 
 

@@ -3,7 +3,7 @@
 		<Header title="我的积分"></Header>
 		<div class="balance-top">
 			<p class="tit">积分余额</p>
-			<p class="balance-amount">{{points}}</p>
+			<p class="balance-amount">{{parseFloat(points).toFixed(2)}}</p>
 		</div>
 		<div class="balance-bottom">
 			<div class="integal-nav">
@@ -24,7 +24,14 @@
 				</div>
 			</Pagination>
 		</div>
-			
+		<confirm-modal 
+			:show="tipShow" 
+			@confirm_modal="goBind" 
+			cancel_text="下次再说"
+			confirm_text="去绑定"
+			@closeModal="tipShow = false" 
+			message="积分获取需要绑定会员卡哦！">
+		</confirm-modal>		
 	</section>
 </template>
 
@@ -32,20 +39,24 @@
 	export default {
 		data() {
 			return {
-				points: null,
-				index: 1,
+				tipShow: false,
+				points: 0.00,
+				index: 0,
 				pagination: {
 	                content: [],
 	                loadEnd: false,
 	                data: {
 	                	p: 1,
-										typePoints: 1
+						typePoints: 1
 	                }
-	            },
+	            }
 			}
 		},
 		created() {
-			
+			if(this.$route.params.status == '0') {
+				this.tipShow = true
+				return
+			}
 			this.$api.userPoints().then(res => { 
 				if(res.ret == 1) {
 					this.points = parseFloat(res.data.integral).toFixed(2)
@@ -59,6 +70,9 @@
 			this.changeMenu(1)
 		},
 		methods: {
+			goBind() {
+				this.$router.replace('/bindMemberCard')
+			},
 			changeMenu(index){
 				if(this.index == index) {
 					return
@@ -69,7 +83,7 @@
 	                loadEnd: false,
 	                data: {
 	                	p: 1,
-										typePoints: index
+						typePoints: index
 	                }
 				}
 				this.$refs.pagination.refresh()
