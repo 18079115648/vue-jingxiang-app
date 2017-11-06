@@ -2,13 +2,13 @@
     <div class="app" id="app" :style="{ height: wH + 'px' }">
     	<Header title="会员卡绑定"></Header>
     	<section class="content">
-			<input ref="Input" type="text" placeholder="请输入会员卡卡号"  />
+			<input ref="Input" v-model="card" @input="inputNumber" type="tel" placeholder="请输入会员卡卡号"  />
 			<div class="tip">
 				<p>※ 绑定会员卡后，可以实时查询积分</p>
 	            <p>※ 线上消费积分将计入会员卡</p>
 			</div>
 				
-            <div class="btn-default">绑定</div>
+            <div class="btn-default btn-hover" @click="bindMemberCard">绑定</div>
 		</section>
 		<section class="none-member">
 			<p>※ 若无会员卡，提交相关信息线下开通，开通后线下门店可以使用</p>
@@ -19,19 +19,55 @@
 
 <script>
 import $ from 'jquery'
+import { Toast } from 'mint-ui'
 export default {
 	data() {
 	    return {
-	    	nickName: '111',
-	    	wH: 0
+	    	wH: 0,
+	    	card: ''
 	    }
 	},
 	mounted() {	
 		this.wH = $('#app').height()
 	},
 	methods: {
-		back() {
-			this.$router.go(-1)
+		inputNumber() {
+			if (!/^\d*$/.test(this.card)) {	
+	            this.card = this.card.replace(/\D+/g,'')            
+	        } 
+		},
+		bindMemberCard() {
+			if(this.card.length < 1) {
+				Toast({
+					message: '请输入会员卡号',
+					position: 'bottom',
+					duration: 1000
+				});
+				return
+			}
+			this.$api.bindMemberCard({
+				cardno: this.card
+			}).then(res => {
+				if(res.ret !== 1) {
+					Toast({
+					  message: res.resultInfo,
+					  position: 'bottom',
+					  duration: 1000
+					});
+					return
+				}
+				Toast({
+				  message: '绑定成功',
+				  position: 'middle',
+				  iconClass: 'toast-icon icon-success',
+				  duration: 1000
+				})
+				setTimeout(() => {
+					this.$router.go(-1)
+				},800)
+	        }, err => {
+
+	        })
 		},
 		openMember() {
 			this.$router.push('/openMember')

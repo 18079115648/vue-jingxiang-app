@@ -5,7 +5,10 @@
 		</keep-alive>
 		<router-view v-if="!$route.meta.keepAlive"></router-view>
 	    <div class="loading" v-show = "loadingStatus">
-	    	<mt-spinner class="loading-icon" type="triple-bounce" color="#39B382" :size="50"></mt-spinner>
+	    	<div class="loading-box">
+	    		<mt-spinner class="loading-icon" color="rgb(204, 204, 204)" :size="40"></mt-spinner>
+	    	</div>
+	    	
 	    </div>
   </div>
 </template>
@@ -109,15 +112,19 @@ input::-webkit-search-cancel-button {
 	top: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 45;
+	z-index: 20;
 	background: #fff;
 	
 }
-.loading-icon{
+.loading-box{
 	position: absolute;
+	padding: 0.4rem;
 	top: 50%;
 	left: 50%;
+	background: rgba(0, 0, 0, 0.7);
+	
 	transform: translate(-50%, -50%);
+	border-radius: 0.1rem;
 }
 
 /*tab切换样式*/
@@ -304,6 +311,20 @@ input::-webkit-search-cancel-button {
 	.pics img{
 		display: block;
 		width: 100%;
+	}
+	select{
+		border: 0;
+		outline: none;
+		appearance: none;
+		background: #fff;
+		font-size: 0.28rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		vertical-align: middle;	
+	}
+	.mint-indicator-text{
+		font-size: 0.28rem !important;
 	}
 	
 </style>

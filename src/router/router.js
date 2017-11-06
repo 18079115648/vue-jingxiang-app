@@ -3,6 +3,7 @@ const search = r => require.ensure([], () => r(require('../components/search.vue
 const searchResult = r => require.ensure([], () => r(require('../components/searchResult.vue')), 'searchResult')
 const productList = r => require.ensure([], () => r(require('../components/productList.vue')), 'productList')
 const cart = r => require.ensure([], () => r(require('../components/cart.vue')), 'cart')
+const requireList = r => require.ensure([], () => r(require('../components/requireList.vue')), 'requireList')
 const orderSubmit = r => require.ensure([], () => r(require('../components/orderSubmit.vue')), 'orderSubmit')
 const demandSubmit = r => require.ensure([], () => r(require('../components/demandSubmit.vue')), 'demandSubmit')
 const user = r => require.ensure([], () => r(require('../components/user.vue')), 'user')
@@ -58,6 +59,12 @@ export default  [{
     },{
         path: '/cart',
         component: cart,
+        meta: {
+            requireAuth: true
+        }
+    },{
+        path: '/requireList',
+        component: requireList,
         meta: {
             requireAuth: true
         }

@@ -84,6 +84,7 @@ export default {
 	    }
 	},
 	created() {
+		this.$store.commit('setLoadingStatus', true)
 		this.initData()
 	},
 	methods: {
@@ -241,7 +242,7 @@ export default {
 				})
 				setTimeout(() => {
 					this.$router.go(-1)
-				},800)
+				},1000)
 	        }, err => {
 	        	
 	        })

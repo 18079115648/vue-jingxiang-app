@@ -62,6 +62,7 @@ export default {
 				wd: this.$storage.get('search_word')
             }
         }
+		this.$store.commit('setLoadingStatus', true)
 		this.$refs.pagination.refresh()
 	},
 	methods: {
@@ -101,7 +102,7 @@ export default {
 	line-height: 0.6rem;
 	padding: 0.18rem 0.3rem;
 	border-bottom: 1px solid #F5F5F9;
-	z-index: 10;
+	z-index: 30;
 	& > span.back{
 		width: 0.6rem;
 		margin-right: 0.3rem;

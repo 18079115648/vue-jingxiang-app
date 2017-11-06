@@ -37,16 +37,17 @@ export function fetchPost(url, params) {
     return new Promise((resolve, reject) => {
         axios.post(url, qs.stringify(params))
             .then(response => {
+            	store.commit('setLoadingStatus', false)
             	if(response.status == 200) {
             		if(response.data.ret === 0 && response.data.msg !== '用户 未登录') {
-            			reject(response.data)
+            			reject(response)
             			Toast({
 						  message: response.data.msg || '数据错误',
 						  position: 'bottom',
 						  duration: 1500
 						});
             		}else if(response.data.ret === 0 && response.data.msg === '用户 未登录'){
-            			resolve(response.data)
+            			reject(response)
             			Toast({
 						  message: response.data.msg || '数据错误',
 						  position: 'bottom',
@@ -59,7 +60,7 @@ export function fetchPost(url, params) {
             			resolve(response.data) 
             		} 
             	}else {
-            		reject(error)
+            		reject(response)
 	               	Toast({
 					  message: '网络错误',
 					  position: 'bottom',
@@ -69,6 +70,7 @@ export function fetchPost(url, params) {
             	  
             })
             .catch((error) => {
+            	store.commit('setLoadingStatus', false)
                	reject(error)
                	Toast({
 				  message: '网络错误',
@@ -83,16 +85,17 @@ export function fetchGet(url, params) {
         axios.get(url, {
         	params: params
         }).then(response => {
+        	    store.commit('setLoadingStatus', false)
             	if(response.status == 200) {
             		if(response.data.ret === 0 && response.data.msg !== '用户 未登录') {
-            			reject(response.data)
+            			reject(response)
             			Toast({
 						  message: response.data.msg || '数据错误',
 						  position: 'bottom',
 						  duration: 1500
 						});
             		}else if(response.data.ret === 0 && response.data.msg === '用户 未登录'){
-            			reject(response.data)
+            			reject(response)
             			if(/shopdetails/.test(window.location.hash)) {
             				return
             			}
@@ -118,6 +121,7 @@ export function fetchGet(url, params) {
             	}
             })
             .catch((error) => {
+            	store.commit('setLoadingStatus', false)
                 reject(error)
                 Toast({
 				  message: '网络错误',
@@ -315,9 +319,34 @@ export default {
 	},
 	
 	
-	//微信多媒体上传图片
-	wxUploadImg(params) {
+	//微信多媒体上传头像图片
+	wxUploadUserImg(params) {
 		return fetchPost('/user/img_head2', params)
+	},
+	
+	//微信多媒体上传处方药图片
+	wxUploadOrderImg(params) {
+		return fetchPost('/order/img_user2', params)
+	},
+	
+	//会员卡绑定
+	bindMemberCard(params) {
+		return fetchPost('/user/bind', params)
+	},
+	
+	//会员卡开通城市列表
+	regCityList(params) {
+		return fetchGet('/user/reg', params)
+	},
+	
+	//会员卡开通城市列表
+	regMember(params) {
+		return fetchPost('/user/reg', params)
+	},
+	
+	//充值
+	recharge(params) {
+		return fetchPost('/cart/createRecharge', params)
 	},
 
 

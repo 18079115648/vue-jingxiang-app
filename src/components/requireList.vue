@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-    	<Header title="购物车" back="hidden"></Header>
+    	<Header title="需求清单"></Header>
     	<div class="edit-status" v-show="cartData.length>0" @click="editStatus = !editStatus">
     		<span v-show="!editStatus">编辑</span>
     		<span v-show="editStatus">完成</span>
@@ -44,12 +44,11 @@
 					<span>合计：</span>
 					<span class="price-color">&yen;{{checkTotalPrice}}</span>
 				</div>
-				<div class="btn-operate disabled" v-show="!editStatus && checkNum<1">去结算</div>
-				<div class="btn-operate" v-show="!editStatus && checkNum>0" @click="paySubmit">去结算({{checkNum}})</div>
+				<div class="btn-operate disabled" v-show="!editStatus && checkNum<1">提交预定</div>
+				<div class="btn-operate" v-show="!editStatus && checkNum>0" @click="paySubmit">提交预定({{checkNum}})</div>
 				<div class="btn-delete" v-show="editStatus" @click="deleteGoods">删除</div>
 			</div>
 		</div>
-		<Menu actived="four"></Menu>
 		<confirm-modal :show="deleteShow" @confirm_modal="cartDelete" @closeModal="deleteShow = false" message="确定删除该商品?"></confirm-modal>	
     </div>
 </template>
@@ -110,7 +109,7 @@ export default {
 	methods: {
 		initData() {
 			this.$api.getCartData({
-				type_id: 901
+				type_id: 902
 			}).then(res => {
 				if(res.ret == 1) {
 					Indicator.close()
@@ -130,7 +129,7 @@ export default {
 			}
 			item.num--
 			this.$api.updataCartData({
-				type_id: 901,
+				type_id: 902,
 				goods_id: item.goods_id,
 				num: item.num
 			}).then(res => {
@@ -144,7 +143,7 @@ export default {
 		plus(item){
 			item.num++
 			this.$api.updataCartData({
-				type_id: 901,
+				type_id: 902,
 				goods_id: item.goods_id,
 				num: item.num
 			}).then(res => {
@@ -169,7 +168,7 @@ export default {
 		paySubmit() {
 			this.$storage.set('select_goods_arr', this.checkGoodsId)
 			this.$router.push({
-				path: '/orderSubmit/' + 901 + '/' + 1
+				path: '/orderSubmit/' + 902 + '/' + 2
 			})
 		},
 		deleteGoods() {
@@ -182,7 +181,7 @@ export default {
 				str+=(',' + value)
 			})
 			this.$api.deleteCartData({
-				type_id: 901,
+				type_id: 902,
 				goods_ids: str.substr(1)
 			}).then(res => {
 				if(res.ret == 1) {
@@ -236,7 +235,7 @@ export default {
 	width: 100%;
 	left: 0;
 	top: 0.92rem;
-	bottom: 1.9rem;
+	bottom: 0.9rem;
 	overflow-y: auto;
 }
 .product-item{
@@ -321,7 +320,7 @@ export default {
 	position: fixed;
 	width: 100%;
 	left: 0;
-	bottom: 1rem;
+	bottom: 0;
 	height: 0.9rem;
 	background: #FFFFFF;
 	border-top: 1px solid #eee;
@@ -345,7 +344,7 @@ export default {
 			}
 		}
 		.btn-operate{
-			width: 2.2rem;
+			width: 2.4rem;
 			text-align: center;
 			background: #3cafb6;
 			color: #fff;

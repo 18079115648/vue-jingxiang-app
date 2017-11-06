@@ -4,7 +4,7 @@
 		<div class="balance-top">
 			<p class="tit">账户余额(元)</p>
 			<p class="balance-amount">{{balance}}</p>
-			<span class="recharge-btn">充值</span>
+			<router-link to="/recharge" class="recharge-btn">充值</router-link>
 		</div>
 		<div class="content">
 			<Pagination :render="render" :param="pagination" ref="pagination" uri="/order/recharge">
@@ -94,6 +94,7 @@
 		border-radius: 0.3rem;
 		right: 0.3rem;
 		bottom: 0.5rem;
+		color: #fff;
 	}
 }
 .content{

@@ -55,6 +55,7 @@ export default {
     created() {
     	window.scrollTo(0,0)
         const self = this
+        this.$store.commit('setLoadingStatus', true)
         this.$api.indexInformationContent(
             {
                 id: self.$route.params.id
@@ -261,6 +262,7 @@ article {
     font-size: .28rem;
     line-height: .3rem;
     text-indent: .56rem;
+    padding: 0.1rem 0;
 }
 .zhuanyi>img{
     width: 100%;
