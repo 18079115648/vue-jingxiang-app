@@ -39,7 +39,7 @@ export default {
       ismove: true, // 判断滑动和点击
       imgs: '', // imgs
       items: [
-          {relationship_id_name: '爸爸',true_name: '刘德华',age: '50',data:[
+          {relationship_id_name: '朋友',true_name: '刘德华',age: '50',data:[
               {name:'健康'}
           ]}
       ], // 内容

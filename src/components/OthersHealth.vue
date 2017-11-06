@@ -67,7 +67,12 @@
     </div>
 
     <div class="condition">
-        <div  class="illness"  v-for="item in HealthTag"  @click="cut">{{item}}</div>
+        <div  class="illness"  v-for="(item,index) in HealthTag"  @click="cut">{{item}}</div>
+
+        <div class="illness illnessing" v-for="list in lists"  @click="deleteTag_show">
+            <div class="deleteTag" v-if="deleteIcon" @click="deleteTag"></div>
+            {{list.name}}
+        </div>
         <div class="add_illness" @click="add_label">+添加</div>
         <div class="kong"></div>
         <div class="kong"></div>
@@ -83,6 +88,7 @@
 </template>
 
 <script>
+import $ from 'jquery';
 import { DatetimePicker } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Toast } from 'mint-ui'
@@ -94,7 +100,10 @@ export default {
             height: '',
             sex: '',
             birthday: '',
-            HealthTag:[],
+            HealthTag:[],      //常用健康标签
+            lists:[
+                {name:'可爱病'}
+            ], //新增疾病标签
             relationship: [], // 关系
             relationship_id: '', // 选中的关系id
             sex_name: true,
@@ -106,6 +115,7 @@ export default {
             endDate: new Date(),
             tag: '', // 常用健康标签
             is_my:'',
+            deleteIcon:false,
         }
     },
     created() {
@@ -128,10 +138,10 @@ export default {
             if(res.sex){
                 this.sex_name = false
             }
-             if(res.relationship_id_name){
+            if(res.relationship_id_name){
                 this.relationship_name = false
             }
-             if(res.birthday){
+            if(res.birthday){
                 this.birth_time = false
             }
         }, err => {
@@ -147,7 +157,7 @@ export default {
 
         //获取关系列表
         this.$api.indexGetRelation().then(res => {
-            // this.relationship = res.form_relationship
+            this.relationship = res.form_relationship
         }, err => {
             
         })
@@ -216,7 +226,13 @@ export default {
         },
         //切换标签
         cut() {
-            
+            $(function () {
+                $('.illness').click(function () {
+                    $(this).toggleClass('illnessing');
+                    // $(this).addClass('illnessing').toggle("illnessing").removeClass('illnessing');
+
+                })
+            });
         },
         //添加疾病标签
         add_label() {
@@ -274,19 +290,37 @@ export default {
         },
 
         //删除标签
+        deleteTag_show() {
+            this.deleteIcon = true
+        },
         deleteTag() {
             const self = this
             this.$api.indexDeleteHealthTag(
                 {
-                    health_tag_id: id,
-                    health_id: id
+                    health_tag_id: this.id,
+                    health_id: this.id
                 }
             ).then(res => {
+                if(res.ret == 1) {
+                    Toast({
+                        message: '删除成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }else if(res.ret == 0){
+                    Toast({
+                        message: res.msg,
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+
+                this.deleteIcon = false
                 
             }, err => {
                 
             })
-        }
+        },
         
 
         
@@ -388,18 +422,33 @@ export default {
 }
 .illness{
     width: 1.8rem;
-    border: solid 1px #3cafb6;
-    color: #3cafb6;
+    border: solid 1px #efefef;
+    color: #999;
+    background-color: #efefef;
     text-align: center;
     line-height: .58rem;
     border-radius: 5px;
     margin:.2rem .3rem;
+    position: relative;
+    
 }
-.illness:active{
-    border: solid 1px #ccc;
-    color: #ccc;
+.illnessing{
+    border: solid 1px #3cafb6;
+    color: #3cafb6;
+    background-color: #fff;
 }
-
+.deleteTag{
+    position: absolute;
+    width: .3rem;
+    height: .3rem;
+    background: url('../../static/images/29@3x.png') no-repeat;
+    background-size: .17rem .17rem;
+    background-position: .08rem .08rem;
+    right: -.1rem;
+    top: -.1rem;
+    background-color: #ccc;
+    border-radius: 50%;
+}
 .add_illness{
     width: 1.8rem;
     height: .58rem;
