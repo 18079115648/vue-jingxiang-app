@@ -396,7 +396,7 @@ export default {
 
 	//跟新自己的健康档案
 	indexHealth(params) {
-		return fetchGet('health/updateMy', params)
+		return fetchPost('health/updateMy', params)
 	},
 
 	//删除健康档案
@@ -416,12 +416,12 @@ export default {
 	
 	//创建病情标签
 	indexAddHealthTag(params) {
-		return fetchGet('health/tagCreate', params)
+		return fetchPost('health/tagCreate', params)
 	},
 
 	//删除病情标签
 	indexDeleteHealthTag(params) {
-		return fetchGet('health/tagDelete', params)
+		return fetchPost('health/tagDelete', params)
 	},
 
 	//关系选择

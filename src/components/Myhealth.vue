@@ -16,7 +16,7 @@
     <div class="field">
         <span>性别</span>
         <div v-if="sex_name">请选择</div>
-        <select @change="change" v-model="sex" >
+        <select @change="change" v-model="sex" dir="rtl">
             <option value="0">保密</option>
             <option value="1">男</option>
             <option value="2">女</option>
@@ -58,7 +58,12 @@
     </div>
 
     <div class="condition">
-        <div :class="{illness: pitch , illnessing: noPitch}"  v-for="(item,index) in HealthTag"  @click="cut">{{item}}</div>
+        <div :class="{ 'illness' : isA, 'illnessing': !isA}"  v-for="(item,index) in HealthTag"  @click="cut(index)">{{item}}</div>
+
+        <div class="illness illnessing" v-for="(list, index) in lists"  @click="deleteTag_show" :data-sc="list.health_tag_id">
+            {{list.name}}
+            <div class="deleteTag" v-if="deleteIcon" @click="deleteTag"></div>
+        </div>
         <div class="add_illness" @click="add_label">+添加</div>
         <div class="kong"></div>
         <div class="kong"></div>
@@ -74,6 +79,7 @@
 </template>
 
 <script>
+import $ from 'jquery';
 import { DatetimePicker } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Toast } from 'mint-ui'
@@ -87,6 +93,7 @@ export default {
             birthday: '',      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
+            lists:[], //新增疾病标签
             relationship_id:'',
             sex_name: true,
             relationship_name: true,
@@ -97,9 +104,8 @@ export default {
             endDate: new Date(),
             is_my:'',   //是否是自己
             //样式
-            pitch: true,
-            noPitch: false,
-            
+            deleteIcon:false,
+            isA: false,
         }
     },
     created() {
@@ -115,6 +121,7 @@ export default {
             this.sex = res.sex
             this.id = res.health_id
             this.relationship_id = res.relationship_id
+            this.lists = res.data
             if(res.sex){
                 this.sex_name = false
             }
@@ -209,15 +216,16 @@ export default {
 
         },
         //切换标签
-        cut() {
-            if(this.noPitch == false){
-                this.noPitch = true
-            }else if( this.noPitch == true){
-                this.noPitch = false
-            }
+        cut:function (index) {
+             this.isA=!this.isA
+            // $('.illness').click(function () {
+            //     console.log(1)
+            //     $(this).toggleClass('illnessing').stop();
+            // })
         },
         //添加疾病标签
         add_label() {
+            const self = this
             
             MessageBox.prompt('慢性病','').then(({ value, action }) => {
                 this.$api.indexAddHealthTag(
@@ -232,6 +240,7 @@ export default {
                             position: 'bottom',
                             duration: 1000
                         })
+                        this.upData()
                     }else if(res.ret == 0){
                         Toast({
                             message: res.msg,
@@ -246,12 +255,47 @@ export default {
                 
             })
         },
+
+       //删除标签
+        deleteTag_show() {
+            this.deleteIcon = true
+        },
+        deleteTag(index,list) {
+            const self = this
+            this.$api.indexDeleteHealthTag(
+                {
+                    health_tag_id: this.health_tag_id,
+                    health_id: this.id
+                }
+            ).then(res => {
+                if(res.ret == 1) {
+                    Toast({
+                        message: '删除成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }else if(res.ret == 0){
+                    Toast({
+                        message: res.msg,
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+
+                this.deleteIcon = false
+                
+            }, err => {
+                
+            })
+        },
+
         //删除健康档案
         deleteHealth() {
             const self = this
             this.$api.indexDeleteHealth(
                 {
-                    id: this.id
+    
+                    id: this.id,
                 }
             ).then(res => {
                 if(res.ret == 1){
@@ -272,19 +316,17 @@ export default {
             })
         },
 
-        //删除标签
-        deleteTag() {
+        //获取新的健康标签
+        upData (){
             const self = this
-            this.$api.indexDeleteHealthTag(
-                {
-                    health_tag_id: id,
-                    health_id: id
-                }
-            ).then(res => {
-                
-            }, err => {
-                
-            })
+        //自己的健康档案
+        this.$api.indexDetailMy().then(res => {
+
+            this.lists = res.data
+            
+        }, err => {
+            
+        })
         }
         
 
@@ -362,6 +404,9 @@ export default {
         position: absolute;
         right: .49rem;
         font-size: .28rem;
+        direction: rtl;
+        top: 50%;
+        margin-top: -.27rem;
     }
     .birth{
         position: absolute;
@@ -394,11 +439,19 @@ export default {
     line-height: .58rem;
     border-radius: 5px;
     margin:.2rem .3rem;
+    position: relative;
+    
 }
 .illnessing{
+    width: 1.8rem;
     border: solid 1px #3cafb6;
     color: #3cafb6;
     background-color: #fff;
+    text-align: center;
+    line-height: .58rem;
+    border-radius: 5px;
+    margin:.2rem .3rem;
+    position: relative;
 }
 
 .add_illness{
@@ -410,6 +463,18 @@ export default {
     text-align: center;
     line-height: .58rem;
     color: #ddd; 
+}
+.deleteTag{
+    position: absolute;
+    width: .3rem;
+    height: .3rem;
+    background: url('../../static/images/29@3x.png') no-repeat;
+    background-size: .17rem .17rem;
+    background-position: .08rem .08rem;
+    right: -.1rem;
+    top: -.1rem;
+    background-color: #ccc;
+    border-radius: 50%;
 }
 .delete_record{
     width: 100%;
