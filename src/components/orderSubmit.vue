@@ -30,7 +30,9 @@
     			</div>
     			<div class="updata-icon">
     				<!--<img src="../../static/images/11@3x.png" class="fullEle" @click="changeAvatar" />-->
-    				<img :src="updataImg" class="fullEle" @click="changeAvatar" />
+    				<!--<img :src="updataImg" class="fullEle" @click="changeAvatar" />-->
+    				<img :src="updataImg" class="fullEle" @click="openImg" />
+    				<input type="file" id="inputImg" @change="onFileChange" accept="image/*" />
     			</div>
     		</div>
     	</div>
@@ -72,6 +74,8 @@
 </template>
 
 <script>
+import { Toast, Indicator } from 'mint-ui'
+import axios from 'axios'
 import wx from 'weixin-js-sdk'
 export default {
 	data() {
@@ -80,7 +84,6 @@ export default {
 	    	goods_id: null,
 	    	type_id: null,
 	    	address_id: null, // 默认地址
-	    	order_addr_id: null, //选择的地址
 	    	status: null, // status订单来源    0：立即购买， 1： 购物车， 2：需求清单
 	    	
 	    	addrDetail: {},
@@ -97,15 +100,13 @@ export default {
 		this.status = this.$route.params.status
 		this.type_id = this.$route.params.type
 		this.address_id = this.$storage.get('default_addr_id')
-		this.order_addr_id = this.$storage.get('order_addr_id')
-		this.$storage.remove('order_addr_id')
 		if(this.status === '0') {
 			this.goods_id = [this.$route.query.goods_id]
 			this.num = this.$route.query.num
 			this.$api.checkOutBuy({
 				type_id: this.type_id,
 				goods_id: this.goods_id[0],
-				address_id: this.order_addr_id || this.address_id,
+				address_id: this.address_id,
 				num: this.num
 			}).then(res => {
 				if(res.ret == 1) {
@@ -122,7 +123,7 @@ export default {
 			this.$api.checkOut({
 				type_id: this.type_id,
 				goods_ids: this.goods_id,
-				address_id: this.order_addr_id || this.address_id,
+				address_id: this.address_id,
 			}).then(res => {
 				if(res.ret == 1) {
 					this.orderDetail = res
@@ -133,7 +134,7 @@ export default {
 	
 			})
 		}
-		if(this.status === '2') {
+		if(this.status === '2' && this.$common.isWeixin()) {
 			this.wxJssdk()
 		}
 		
@@ -169,31 +170,61 @@ export default {
 				console.log(err)
 			})
 		},
+		openImg() {
+			document.getElementById('inputImg').click()
+		},
+		
+		onFileChange(e) {
+			var files = e.target.files[0] || e.dataTransfer.files[0]; 
+			if (!files){
+				return;
+			}
+			Indicator.open()
+			var param = new FormData(); //创建form对象
+      		param.append('file',files);//通过append向form对象添加数据
+            axios.post('/order/img_user', param, {
+            	headers:{
+            		'Content-Type':'multipart/form-data'
+            	}
+            }).then((res) => {
+            	Indicator.close()
+            	if(res.data.ret == 1) {
+            		this.updataImg = res.data.img_user
+            	}
+            	
+            })
+            .catch((error) => {
+				Indicator.close()
+            })
+		},
 		changeAvatar() {
 			let self = this
-			wx.chooseImage({
-			    count: 1, // 默认9
-			    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-			    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-			    success: function (res) {
-			    	console.log(res)
-			        wx.uploadImage({
-					    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
-					    isShowProgressTips: 1, // 默认为1，显示进度提示
-					    success: function (res) {
-					        self.$api.wxUploadOrderImg({
-					        	media_id: res.serverId
-					        }).then(res => {
-								if(res.ret == 1) {
-									self.updataImg = res.img_head
-								}
-					        }, err => {
-					        	
-					        })
-					    }
-					});
-			    }
-			});
+			if(this.$common.isWeixin()) {
+				wx.chooseImage({
+				    count: 1, // 默认9
+				    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+				    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+				    success: function (res) {
+				    	console.log(res)
+				        wx.uploadImage({
+						    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+						    isShowProgressTips: 1, // 默认为1，显示进度提示
+						    success: function (res) {
+						        self.$api.wxUploadOrderImg({
+						        	media_id: res.serverId
+						        }).then(res => {
+									if(res.ret == 1) {
+										self.updataImg = res.img_head
+									}
+						        }, err => {
+						        	
+						        })
+						    }
+						});
+				    }
+				});
+			}
+				
 		},
 		inputNumber() {
 			if (!/^\d*$/.test(this.phone)) {	
@@ -204,7 +235,7 @@ export default {
 			return this.$api.createOrder({
 				type_id: this.type_id,
 				goods_ids: this.goods_id,
-				address_id: this.order_addr_id || this.address_id,
+				address_id: this.address_id,
 				customer: this.addrDetail.contact,
 				id_card: this.addrDetail.id_card,
 				mobile: this.addrDetail.mobile,
@@ -216,9 +247,17 @@ export default {
 			})
 		},
 		payCommit() {
+			if(!this.checkPhone) {
+				Toast({
+					message: '请正确填写您的手机号',
+					position: 'bottom',
+					duration: 1500
+				});
+				return
+			}
 			this.createOrder().then(res => {
 				if(res.ret == 1) {
-					this.$router.replace('/allOrders/9')
+					this.$router.replace('/orderDetail/' + res.order_id)
 				}
 			}, err => {
 	
@@ -228,13 +267,13 @@ export default {
 //			this.$api.checkOut({
 //				type_id: this.type_id,
 //				goods_ids: [this.goods_id],
-//				address_id: this.order_addr_id || this.address_id,
+//				address_id: this.address_id,
 //			}).then(res => {
 //				if(res.ret == 1) {
 //					this.$api.createOrder({
 //						type_id: this.type_id,
 //						goods_ids: [this.goods_id],
-//						address_id: this.order_addr_id || this.address_id,
+//						address_id: this.address_id,
 //						customer: this.addrDetail.contact,
 //						id_card: this.addrDetail.id_card,
 //						mobile: this.addrDetail.mobile,
@@ -439,5 +478,11 @@ export default {
 }
 input::-webkit-input-placeholder {
 	color: #ccc;
+}
+#inputImg{
+	position: fixed;
+	left: 0;
+	top: 1000rem;
+	opacity: 0;	
 }
 </style>

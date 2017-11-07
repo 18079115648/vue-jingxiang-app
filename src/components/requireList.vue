@@ -278,9 +278,13 @@ export default {
 	}
 	.product-info{
 		flex: 1;
+		padding: 0.1rem 0;
 		padding-right: 0.3rem;
 		display: flex;
 		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+		
 		.product-amount{
 			height: 0.7rem;
 			display: flex;
@@ -310,9 +314,6 @@ export default {
 					font-size: 0.32rem;
 				}
 			}
-		}
-		.product-name{
-			flex: 1;
 		}
 	}
 }

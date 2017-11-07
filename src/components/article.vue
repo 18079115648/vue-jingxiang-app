@@ -3,7 +3,7 @@
         <!-- 文章内容 -->
         <div class="img-content">
         	<img src="../../static/images/23@3x.png" class="icon-img back" @click="back" />
-    		<img src="../../static/images/22@3x.png" class="icon-img share" @click="show = true" />
+    		<img src="../../static/images/22@3x.png" class="icon-img share" @click="showShareTip" />
         	<img class="banner" :src="detail.thumb"  />
         </div>
         <article >
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-
+import wx from 'weixin-js-sdk'
 export default {
     data() {
         return {
@@ -63,11 +63,43 @@ export default {
         ).then(res => {
         	this.detail = res
         	this.goodsList = res.goods
+        	if(this.$common.isWeixin()) {
+				var lineLink = window.location.href
+				var imgUrl = 'http://' + location.host + res.thumb
+				var shareTitle = res.title
+				var descContent = '金象大药房'
+				this.wxShare(lineLink, imgUrl, shareTitle, descContent)
+			}	
         }, err => {
             
         })
     },
     methods: {
+    	wxShare(lineLink, imgUrl, shareTitle, descContent) {
+			let self = this
+			this.$api.wxShare({
+				url: window.location.href.split('#')[0]
+			}).then((res) => {
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: res.appId, // 必填，公众号的唯一标识
+					timestamp: parseInt(res.timestamp), // 必填，生成签名的时间戳
+					nonceStr: res.noncestr, // 必填，生成签名的随机串
+					signature: res.signature, // 必填，签名，见附录1
+					jsApiList: ['uploadImage', 'getLocation', 'chooseImage', 'previewImage', 'uploadImage', 'scanQRCode', 'chooseWXPay', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				})
+				wx.ready(function() {
+					self.$loadJssdk(lineLink, imgUrl, shareTitle, descContent)
+				})
+			}).catch((err) => {
+				console.log(err)
+			})
+		},
+		showShareTip() {
+			if(this.$common.isWeixin()) {
+				this.show = true
+			}	
+		},
         goDetail(id){
             this.$router.push('/shopdetails/' + id)
         },

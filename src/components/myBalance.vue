@@ -90,7 +90,7 @@
 		border: 1px solid #fff;
 		height: 0.6rem;
 		padding: 0 0.45rem;
-		line-height: 0.56rem;
+		line-height: 0.6rem;
 		border-radius: 0.3rem;
 		right: 0.3rem;
 		bottom: 0.5rem;

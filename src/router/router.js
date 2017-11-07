@@ -126,7 +126,7 @@ export default  [{
         path: '/orderDetail/:id',
         component: orderDetail
     },{
-        path: '/evaluate',
+        path: '/evaluate/:id',
         component: evaluate
     },{
         path: '/addressList/:status',  //status 地址列表来源    'select': 确认订单页切换地址      'list': 个人中心

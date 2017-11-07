@@ -15,10 +15,15 @@ import VueScroller from 'vue-scroller'
 
 import api from '@/fetch/api'
 Vue.prototype.$api = api
+
 import storage from '@/fetch/storage'
 Vue.prototype.$storage = storage
+
 import { loadJssdk } from '@/fetch/tool'
 Vue.prototype.$loadJssdk = loadJssdk
+
+import common from '@/fetch/common'
+Vue.prototype.$common = common
 
 import aouth from '@/fetch/wxAouth'
 Vue.prototype.$wxAouth = aouth.wxAouth
@@ -34,6 +39,8 @@ import confirmModal from '@/components/common/confirmModal'
 Vue.component('confirmModal', confirmModal)
 import shareTip from '@/components/common/shareTip'
 Vue.component('shareTip', shareTip)
+import enlargeImg from '@/components/common/enlargeImg'
+Vue.component('enlargeImg', enlargeImg)
 
 Vue.use(VueScroller)
 
@@ -57,7 +64,7 @@ router.beforeEach((to, from, next) => {
     			next()
     		}else {
     			storage.set('history_uri', to.fullPath)
-    			window.location.href = store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(to.fullPath)
+    			window.location.replace(store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(to.fullPath))
 //  			next()
     		}
     		

@@ -3,7 +3,7 @@
     	<Header title="个人中心"></Header>
     	<div class="avatar-content has-right-arror">
     		<span>头像</span>
-    		<div class="avatar" @click="previewAvatar">
+    		<div class="avatar" @click="enlargeStatus = true">
     			<img :src="userInfo.img_head" />
     		</div>
     		<div class="changeAvatar" @click="changeAvatar"></div>
@@ -41,6 +41,7 @@
 				</div>
 	    	</div>
     	</div>
+    	<enlarge-img v-show="enlargeStatus" :url="userInfo.img_head" @enlargeCancel="enlargeStatus = false"></enlarge-img>
     </div>
 </template>
 
@@ -49,7 +50,8 @@ import wx from 'weixin-js-sdk'
 export default {
 	data() {
 		return {
-			userInfo: {}
+			userInfo: {},
+			enlargeStatus: false
 		}
 	},
 	created() {

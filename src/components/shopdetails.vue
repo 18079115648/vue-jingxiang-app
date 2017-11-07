@@ -2,7 +2,7 @@
 	<section class="app">
 		<section class="product-banner">
 			<img src="../../static/images/23@3x.png" class="icon-img back" @click="back" />
-			<img src="../../static/images/22@3x.png" class="icon-img share" @click="show = true" />
+			<img src="../../static/images/22@3x.png" class="icon-img share" @click="showShareTip" />
 			<mt-swipe :auto="0">
 				<mt-swipe-item v-for="(item, index) in banner" :key="index">
 					<img :src="item.file" class="fullEle" />
@@ -29,25 +29,25 @@
 					<span>评价(<span>{{goodsDetail.comment_total_count}}</span>)</span>
 				</div>
 				<a :href="'#/reviewList/' + goodsId" class="evaluate_right">
-					<span>好评度</span><span class="money">{{goodsDetail.comment_total_score}}</span><span class="money">%</span>
+					<span>好评度</span><span class="money">{{parseInt(goodsDetail.comment_total_score)}}</span><span class="money">%</span>
 					<div class="icon">
 					</div>
 				</a>
 			</div>
 			<hr>
 		</div>
-		<div class="review" v-if="comment.length>0">
-			<div class="review_info" v-for="(item, index) in comment" :key="index">
+		<div class="review" v-if="comment.comment_id">
+			<div class="review_info">
 				<div class="review_portrait">
-					<img :src="item.img_head">
-					<h4>{{item.uid_username}}</h4>
+					<img :src="comment.img_head">
+					<h4>{{comment.uid_username}}</h4>
 				</div>
 				<div class="review_grade">
-					<img src="../../static/images/28@3x.png" v-for="n in item.score">
-					<img src="../../static/images/27@3x.png" v-for="n in 5-item.score">
+					<img src="../../static/images/28@3x.png" v-for="n in comment.score">
+					<img src="../../static/images/27@3x.png" v-for="n in 5-comment.score">
 				</div>
 			</div>
-			<div class="review_body" v-html="item.content"></div>
+			<div class="review_body" v-html="comment.content"></div>
 		</div>
 
 		<!-- 详情内容 -->
@@ -125,7 +125,7 @@
 
 					goodsDetail: {},
 					banner: [],
-					comment: [],
+					comment: {},
 
 					goodsId: null,
 
@@ -145,15 +145,15 @@
 						this.goodsDetail = res
 						this.typeId = res.type_id == 10002 ? 901 : 902
 						this.banner = res.thumb_more
-							//						let commentArr = []
-							//						commentArr = res.comment
-							//						this.comment = commentArr.slice(0, 1)
+						this.comment = res.comment
 						this.getCartData()
-						var lineLink = window.location.href
-						var imgUrl = 'http://' + location.host + res.thumb
-						var shareTitle = res.title
-						var descContent = '金象大药房正品保证,售价: ￥' + self.price
-						this.wxShare(lineLink, imgUrl, shareTitle, descContent)
+						if(this.$common.isWeixin()) {
+							var lineLink = window.location.href
+							var imgUrl = 'http://' + location.host + res.thumb
+							var shareTitle = res.title
+							var descContent = '金象大药房正品保证,售价: ￥' + self.price
+							this.wxShare(lineLink, imgUrl, shareTitle, descContent)
+						}		
 					}
 
 				}, err => {
@@ -197,6 +197,11 @@
 					}).catch((err) => {
 						console.log(err)
 					})
+				},
+				showShareTip() {
+					if(this.$common.isWeixin()) {
+						this.show = true
+					}	
 				},
 				back() {
 					this.$router.go(-1)
@@ -254,7 +259,7 @@
 							this.opereteStatus = status
 						} else {
 							this.$storage.set('history_uri', window.location.hash.substr(1))
-							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.href)
+							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.hash.substr(1))
 						}
 					}, err => {
 

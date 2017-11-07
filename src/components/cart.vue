@@ -17,9 +17,9 @@
 					</label>
 				</div>
 				<div class="product-detail">
-					<img :src="item.thumb" class="product-img" />
+					<img :src="item.thumb" class="product-img" @click="goDetail(item.goods_id)" />
 					<div class="product-info">
-						<div class="product-name">{{item.title}}</div>
+						<div class="product-name" @click="goDetail(item.goods_id)">{{item.title}}</div>
 						<div class="product-amount">
 							<span class="price-color">&yen;{{item.price_shop}}</span>
 							<div class="count-content">
@@ -123,6 +123,9 @@ export default {
 		    }, err => {
 		    	
 		    })
+		},
+		goDetail(id){
+			this.$router.push('/shopDetails/' + id)
 		},
 		minus(item){
 			if(item.num < 2) {
@@ -252,15 +255,20 @@ export default {
 		display: none;
 	}
 	& > label{
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		width: 100%;
+		height: 100%;
+		display: block;
+		position: relative;
 		.checkbox-icon{
 			width: 0.4rem;
 			height: 0.4rem;
 			overflow: hidden;
 			border: 1px solid #666;
 			border-radius: 50%;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
 		}
 		.checkbox-icon.active{
 			border-color: #3cafb6;
@@ -279,9 +287,13 @@ export default {
 	}
 	.product-info{
 		flex: 1;
+		padding: 0.1rem 0;
 		padding-right: 0.3rem;
 		display: flex;
 		flex-direction: column;
+		justify-content: space-between;
+		
+		overflow: hidden;
 		.product-amount{
 			height: 0.7rem;
 			display: flex;
@@ -313,7 +325,7 @@ export default {
 			}
 		}
 		.product-name{
-			flex: 1;
+			line-height: 1.414;
 		}
 	}
 }

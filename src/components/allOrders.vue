@@ -36,7 +36,7 @@
 			    		<span @click="selectCancel(item.order_id, index)" v-if="item.status === 0 || item.status === 9">取消订单</span>
 			    		<span @click="payWx(item.order_id)"  v-if="item.status === 0 || item.status === 10" class="other">立即付款</span>
 			    		<span @click="orderReceipt(item.order_id)" v-if="item.status === 50" class="other">确认收货</span>
-			    		<span  v-if="item.status === 60 || item.status === 98" class="other">立即评价</span>
+			    		<span @click="orderComment(item.order_id)" v-if="item.status === 60 || item.status === 98" class="other">立即评价</span>
 			    		<span @click="selectDelete(item.order_id, index)" v-if="item.status === 60 || item.status === 98 || item.status === 99 || item.status === 100 || item.status === 110" class="other">删除订单</span>
 			    	</div>
 	        	</div>
@@ -222,6 +222,10 @@ export default {
 		        }, err => {
 		        	
 		        })
+			},
+			//评价
+			orderComment(id){
+				this.$router.push('/evaluate/' + id)
 			}
 	}
 }
@@ -266,7 +270,7 @@ export default {
 		justify-content: flex-end;
 		span{
 			height: 0.6rem;
-			line-height: 0.56rem;
+			line-height: 0.6rem;
 			border-radius: 0.28rem;
 			padding: 0 0.3rem;
 			border: 1px solid #ddd;

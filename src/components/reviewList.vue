@@ -10,7 +10,7 @@
                 <span>评价(<span>{{total}}</span>)</span>
             </div>
             <div class="evaluate_right">
-                <span>好评度</span><span class="money">90</span><span class="money">%</span>
+                <span>好评度</span><span class="money">{{total_score}}</span><span class="money">%</span>
             </div>
         </div>
     </div>	    
@@ -59,6 +59,7 @@ export default {
     data() {
 	    return {
 	    	total: 0,
+	    	total_score: 0,
 			pagination: {
 	            content: [],
 	            loadEnd: false,
@@ -76,6 +77,7 @@ export default {
     methods: {
   	    render(res) {
   	    	this.total = res.total
+  	    	this.total_score = parseInt(res.total_score)
             res.data.forEach((item) => {
             	this.pagination.content.push(item)
             })

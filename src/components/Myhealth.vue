@@ -10,47 +10,55 @@
     
     <div class="field">
         <label for="name">姓名</label>
-        <input type="text" name="name" placeholder="请输入姓名" id="input-test" v-model="name">
+        <input class="input" type="text" name="name" placeholder="请输入姓名"  v-model="name">
     </div>
    
     <div class="field">
         <span>性别</span>
-        <div v-if="sex_name">请选择</div>
-        <select @change="change" v-model="sex" dir="rtl">
-            <option value="0">保密</option>
-            <option value="1">男</option>
-            <option value="2">女</option>
-        </select>
-        <img src="../../static/images/arror.png" >
+        <div class="none-data" v-if="sex_name">请选择</div>
+        <div class="right">
+        	<select @change="change" v-model="sex" dir="rtl">
+	            <option value="0">保密</option>
+	            <option value="1">男</option>
+	            <option value="2">女</option>
+	        </select>
+	        <img src="../../static/images/arror.png" >
+        </div>
+	        
     </div>
 
 
     <div class="field" >
         <span>生日</span>
         <div v-if="birth_time" @click="openPicker">请选择</div>
-        <div class="birth">{{birth}}</div>
-        <mt-datetime-picker
-            ref="picker"
-            v-model="birthday"
-            type="date"
-            year-format="{value} 年"
-            month-format="{value} 月"
-            date-format="{value} 日"
-            :startDate="startDate"
-            :endDate="endDate"
-            @confirm="handleConfirm">
-        </mt-datetime-picker>
-        <img src="../../static/images/arror.png"  @click="openPicker">
+        <div class="right"  @click="openPicker">
+        	<div class="birth">{{birth}}</div>
+	        
+	        <img src="../../static/images/arror.png" >
+        </div>
+	       <mt-datetime-picker
+	            ref="picker"
+	            v-model="birthPicker"
+	            type="date"
+	            year-format="{value} 年"
+	            month-format="{value} 月"
+	            date-format="{value} 日"
+	            :startDate="startDate"
+	            :endDate="endDate"
+	            @confirm="handleConfirm">
+	        </mt-datetime-picker> 
     </div>
 
     <div class="field">
-        <label for="name">身高</label>
-        <input type="text" name="name" placeholder="请输入身高" id="input-test" v-model="height">
+        <label >身高</label>
+        <input class="input has-unit" @input="editHeight" type="tel" placeholder="请输入身高"  v-model="height">
+        <span class="unit ">cm</span>
     </div>
 
     <div class="field" style="border:none;">
-        <label for="name">体重</label>
-        <input type="text" name="name" placeholder="请输入体重" id="input-test" v-model="weight">
+        <label >体重</label>
+        <input class="input has-unit" @input="editWeight" type="tel"  placeholder="请输入体重"  v-model="weight">
+        <span class="unit">kg</span>
     </div>
 
     <div class="datum">
@@ -58,19 +66,13 @@
     </div>
 
     <div class="condition">
-        <div :class="{ 'illness' : isA, 'illnessing': !isA}"  v-for="(item,index) in HealthTag"  @click="cut(index)">{{item}}</div>
+        <div class="illness" :class="{'active': item.active}"  v-for="(item,index) in HealthTag"  @click="selectComTag(item)">{{item.value}}</div>
 
-        <div class="illness illnessing" v-for="(list, index) in lists"  @click="deleteTag_show" :data-sc="list.health_tag_id">
-            {{list.name}}
-            <div class="deleteTag" v-if="deleteIcon" @click="deleteTag"></div>
+        <div class="illness active" v-for="(item, index) in aloneHeaath"  @click="deleteTag_show(item)">
+            {{item.name}}
+            <div class="deleteTag" v-show="item.deleteIcon" @click="deleteTag(item.health_tag_id, index)"></div>
         </div>
         <div class="add_illness" @click="add_label">+添加</div>
-        <div class="kong"></div>
-        <div class="kong"></div>
-    </div>
-
-    <div class="delete_record" @click="deleteHealth" v-if="is_my == 1">
-        <span>删除此亲属记录</span>
     </div>
 
 
@@ -90,19 +92,17 @@ export default {
             weight: '', //体重
             height: '', //身高
             sex: '',    //性别
-            birthday: '',      //生日
+            birthPicker: false,      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
-            lists:[], //新增疾病标签
+            aloneHeaath:[], //新增疾病标签
             relationship_id:'',
             sex_name: true,
-            relationship_name: true,
             birth_time: true,
             birth: '',
             id :'',
             startDate: new Date('1917-1-1'),
             endDate: new Date(),
-            is_my:'',   //是否是自己
             //样式
             deleteIcon:false,
             isA: false,
@@ -113,20 +113,20 @@ export default {
         
         const self = this
         //自己的健康档案
-        this.$api.indexDetailMy().then(res => {
+        this.initData().then(res => {
             this.birth = res.birthday
-            this.weight = res.weight
-            this.height = res.height
+            this.weight = parseInt(res.weight)
+            this.height = parseInt(res.height)
             this.name = res.true_name
             this.sex = res.sex
             this.id = res.health_id
             this.relationship_id = res.relationship_id
-            this.lists = res.data
+            res.data.forEach((item) => {
+            	item.deleteIcon = false
+            	this.aloneHeaath.push(item)
+            })
             if(res.sex){
                 this.sex_name = false
-            }
-            if(res.relationship_id_name){
-                this.relationship_name = false
             }
             if(res.birthday){
                 this.birth_time = false
@@ -137,7 +137,13 @@ export default {
 
         //获取标签接口
         this.$api.indexHealthTag().then(res => {
-            this.HealthTag = res.data
+        	res.data.forEach((value) => {
+        		 let obj = {
+        		 	value: value,
+        		 	active: false
+        		 }
+        		 this.HealthTag.push(obj)
+        	})
         }, err => {
             
         })
@@ -154,55 +160,83 @@ export default {
         
     },
     methods: {
-
+	    	initData() {
+	    		return this.$api.indexDetailMy()
+	    	},
+				editHeight() {
+					if(!/^[1-9]\d*$/.test(this.height)) {				
+	            this.height = this.height.replace(/^0|\D+/g,'')            
+	        }
+				},
+				editWeight() {
+					if(!/^[1-9]\d*$/.test(this.weight)) {				
+	            this.weight = this.weight.replace(/^0|\D+/g,'')            
+	        }
+				},
         //保存健康档案
         save(){
-            const self = this
-
-            this.$api.indexHealth(
-                {
-                    id: this.id,
-                    sex: this.sex,
-                    height: this.height,
-                    weight: this.weight,
-                    true_name: this.name,
-                    birthday: this.birth,
-                    relationship_id: this.relationship_id,
-                }
-            ).then(res => {
-                if(res.ret == 1) {
-                    Toast({
-                        message: '保存成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                    setTimeout(() => {
-                        this.$router.go(-1)
-                    },800)
-                }else {
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
-                
-            }, err => {
-                
+        	if(!this.name || this.name == '自己') {
+        		Toast({
+                message: '请输入姓名',
+                position: 'bottom',
+                duration: 1000
             })
+        		return
+        	}
+        	if(!this.weight) {
+        		Toast({
+                message: '请输入体重',
+                position: 'bottom',
+                duration: 1000
+            })
+        		return
+        	}
+        	if(!this.height) {
+        		Toast({
+                message: '请输入身高',
+                position: 'bottom',
+                duration: 1000
+            })
+        		return
+        	}
+	        const self = this
+	
+	        this.$api.indexHealth(
+	            {
+	                id: this.id,
+	                sex: this.sex,
+	                height: this.height,
+	                weight: parseInt(this.weight)*1000,
+	                true_name: this.name,
+	                birthday: this.birth,
+	                relationship_id: 0
+	            }
+	        ).then(res => {
+	            if(res.ret == 1) {
+	                Toast({
+	                    message: '保存成功',
+	                    position: 'bottom',
+	                    duration: 1000
+	                })
+	                setTimeout(() => {
+	                    this.$router.go(-1)
+	                },800)
+	            }else {
+	                Toast({
+	                    message: res.msg,
+	                    position: 'bottom',
+	                    duration: 1000
+	                })
+	            }
+	            
+	        }, err => {
+	            
+	        })
         },
         change() {
             this.sex_name = false
-            
-        },
-        bian() {
-                
         },
         
-        guanxi() {
-            this.relationship_name = false
-            
-        },
         //打开生日选择器
         openPicker() {
             this.$refs.picker.open();
@@ -210,24 +244,46 @@ export default {
         //点击生日选择器上的确定
         handleConfirm(value) {
             this.birth_time = false
-            var time = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate()
-            this.birth  = time
+            this.birth  = value.getFullYear() + '-' + this.toTwo(value.getMonth() + 1) + '-' + this.toTwo(value.getDate())
             
 
         },
+        toTwo(n) {
+        	return n <10 ? '0' + n : n
+        },
         //切换标签
-        cut:function (index) {
-             this.isA=!this.isA
-            // $('.illness').click(function () {
-            //     console.log(1)
-            //     $(this).toggleClass('illnessing').stop();
-            // })
+        selectComTag(item){
+        	item.active = !item.active
+        },
+        //删除标签
+        deleteTag_show(item) {
+            item.deleteIcon = !item.deleteIcon
+        },
+        deleteTag(id, index) {
+            const self = this
+            this.$api.indexDeleteHealthTag(
+                {
+                    health_tag_id: id,
+                    health_id: this.id
+                }
+            ).then(res => {
+                if(res.ret == 1) {
+                	this.aloneHeaath.splice(index, 1)
+                    Toast({
+                        message: '删除成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+            }, err => {
+                
+            })
         },
         //添加疾病标签
         add_label() {
             const self = this
             
-            MessageBox.prompt('慢性病','').then(({ value, action }) => {
+            MessageBox.prompt('请输入慢性病').then(({ value, action }) => {
                 this.$api.indexAddHealthTag(
                     {
                         health_id: this.id,
@@ -240,13 +296,15 @@ export default {
                             position: 'bottom',
                             duration: 1000
                         })
-                        this.upData()
-                    }else if(res.ret == 0){
-                        Toast({
-                            message: res.msg,
-                            position: 'bottom',
-                            duration: 1000
-                        })
+                        this.initData().then(res => {
+                        		this.aloneHeaath = []
+								            res.data.forEach((item) => {
+								            	item.deleteIcon = false
+								            	this.aloneHeaath.push(item)
+								            })
+								        }, err => {
+								            
+								        })
                     }
                 }, err => {
                     
@@ -256,81 +314,6 @@ export default {
             })
         },
 
-       //删除标签
-        deleteTag_show() {
-            this.deleteIcon = true
-        },
-        deleteTag(index,list) {
-            const self = this
-            this.$api.indexDeleteHealthTag(
-                {
-                    health_tag_id: this.health_tag_id,
-                    health_id: this.id
-                }
-            ).then(res => {
-                if(res.ret == 1) {
-                    Toast({
-                        message: '删除成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }else if(res.ret == 0){
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
-
-                this.deleteIcon = false
-                
-            }, err => {
-                
-            })
-        },
-
-        //删除健康档案
-        deleteHealth() {
-            const self = this
-            this.$api.indexDeleteHealth(
-                {
-    
-                    id: this.id,
-                }
-            ).then(res => {
-                if(res.ret == 1){
-                    Toast({
-                        message: '添加成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }else if(res.ret == 0) {
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
-            }, err => {
-                
-            })
-        },
-
-        //获取新的健康标签
-        upData (){
-            const self = this
-        //自己的健康档案
-        this.$api.indexDetailMy().then(res => {
-
-            this.lists = res.data
-            
-        }, err => {
-            
-        })
-        }
-        
-
-        
     }
 
 }
@@ -370,16 +353,27 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 .34rem;
+    padding: 0 .3rem;
     font-weight: 100;
     background-color: #fff;
     position: relative;
     border-bottom: solid 1px #f5f5f9;
-    input{
-        height: 100%;
-        flex: 1;
+    .input{
+        /*height: 100%;*/
+        width: 4rem;
         text-align: right;
         font-size: .28rem;
+    }
+    .input.has-unit{
+    	/*margin-right: 0.4rem;*/
+    	padding-right: 0.5rem;
+    }
+    .unit{
+    	position: absolute;
+    	right: 0.4rem;
+    	width: 0.3rem;
+    	top: 50%;
+    	transform: translateY(-50%);
     }
     hr{
         position: absolute;
@@ -388,36 +382,34 @@ export default {
         bottom: 0;
         margin: 0 auto;
     }
-    div{
+    div.none-data{
         text-align: right;
-        flex: 1;
+        width: 3rem;
         padding-right: .24rem;
         color: #ddd;
         font-size: .28rem;
         font-weight: 100;
     }
+    .right{
+    	width: 4rem;
+    	justify-content: flex-end;
+    	display: flex;
+    	align-items: center;
+    }
+    .right select{
+    	width: 2rem;
+    	margin-right: 0.2rem;
+    }
     img{
         width: .15rem;
         height: .25rem;
     }
-    select{
-        position: absolute;
-        right: .49rem;
-        font-size: .28rem;
-        direction: rtl;
-        top: 50%;
-        margin-top: -.27rem;
-    }
     .birth{
-        position: absolute;
-        right: .49rem;
-        color: black;
-        font-size: .28rem;        
-        font-weight:400; 
+        margin-right: 0.2rem;
     }
 }
 
-#input-test::-webkit-input-placeholder{
+input::-webkit-input-placeholder{
         color: #ddd;
         font-size: .28rem;
         font-weight: 100;
@@ -427,11 +419,14 @@ export default {
     width: 100%;
     height: auto;
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    padding: 0.15rem;
+}
+.condition>div{
+	margin: 0.15rem 0.2rem;
+	min-width: 2rem;
 }
 .illness{
-    width: 1.8rem;
     border: solid 1px #efefef;
     color: #999;
     background-color: #efefef;
@@ -440,22 +435,16 @@ export default {
     border-radius: 5px;
     margin:.2rem .3rem;
     position: relative;
+    padding: 0 0.15rem;
     
 }
-.illnessing{
-    width: 1.8rem;
-    border: solid 1px #3cafb6;
-    color: #3cafb6;
-    background-color: #fff;
-    text-align: center;
-    line-height: .58rem;
-    border-radius: 5px;
-    margin:.2rem .3rem;
-    position: relative;
+.illness.active{
+	border: solid 1px #3cafb6;
+	background-color: #fff;
+	color: #3cafb6;
 }
 
 .add_illness{
-    width: 1.8rem;
     height: .58rem;
     border: dashed 1px #ddd;
     border-radius: 5px;
@@ -466,57 +455,14 @@ export default {
 }
 .deleteTag{
     position: absolute;
-    width: .3rem;
-    height: .3rem;
-    background: url('../../static/images/29@3x.png') no-repeat;
-    background-size: .17rem .17rem;
-    background-position: .08rem .08rem;
-    right: -.1rem;
-    top: -.1rem;
+    width: .36rem;
+    height: .36rem;
+    background: url('../../static/images/29@3x.png') no-repeat center;
+    background-size: 50%;
+    right: -.14rem;
+    top: -.14rem;
     background-color: #ccc;
     border-radius: 50%;
 }
-.delete_record{
-    width: 100%;
-    height: .88rem;
-    background-color: #fff;
-    color: #3cafb6;
-    text-align: center;
-    line-height: .88rem;
-    position: absolute;
-    bottom: .34rem;
-}
-.kong{
-    width: 1.8rem;
-    height: .58rem;
-    margin:.2rem .3rem;
-}
-.model{
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    background-color: rgba(0, 0, 0, .6);
-    z-index: 100;
-    left: 0;
-    top: 0;
 
-}
-.bounces{
-    background-color: #fff;
-    width: 80vw;
-    height: auto;
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    margin-left: -40vw;
-    text-align: center;
-    p{
-        text-align: center;
-    }
-    input{
-        width: 80%;
-        height: .88rem;
-        margin: 0 auto;
-    }
-}
 </style>

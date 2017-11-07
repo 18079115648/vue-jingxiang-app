@@ -31,7 +31,7 @@
     			<p>处方资料及联系方式</p>
     			<p class="phone">{{orderDetail.check_phone_user}}</p>
     		</div>
-    		<img v-if="orderDetail.recipe_img" :src="orderDetail.recipe_img" class="recipe-img" />
+    		<img v-if="orderDetail.recipe_img" :src="orderDetail.recipe_img" class="recipe-img" @click="enlargeStatus = true"/>
     		<span class="none-recipe-img" v-if="!orderDetail.recipe_img">暂无处方图片</span>
     	</div>
     	<div class="product-list">
@@ -68,19 +68,21 @@
     		<span @click="orderCancel" v-if="orderDetail.status === 0 || orderDetail.status === 9">取消订单</span>
     		<span @click="payWx" v-if="orderDetail.status === 0 || orderDetail.status === 10" class="other">立即付款</span>
     		<span @click="orderReceipt" v-if="orderDetail.status === 50" class="other">确认收货</span>
-    		<span v-if="orderDetail.status === 60 || orderDetail.status === 98" class="other">立即评价</span>
+    		<span @click="orderComment" v-if="orderDetail.status === 60 || orderDetail.status === 98" class="other">立即评价</span>
     		<span @click="orderDelete" v-if="orderDetail.status === 60 || orderDetail.status === 98 || orderDetail.status === 99 || orderDetail.status === 100 || orderDetail.status === 110" class="other">删除订单</span>
     	</div>
+    	<enlarge-img v-show="enlargeStatus" :url="orderDetail.recipe_img" @enlargeCancel="enlargeStatus = false"></enlarge-img>
     </div>
 </template>
 
 <script>
 import qs from 'qs'
-import { Toast } from 'mint-ui'
+import { Toast, Indicator } from 'mint-ui'
 export default {
 	data() {
 	    return {
-	    	orderDetail:{}
+	    	orderDetail:{},
+	    	enlargeStatus: false
 	    }
 	},
 	created() {
@@ -246,7 +248,21 @@ export default {
 	        }, err => {
 	        	
 	        })
+		},
+		//评价
+		orderComment() {
+			this.$router.push('/evaluate/' + this.$route.params.id)
 		}
+	},
+	beforeRouteLeave(to, from, next) {
+		if(this.enlargeStatus) {
+			this.enlargeStatus = false
+			next(false)
+			return
+		} else {
+			next()
+		}
+
 	}
 }
 </script>
@@ -267,7 +283,7 @@ export default {
 	margin-bottom: 0.2rem;
 	.addr-icon{
 		width: 0.32rem;
-		margin-right: 0.34rem;
+		margin-right: 0.3rem;
 		margin-top: 0.08rem;
 	}
 	.order-status-info{
@@ -296,7 +312,7 @@ export default {
 	.addr-icon{
 		width: 0.22rem;
 		height: 0.32rem;
-		margin-right: 0.34rem;
+		margin-right: 0.36rem;
 		margin-top: 0.02rem;
 	}
 	.recipe-info{
@@ -423,7 +439,7 @@ export default {
 	background: #fff;
 	span{
 		height: 0.6rem;
-		line-height: 0.56rem;
+		line-height: 0.6rem;
 		border-radius: 0.28rem;
 		padding: 0 0.3rem;
 		border: 1px solid #ddd;

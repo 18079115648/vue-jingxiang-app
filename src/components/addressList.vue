@@ -152,7 +152,7 @@ export default {
 			if(this.status == 'list') {
 				return
 			}
-			this.$storage.set('order_addr_id',id)
+			this.$storage.set('default_addr_id',id)
 			this.$router.go(-1)
 		}
 	}

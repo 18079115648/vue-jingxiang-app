@@ -348,6 +348,12 @@ export default {
 	recharge(params) {
 		return fetchPost('/cart/createRecharge', params)
 	},
+	
+	
+	//评价
+	createComment(params) {
+		return fetchPost('/goods/commentCreate', params)
+	},
 
 
 
