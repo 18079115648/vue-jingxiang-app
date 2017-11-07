@@ -6,7 +6,7 @@
 	    		<img class="none-img" src="../../static/images/25@3x.png"  />
 	    		<p class="none-tip">暂无订单信息</p>
 	    	</div>
-	    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/order/index">
+	    	<Pagination :render="render" :autoload="false" :param="pagination" ref="pagination" uri="/order/index">
 					<div class="order-list" v-show="pagination.content.length>0">
 	        	<div class="order-item" v-for="(item, index) in pagination.content" :key="index">
 	        		<router-link :to="'/orderDetail/' + item.order_id">
@@ -72,7 +72,8 @@ export default {
 	    },
     }
 	},
-	created() {
+	mounted() {
+		this.$store.commit('setLoadingStatus', true)
 		this.status = Number(this.$route.params.status)
 		this.pagination = {
 					        content: [],
@@ -102,6 +103,7 @@ export default {
 			  this.title = '待评价'
 			  break;
 		}
+		this.$refs.pagination.refresh()
 	},
 	methods: {
 		  render(res) {

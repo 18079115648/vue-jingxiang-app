@@ -7,96 +7,137 @@
     			<span>搜索你要的宝贝</span>
     		</a>
     	</div>
-    	<section class="product-banner">
-			<mt-swipe :auto="0">
-				<mt-swipe-item v-for="(item,index) in bannerList" :key="index">
-					<router-link :to="'/shopdetails/' + item.goods_id " class="fullEle">
-						<img :src="item.thumb" class="fullEle" />
-					</router-link>
-				</mt-swipe-item>
-			</mt-swipe>
-		</section>
-		<section class="product-nav">
-			<div class="left">
-				<div @click="goList(bannerCat[0].activity_id, bannerCat[0].name)" class="fullEle">
-					<img :src="bannerCat[0].thumb" class="fullEle" />
-				</div>
-			</div>
-			<div class="right">
-				<div class="top">
-					<div @click="goList(bannerCat[1].activity_id, bannerCat[1].name)" class="fullEle">
-						<img :src="bannerCat[1].thumb" class="fullEle" />
-					</div>
-				</div>
-				<div class="bottom">
-					<div @click="goList(bannerCat[2].activity_id, bannerCat[2].name)"  class="fullEle">
-						<img :src="bannerCat[2].thumb" class="fullEle" />
-					</div>
-				</div>
-			</div>
-		</section>
-		<section class="pop-product">
-			<div class="pop-product-tit">
-				<div class="tit"><span class="pop-icon"></span>人气热销</div>
-			</div>
-			<div class="pop-product-list">
-				<router-link :to="'/shopdetails/' + item.goods_id " class="pop-product-item" v-for="(item, index) in hotList" :key="index">
-					<div class="fullEle">
-						<div class="pop-product-img">
-							<img class="fullEle" :src="item.thumb" />
-						</div>
-						<div class="pop-product-desc">
-							<p class="pop-product-name">{{item.title}}</p>
-							<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+    	<div class="content">
+    		<mt-loadmore :top-method="loadTop" :bottom-all-loaded="allLoaded" ref="loadmore">
+			 	<section class="product-banner">
+					<mt-swipe :auto="0">
+						<mt-swipe-item v-for="(item,index) in bannerList" :key="index">
+							<router-link :to="'/shopdetails/' + item.goods_id " class="fullEle">
+								<img :src="item.thumb" class="fullEle" />
+							</router-link>
+						</mt-swipe-item>
+					</mt-swipe>
+				</section>
+				<section class="product-nav">
+					<div class="left">
+						<div @click="goList(bannerCat[0].activity_id, bannerCat[0].name)" class="fullEle">
+							<img :src="bannerCat[0].thumb" class="fullEle" />
 						</div>
 					</div>
-					
-				</router-link>
-			</div>
-		</section>
+					<div class="right">
+						<div class="top">
+							<div @click="goList(bannerCat[1].activity_id, bannerCat[1].name)" class="fullEle">
+								<img :src="bannerCat[1].thumb" class="fullEle" />
+							</div>
+						</div>
+						<div class="bottom">
+							<div @click="goList(bannerCat[2].activity_id, bannerCat[2].name)"  class="fullEle">
+								<img :src="bannerCat[2].thumb" class="fullEle" />
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="pop-product">
+					<div class="pop-product-tit">
+						<div class="tit"><span class="pop-icon"></span>人气热销</div>
+					</div>
+					<div class="pop-product-list">
+						<router-link :to="'/shopdetails/' + item.goods_id " class="pop-product-item" v-for="(item, index) in hotList" :key="index">
+							<div class="fullEle">
+								<div class="pop-product-img">
+									<img class="fullEle" :src="item.thumb" />
+								</div>
+								<div class="pop-product-desc">
+									<p class="pop-product-name">{{item.title}}</p>
+									<p class="pop-product-price price-color">&yen; {{item.price_shop}}</p>
+								</div>
+							</div>
+							
+						</router-link>
+					</div>
+				</section>
+			</mt-loadmore>
+	    		
+    	</div>
+	    	
         <Menu actived="first"></Menu>
     </div>
 </template>
 
 <script>
-
+import {Indicator } from 'mint-ui'
 export default {
 	data() {
 		return {
 			bannerList: [],
 			bannerCat: [{},{},{}],
-			hotList: []
+			hotList: [],
+			
+			allLoaded: true
 		}
 	},
 	created() {
 		window.scrollTo(0,0)
-		this.$api.indexBanner().then(res => {   
-            res.forEach((item) => {
-            	let obj = {
-            		type_id: item.goods.type_id,
-            		type_id_name: item.goods.type_id_name,
-            		goods_id: item.goods.goods_id,
-            		thumb: item.thumb
-            	}
-            	this.bannerList.push(obj)
-            })
-        }, err => {
-        	
-        })
-		this.$api.indexBannerCat().then(res => {   
-			this.bannerCat = res.data
-        }, err => {
-        	
-        })
-		this.$api.indexHot().then(res => {   
-			res.forEach((item) => {
-            	this.hotList.push(item.goods)
-            })
-        }, err => {
-        	
-        })
+//		this.$api.indexBanner().then(res => {   
+//          res.forEach((item) => {
+//          	let obj = {
+//          		type_id: item.goods.type_id,
+//          		type_id_name: item.goods.type_id_name,
+//          		goods_id: item.goods.goods_id,
+//          		thumb: item.thumb
+//          	}
+//          	this.bannerList.push(obj)
+//          })
+//      }, err => {
+//      	
+//      })
+//		this.$api.indexBannerCat().then(res => {   
+//			this.bannerCat = res.data
+//      }, err => {
+//      	
+//      })
+//		this.$api.indexHot().then(res => {   
+//			res.forEach((item) => {
+//          	this.hotList.push(item.goods)
+//          })
+//      }, err => {
+//      	
+//      })
+		this.$store.commit('setLoadingStatus', true)
+		this.homeData()
 	},
 	methods: {
+		loadTop() {
+			Indicator.open('加载中...')
+			this.homeData()
+		    
+		},
+		homeData() {
+			
+			this.$api.indexBanner().then(res => {   
+				this.bannerList = []
+	            res.forEach((item) => {
+	            	let obj = {
+	            		type_id: item.goods.type_id,
+	            		type_id_name: item.goods.type_id_name,
+	            		goods_id: item.goods.goods_id,
+	            		thumb: item.thumb
+	            	}
+	            	this.bannerList.push(obj)
+	            })
+	            return this.$api.indexBannerCat()
+	        }).then(res => {
+	        	this.bannerCat = res.data
+	        	return this.$api.indexHot()
+	        }).then(res => {
+	        	Indicator.close()
+	        	this.hotList = []
+	        	res.forEach((item) => {
+	            	this.hotList.push(item.goods)
+	            })
+	        	this.$refs.loadmore.onTopLoaded();
+	        })
+		},
 		goList(id, name){
 	  		this.$storage.set('activity_cat', name)
 	  		this.$router.push('/productList/active/' + id)
@@ -135,6 +176,14 @@ export default {
 	span{
 		color: #777;
 	}
+}
+.content{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 1.72rem;
+	bottom: 1rem;
+	overflow-y: auto;
 }
 .product-banner{
 	width: 100%;

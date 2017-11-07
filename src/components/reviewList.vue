@@ -4,7 +4,7 @@
     <Header title="评论列表"></Header>
 
     <!-- 评价 -->
-    <div class="evaluate" v-show="pagination.content.length>0">
+	<div class="evaluate" v-show="pagination.loadEnd && pagination.content.length>0">
         <div class="evaluate_title">
             <div class="evaluate_left">
                 <span>评价(<span>{{total}}</span>)</span>
@@ -13,9 +13,10 @@
                 <span>好评度</span><span class="money">90</span><span class="money">%</span>
             </div>
         </div>
-    </div>
+    </div>	    
 	<div class="content">
 		<Pagination :render="render" :param="pagination" ref="pagination" uri="/goods/comment">
+			
 			<div class="review-list" v-show="pagination.content.length>0">
 				<div class="review" v-for="(item, index) in pagination.content" :key="index">
 			        <div class="review_info">
@@ -69,6 +70,9 @@ export default {
 	        },
 	    }
     },
+    created() {
+    	this.$store.commit('setLoadingStatus', true)
+    },
     methods: {
   	    render(res) {
   	    	this.total = res.total
@@ -96,6 +100,8 @@ export default {
 	overflow-y: auto;
 }
 .evaluate{
+	left: 0;
+	top: 0;
     width: 100%;
     height: auto;
     background-color: #fff;

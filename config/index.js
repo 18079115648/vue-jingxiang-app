@@ -29,14 +29,14 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
 	    	'/index': {    //将www.exaple.com印射为/apis
-	          target: 'http://mobile.jxdyf.cn/index',  // 接口域名
+	          target: 'http://jx.shengshine.com/index',  // 接口域名
 	          changeOrigin: true,  //是否跨域
 	          pathRewrite: {
 	                '^/index': ''   //需要rewrite的,
 	          }              
 	        },
 	        '/uploads': {    //将www.exaple.com印射为/apis
-	          target: 'http://mobile.jxdyf.cn/uploads',  // 接口域名
+	          target: 'http://jx.shengshine.com/uploads',  // 接口域名
 	          changeOrigin: true,  //是否跨域
 	          pathRewrite: {
 	                '^/uploads': ''   //需要rewrite的,

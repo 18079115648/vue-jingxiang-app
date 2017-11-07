@@ -61,6 +61,7 @@
         border-top: 1px solid #eee;
         box-sizing: border-box;       
         display: flex;
+        z-index: 30;
     }
     .nav_bottm li{
         flex: 1;

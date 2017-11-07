@@ -8,7 +8,10 @@
 			<div class="product-nav" v-show="pagination.loadEnd">
 				<mt-swipe :auto="0">
 					<mt-swipe-item v-for="(item,index) in bannerCat" :key="index">
-						<img :src="item.thumb" />
+						<router-link :to="'/article/' + item.news_id " class="fullEle">
+							<img :src="item.thumb" />
+						</router-link>
+						
 					</mt-swipe-item>
 				</mt-swipe>
 			</div>
@@ -52,7 +55,7 @@ export default {
     }
   },
   created() {
-    
+    this.$store.commit('setLoadingStatus', true)
   },
   methods: {
   	HTMLDecode(text) {
@@ -137,6 +140,7 @@ export default {
   	text-overflow: ellipsis;
   	white-space: nowrap;
   	overflow: hidden;
+  	padding-top: 0.06rem;
   }
   .msg-content{
   	font-size: 0.24rem;
@@ -147,7 +151,7 @@ export default {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-height: 0.3rem;
-    margin: 0.14rem 0;
+    margin: 0.1rem 0;
   }
 }
 .teat_info{

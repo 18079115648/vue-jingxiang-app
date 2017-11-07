@@ -58,17 +58,18 @@
 		</div>
 
 		<!-- 立即购买 -->
-		<div class="foot_button" style="display:none;">
-			<div class="desired">
+		<div class="foot_button" v-if="typeId == 902">
+			<div class="desired" @click="goCart('/requireList')">
 				<img src="../../static/images/21@3x.png">
 				<div>需求清单</div>
+				<span class="count" v-show="total>0">{{total}}</span>
 			</div>
-			<div class="commit">提交需求</div>
+			<div class="commit" @click="goodsCommit">提交需求</div>
 		</div>
 
 		<!-- 加入购物车 -->
-		<div class="foot_button">
-			<div class="desired" @click="goCart">
+		<div class="foot_button" v-if="typeId == 901">
+			<div class="desired" @click="goCart('/cart')">
 				<img src="../../static/images/20@3x.png" style="width:auto;">
 				<div>购物车</div>
 				<span class="count" v-show="total>0">{{total}}</span>
@@ -76,33 +77,6 @@
 			<div class="operation">
 				<div class="pay" @click="goodsOperate('pay')">立即购买</div>
 				<div class="add" @click="goodsOperate('add')">加入购物车</div>
-			</div>
-		</div>
-
-		<!-- 立即购买的涂层 -->
-		<div class="car_model_warp" style="display:none;">
-			<div class="car_model">
-				<div class="model_main">
-					<div class="model_pic">
-
-					</div>
-					<div class="model_title">
-						<p>￥ 100</p>
-						<p>库存: 12</p>
-					</div>
-					<div class="closex">X</div>
-				</div>
-				<p class="commodity_p1">
-					<span class="s1">数量</span>
-					<span class="commodity_num">
-                  <i >-</i>
-                  <input class="em" >
-                  <i >+</i>
-              </span>
-				</p>
-				<div class="btncar">
-					确 定
-				</div>
 			</div>
 		</div>
 
@@ -136,7 +110,8 @@
 <script>
 	import {
 		Popup,
-		Toast
+		Toast,
+		Indicator
 	} from 'mint-ui';
 	import wx from 'weixin-js-sdk'
 	export default {
@@ -162,6 +137,7 @@
 			created() {
 				window.scrollTo(0, 0)
 				this.goodsId = this.$route.params.id
+				this.$store.commit('setLoadingStatus', true)
 				this.$api.goodsDetail({
 					id: this.$route.params.id
 				}).then(res => {
@@ -258,19 +234,18 @@
 				plusCharge() {
 					this.chargeNum < this.goodsDetail.num ? this.chargeNum++ : this.chargeNum = this.goodsDetail.num
 				},
-				goCart() {
-					this.$api.loginAouth().then(res => {
-						if(res.ret == 1) {
-							this.$router.push('/cart')
-						} else {
-							this.$storage.set('history_uri', '/cart')
-							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.href)
-						}
-					}, err => {
-
-					})
+				goCart(url) {
+					this.$router.push(url)
 				},
 				goodsOperate(status) {
+					if(this.goodsDetail.num < 1) {
+						Toast({
+							message: '库存不足',
+							position: 'bottom',
+							duration: 1500
+						});
+						return
+					}
 					this.showCharge = true
 					this.aouthStatus = false
 					this.$wxAouth().then(res => {
@@ -306,7 +281,7 @@
 							}
 
 						}, err => {
-
+							this.showCharge = false
 						})
 					} else if(this.opereteStatus === 'pay' && this.aouthStatus) {
 						this.$router.push({
@@ -317,6 +292,48 @@
 							}
 						})
 					}
+				},
+				goodsCommit() {
+					if(this.goodsDetail.num < 1) {
+						Toast({
+							message: '库存不足',
+							position: 'bottom',
+							duration: 1500
+						});
+						return
+					}
+					Indicator.open()
+					this.$wxAouth().then(res => {
+						if(res.ret == 1) {
+							this.$api.addCartData({
+								type_id: this.typeId,
+								goods_id: this.goodsId,
+								num: 1
+							}).then(res => {
+								Indicator.close()
+								if(res.ret == 1) {
+									Toast({
+										message: '添加成功',
+										position: 'bottom',
+										duration: 1500
+									});
+									if(!this.incart) {
+										this.total += 1
+									}
+								}
+		
+							}, err => {
+								Indicator.close()
+							})
+						} else {
+							Indicator.close()
+							this.$storage.set('history_uri', window.location.hash.substr(1))
+							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.href)
+						}
+					}, err => {
+						Indicator.close()
+					})
+					
 				}
 			}
 	}
@@ -377,10 +394,10 @@
 		align-items: center;
 		font-size: 0.24rem;
 		.point-icon {
-			padding: 0 0.08rem;
+			padding: 0.04rem 0.08rem;
 			border: 1px solid #f60;
 			font-size: 0.2rem;
-			padding-top: 0.02rem;
+			padding-top: 0.06rem;
 			border-radius: 0.06rem;
 			margin-right: 0.2rem;
 			color: #f60;
@@ -541,7 +558,7 @@
 			color: #fff;
 			text-align: center;
 			line-height: .98rem;
-			font-size: .34rem;
+			font-size: .32rem;
 		}
 		.operation {
 			display: flex;

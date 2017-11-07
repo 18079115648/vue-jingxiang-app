@@ -86,6 +86,7 @@ export default {
 		}
 	},
 	created() {
+		this.$store.commit('setLoadingStatus', true)
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res

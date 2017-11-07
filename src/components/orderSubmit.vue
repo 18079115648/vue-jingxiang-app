@@ -18,6 +18,22 @@
     		<img src="../../static/images/line.png" class="bg-line" />
     		<div class="none-addr">选择收货地址</div>
     	</router-link>
+    	<div class="customer-info" v-if="type_id == 902">
+    		<div class="cell-item">
+    			<span class="phone-tip">手机</span>
+    			<input class="phone" v-model="phone" @input="inputNumber" maxlength="11" type="tel" placeholder="输入您的手机号，供药师回拨" />
+    		</div>
+    		<div class="cell-item">
+    			<div class="updata-text">
+    				<p>上传处方</p>
+    				<p class="tip">上传处方可以缩短审核时间，仅限一张</p>
+    			</div>
+    			<div class="updata-icon">
+    				<!--<img src="../../static/images/11@3x.png" class="fullEle" @click="changeAvatar" />-->
+    				<img :src="updataImg" class="fullEle" @click="changeAvatar" />
+    			</div>
+    		</div>
+    	</div>
     	<div class="product-list">
     		<div class="product-item" v-for="(item, index) in goodsList" :key="index">
     			<img :src="item.thumb" class="product-img" />
@@ -49,13 +65,14 @@
     			共<span class="price-color"> {{orderDetail.total}} </span>件， 
     			实付 <span class="price-color"> &yen; {{orderDetail.amount_order}}</span>
     		</div>
-    		<div class="pay-btn" @click="payWx">微信支付</div>
+    		<div class="pay-btn" v-if="type_id == 901" @click="payWx">微信支付</div>
+    		<div class="pay-btn" v-if="type_id == 902" @click="payCommit">提交预定</div>
     	</div>
     </div>
 </template>
 
 <script>
-
+import wx from 'weixin-js-sdk'
 export default {
 	data() {
 	    return {
@@ -68,10 +85,15 @@ export default {
 	    	
 	    	addrDetail: {},
 	    	goodsList: [],
-	    	orderDetail: {}
+	    	orderDetail: {},
+	    	
+	    	//处方药
+	    	phone: '',
+	    	updataImg: '../../static/images/11@3x.png'
 	    }
 	},
 	created() {
+		this.$store.commit('setLoadingStatus', true)
 		this.status = this.$route.params.status
 		this.type_id = this.$route.params.type
 		this.address_id = this.$storage.get('default_addr_id')
@@ -94,7 +116,7 @@ export default {
 			}, err => {
 	
 			})
-		}else if(this.status === '1') {
+		}else if(this.status === '1' || this.status === '2') {
 			this.goods_id = this.$storage.get('select_goods_arr')
 //			this.$storage.remove('select_goods_arr')
 			this.$api.checkOut({
@@ -111,13 +133,97 @@ export default {
 	
 			})
 		}
-		
-		
+		if(this.status === '2') {
+			this.wxJssdk()
+		}
 		
 		
 			
 	},
+	computed: {
+		checkPhone: function() {
+			if(/^1[34578]\d{9}$/.test(this.phone)){   
+		        return true; 
+		    } 
+		    return false
+		}
+	},
 	methods: {
+		wxJssdk() {
+			let self = this
+			this.$api.wxShare({
+				url: window.location.href.split('#')[0]
+			}).then((res) => {
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: res.appId, // 必填，公众号的唯一标识
+					timestamp: parseInt(res.timestamp), // 必填，生成签名的时间戳
+					nonceStr: res.noncestr, // 必填，生成签名的随机串
+					signature: res.signature, // 必填，签名，见附录1
+					jsApiList: ['getLocation', 'chooseImage', 'previewImage', 'uploadImage', 'scanQRCode', 'chooseWXPay', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				})
+//				wx.ready(function() {
+//					
+//				})
+			}).catch((err) => {
+				console.log(err)
+			})
+		},
+		changeAvatar() {
+			let self = this
+			wx.chooseImage({
+			    count: 1, // 默认9
+			    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+			    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+			    success: function (res) {
+			    	console.log(res)
+			        wx.uploadImage({
+					    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+					    isShowProgressTips: 1, // 默认为1，显示进度提示
+					    success: function (res) {
+					        self.$api.wxUploadOrderImg({
+					        	media_id: res.serverId
+					        }).then(res => {
+								if(res.ret == 1) {
+									self.updataImg = res.img_head
+								}
+					        }, err => {
+					        	
+					        })
+					    }
+					});
+			    }
+			});
+		},
+		inputNumber() {
+			if (!/^\d*$/.test(this.phone)) {	
+	            this.phone = this.phone.replace(/\D+/g,'')            
+	        } 
+		},
+		createOrder() {
+			return this.$api.createOrder({
+				type_id: this.type_id,
+				goods_ids: this.goods_id,
+				address_id: this.order_addr_id || this.address_id,
+				customer: this.addrDetail.contact,
+				id_card: this.addrDetail.id_card,
+				mobile: this.addrDetail.mobile,
+				province: this.addrDetail.province,
+				city: this.addrDetail.city,
+				district: this.addrDetail.district,
+				address: this.addrDetail.address,
+				check_phone_user: this.phone
+			})
+		},
+		payCommit() {
+			this.createOrder().then(res => {
+				if(res.ret == 1) {
+					this.$router.replace('/allOrders/9')
+				}
+			}, err => {
+	
+			})
+		},
 		payWx() {
 //			this.$api.checkOut({
 //				type_id: this.type_id,
@@ -148,19 +254,7 @@ export default {
 //			}, err => {
 //	
 //			})
-			this.$api.createOrder({
-				type_id: this.type_id,
-				goods_ids: this.goods_id,
-				address_id: this.order_addr_id || this.address_id,
-				customer: this.addrDetail.contact,
-				id_card: this.addrDetail.id_card,
-				mobile: this.addrDetail.mobile,
-				province: this.addrDetail.province,
-				city: this.addrDetail.city,
-				district: this.addrDetail.district,
-				address: this.addrDetail.address,
-				check_phone_user: ''
-			}).then(res => {
+			this.createOrder().then(res => {
 				if(res.ret == 1) {
 					window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_id
 				}
@@ -310,5 +404,40 @@ export default {
 		padding-left: 0.5rem;
 		padding-right: 0.2rem;
 	}
+}
+.customer-info{
+	background: #FFFFFF;
+	padding: 0 0.3rem;
+	margin-top: 0.2rem;
+	.cell-item{
+		border-bottom: 1px solid #F9F9F9;
+		padding: 0.2rem 0;
+		display: flex;
+		
+		.phone-tip{
+			width: 0.9rem;
+		}
+		.phone{
+			flex: 1;
+			
+		}
+		.updata-icon{
+			width: 1.1rem;
+			height: 1.1rem;
+		}
+		.updata-text{
+			flex: 1;
+			p{
+				padding: 0.06rem 0;
+			}
+			p.tip{
+				color: #ccc;
+				font-size: 0.24rem;
+			}
+		}
+	}
+}
+input::-webkit-input-placeholder {
+	color: #ccc;
 }
 </style>

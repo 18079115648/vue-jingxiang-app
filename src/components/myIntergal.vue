@@ -10,19 +10,26 @@
 				<div class="nav-item" :class="{'active': index == 1}" @click="changeMenu(1)"><span>收入记录</span></div>
 				<div class="nav-item" :class="{'active': index == 2}" @click="changeMenu(2)"><span>支出记录</span></div>
 			</div>
-			<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/order/points">
-				<div class="balance-list">
-					<div class="balance-item">
-						<p class="item-name">
-							<span>微信充值</span>
-							<span class="price-color">+50.00</span>
-						</p>
-						<p class="item-time">
-							<span>2017</span>
-						</p>
+			<div class="content">
+				<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/order/points">
+					<div class="balance-list" v-show="pagination.content.length > 0">
+						<div class="balance-item" v-for="(item, index) in pagination.content" :key="index">
+							<p class="item-name">
+								<span>{{item.note}}</span>
+								<span class="price-color" v-if="item.type == 1">+{{item.points}}</span>
+								<span class="price-color" v-if="item.type == 2">{{item.points}}</span>
+							</p>
+							<p class="item-time">
+								<span>{{item.entrydate}}</span>
+							</p>
+						</div>
 					</div>
-				</div>
-			</Pagination>
+				</Pagination>
+				<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+		    		<p class="none-tip">暂无数据信息</p>
+		   	    </div>
+			</div>
+				
 		</div>
 		<confirm-modal 
 			:show="tipShow" 
@@ -170,5 +177,13 @@
 			font-size: 0.26rem;
 		}
 	}
+}
+.content{
+	position: absolute;
+	top: 3.82rem;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	overflow-y: auto;
 }
 </style>

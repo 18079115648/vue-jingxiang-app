@@ -59,6 +59,7 @@ export default {
 		}
 	},
 	created() {
+		this.$store.commit('setLoadingStatus', true)
 		this.status = this.$route.params.status
 	},
 	methods: {
