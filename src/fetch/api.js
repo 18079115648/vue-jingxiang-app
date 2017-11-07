@@ -407,12 +407,17 @@ export default {
 
 	//删除健康档案
 	indexDeleteHealth(params) {
-		return fetchGet('health/delete', params)
+		return fetchPost('health/delete', params)
 	},
 	
-	//自己健康的档案
+	//自己的健康档案
 	indexDetailMy(params) {
 		return fetchGet('health/detailMy', params)
+	},
+
+	//健康档案
+	indexDetail(params) {
+		return fetchGet('health/detail', params)
 	},
 
 	//常用标签
@@ -435,8 +440,14 @@ export default {
 		return fetchGet('health/getRelationship', params)
 	},
 
+	//健康档案创建
+	indexHealthCreate(params) {
+		return fetchPost('health/create', params)
+	},
 	
+	//更新健康档案
 	
-	
-	
+	indexHealthChange(params) {
+		return fetchPost('health/update', params)
+	},
 }

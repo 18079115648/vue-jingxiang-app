@@ -26,8 +26,8 @@
 
     <div class="field" >
         <span>关系</span>
-        <div v-if="relationship_name">请选择</div>
-        <select @change="guanxi" v-model="relationship_id">
+        <div  v-if="relationship_name" :class="{'relation': isA,}">{{relationship_id_name}}</div>
+        <select @click="guanxi" v-model="relationship_id">
             <option>关系</option>
             <option v-for="list in relationship" :value="list.value">{{list.text}}</option>
         </select>
@@ -37,7 +37,7 @@
     <div class="field" >
         <span>生日</span>
         <div v-if="birth_time" @click="openPicker">请选择</div>
-        <div class="birth">{{birth}}</div>
+        <div class="birth" @click="openPicker">{{birth}}</div>
         <mt-datetime-picker
             ref="picker"
             v-model="birthday"
@@ -78,12 +78,13 @@
         <div class="kong"></div>
     </div>
 
-    <div class="delete_record" @click="deleteHealth" >
+    <div class="delete_record" @click="deleteHealth" v-if=" id != '' " >
         <span>删除此亲属记录</span>
     </div>
     
 
-    
+
+
   </section>
 </template>
 
@@ -101,11 +102,10 @@ export default {
             sex: '',
             birthday: '',
             HealthTag:[],      //常用健康标签
-            lists:[
-                {name:'可爱病'}
-            ], //新增疾病标签
+            lists:[], //新增疾病标签
             relationship: [], // 关系
             relationship_id: '', // 选中的关系id
+            relationship_id_name:'请选择',
             sex_name: true,
             relationship_name: true,
             birth_time: true,
@@ -116,34 +116,44 @@ export default {
             tag: '', // 常用健康标签
             is_my:'',
             deleteIcon:false,
+            isA:false,
         }
     },
     created() {
         const self = this
-        //自己的健康档案
-        this.$api.indexDetailMy().then(res => {
+        //健康档案
+        this.$api.indexDetail(
+            {
+                id: self.$route.params.id,
+                is_my: self.$route.params.is_my,
+            }
+        ).then(res => {
             this.sex = res.sex
             this.weight = res.weight
             this.height = res.height
             this.id = res.health_id
             this.name = res.true_name
             this.birth = res.birthday
-            this.relationship_id = res.relationship_id
-            var option = $(res.data.form_relationship).children('option')
-                // console.log(option)
+            this.lists = res.data
+            this.relationship_id_name = res.relationship_id_name
+            // this.relationship_id = res.relationship_id
+            var option = $(res.form_relationship).children('option')
+            // console.log(option)
             option.each(function () {
                 self.relationship.push({ value: $(this).val(), text: $(this).text() })
-                // console.log(self.relationship)
+            // console.log(self.relationship)
             })
             if(res.sex){
                 this.sex_name = false
             }
             if(res.relationship_id_name){
-                this.relationship_name = false
+                this.isA = true
+                // this.relationship_name = false
             }
             if(res.birthday){
-                this.birth_time = false
+                this.birth_time = falser
             }
+            
         }, err => {
             
         })
@@ -157,7 +167,15 @@ export default {
 
         //获取关系列表
         this.$api.indexGetRelation().then(res => {
-            this.relationship = res.form_relationship
+             self.relationship_id = res.relationship_id
+            var option = $(res.form_relationship).children('option')
+
+            // console.log(option)
+            option.each(function () {
+                self.relationship.push({ value: $(this).val(), text: $(this).text() })
+            // console.log(self.relationship)
+            })
+            
         }, err => {
             
         })
@@ -169,37 +187,70 @@ export default {
         //保存健康档案
         save(){
             const self = this
-            this.$api.indexHealth(
-                {
-                    id: self.id,
-                    sex: self.sex,
-                    height: self.height,
-                    weight: self.weight,
-                    birthday:self.birth,
-                    true_name: self.name,
-                    relationship_id: self.relationship_id,
-                }
-            ).then(res => {
-                if(res.ret == 1) {
-                    Toast({
-                        message: '保存成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                    setTimeout(() => {
-                        this.$router.go(-1)
-                    },800)
-                }else {
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
-                
-            }, err => {
-                
-            })
+            if(this.id) {
+                this.$api.indexHealthChange(
+                    {
+                        id: self.id,
+                        sex: self.sex,
+                        height: self.height,
+                        weight: self.weight,
+                        birthday:self.birth,
+                        true_name: self.name,
+                        relationship_id: self.relationship_id,
+                        data:"感冒"
+                    }
+                ).then(res => {
+                    if(res.ret == 1) {
+                        Toast({
+                            message: '更新成功',
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            this.$router.go(-1)
+                        },800)
+                    }else {
+                       
+                    }
+                    
+                }, err => {
+                    
+                })
+            }else{
+                this.$api.indexHealthCreate(
+                    {
+                        sex: self.sex,
+                        height: self.height,
+                        weight: self.weight,
+                        birthday:self.birth,
+                        true_name: self.name,
+                        relationship_id: self.relationship_id,
+                        data:"感冒"
+                        
+                    }
+                ).then(res => {
+                    if(res.ret == 1) {
+                        Toast({
+                            message: '保存成功',
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            this.$router.go(-1)
+                        },800)
+                    }else {
+                        Toast({
+                            message: res.msg,
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                    }
+                    
+                }, err => {
+                    
+                })
+            }
+            
         },
         change() {
             this.sex_name = false
@@ -210,7 +261,10 @@ export default {
         },
         
         guanxi() {
+            var self = this
             this.relationship_name = false
+            // self.changeceshi = $(ele.target).find('option:selected').text()
+            // self.relationship_id = $(ele.target).find('option:selected').val()
             
         },
         //打开时间选择器
@@ -265,28 +319,41 @@ export default {
         },
         //删除健康档案
         deleteHealth() {
-            const self = this
-            this.$api.indexDeleteHealth(
-                {
-                    id: this.id
-                }
-            ).then(res => {
-                if(res.ret == 1){
-                    Toast({
-                        message: '添加成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }else if(res.ret == 0) {
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
+            MessageBox.confirm('',{
+                showConfirmButton:true,
+                confirmButtonClass:'affirm',
+                message:'你确定删除此档案吗？',
+                title: '提示',
+            }).then(action => {
+                const self = this
+                this.$api.indexDeleteHealth(
+                    {
+                        id: this.id
+                    }
+                ).then(res => {
+                    if(res.ret == 1){
+                        Toast({
+                            message: '删除成功',
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            this.$router.go(-1)
+                        },800)
+                    }else if(res.ret == 0) {
+                        Toast({
+                            message: res.msg,
+                            position: 'bottom',
+                            duration: 1000
+                        })
+                    }
+                }, err => {
+                    
+                })
             }, err => {
-                
+                    
             })
+            
         },
 
         //删除标签
@@ -297,7 +364,7 @@ export default {
             const self = this
             this.$api.indexDeleteHealthTag(
                 {
-                    health_tag_id: this.id,
+                    health_tag_id: 68,
                     health_id: this.id
                 }
             ).then(res => {
@@ -314,7 +381,7 @@ export default {
                         duration: 1000
                     })
                 }
-
+                this.upData()
                 this.deleteIcon = false
                 
             }, err => {
@@ -322,7 +389,17 @@ export default {
             })
         },
         
+         //获取新的健康标签
+        upData (){
+            const self = this
+            this.$api.indexDetailMy().then(res => {
 
+                this.lists = res.data
+                
+            }, err => {
+                
+            })
+        }
         
     }
 
@@ -403,6 +480,11 @@ export default {
         right: .49rem;
         color: black;
         font-size: .28rem;        
+        font-weight:400; 
+    }
+    .relation{
+        color: black;
+        font-size: .28rem;
         font-weight:400; 
     }
 }
@@ -501,5 +583,9 @@ export default {
         height: .88rem;
         margin: 0 auto;
     }
+}
+.affirm{
+    color: #3cafb6;
+    font-size: .28rem;
 }
 </style>

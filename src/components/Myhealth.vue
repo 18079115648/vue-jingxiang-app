@@ -68,7 +68,7 @@
     <div class="condition">
         <div class="illness" :class="{'active': item.active}"  v-for="(item,index) in HealthTag"  @click="selectComTag(item)">{{item.value}}</div>
 
-        <div class="illness active" v-for="(item, index) in aloneHeaath"  @click="deleteTag_show(item)">
+        <div class="illness active" v-for="(item, index) in aloneHealth" @click="deleteTag_show(item)">
             {{item.name}}
             <div class="deleteTag" v-show="item.deleteIcon" @click="deleteTag(item.health_tag_id, index)"></div>
         </div>
@@ -95,7 +95,7 @@ export default {
             birthPicker: false,      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
-            aloneHeaath:[], //新增疾病标签
+            aloneHealth:[], //新增疾病标签
             relationship_id:'',
             sex_name: true,
             birth_time: true,
@@ -106,6 +106,7 @@ export default {
             //样式
             deleteIcon:false,
             isA: false,
+            tagId:'', //标签id
         }
     },
     created() {
@@ -123,7 +124,7 @@ export default {
             this.relationship_id = res.relationship_id
             res.data.forEach((item) => {
             	item.deleteIcon = false
-            	this.aloneHeaath.push(item)
+            	this.aloneHealth.push(item)
             })
             if(res.sex){
                 this.sex_name = false
@@ -191,14 +192,6 @@ export default {
             })
         		return
         	}
-        	if(!this.height) {
-        		Toast({
-                message: '请输入身高',
-                position: 'bottom',
-                duration: 1000
-            })
-        		return
-        	}
 	        const self = this
 	
 	        this.$api.indexHealth(
@@ -206,10 +199,11 @@ export default {
 	                id: this.id,
 	                sex: this.sex,
 	                height: this.height,
-	                weight: parseInt(this.weight)*1000,
+	                weight: this.weight,
 	                true_name: this.name,
 	                birthday: this.birth,
-	                relationship_id: 0
+	                relationship_id: this.relationship_id,
+	                
 	            }
 	        ).then(res => {
 	            if(res.ret == 1) {
@@ -230,8 +224,10 @@ export default {
 	            }
 	            
 	        }, err => {
-	            
+	        	
 	        })
+
+        	
         },
         change() {
             this.sex_name = false
@@ -268,7 +264,7 @@ export default {
                 }
             ).then(res => {
                 if(res.ret == 1) {
-                	this.aloneHeaath.splice(index, 1)
+                	this.aloneHealth.splice(index, 1)
                     Toast({
                         message: '删除成功',
                         position: 'bottom',
@@ -297,10 +293,10 @@ export default {
                             duration: 1000
                         })
                         this.initData().then(res => {
-                        		this.aloneHeaath = []
+                        		this.aloneHealth = []
 								            res.data.forEach((item) => {
 								            	item.deleteIcon = false
-								            	this.aloneHeaath.push(item)
+								            	this.aloneHealth.push(item)
 								            })
 								        }, err => {
 								            
@@ -312,7 +308,7 @@ export default {
             }, err => {
                 
             })
-        },
+        }
 
     }
 
