@@ -143,7 +143,7 @@ export default  [{
         path: '/Myhealth',
         component: Myhealth
     },{
-        path: '/OthersHealth',
+        path: '/OthersHealth/:id/:is_my',
         component: OthersHealth
     }]
 

@@ -2,7 +2,7 @@
   <section class="healthRecords">
     <Header title="健康档案"></Header>
     
-    <div class="recordsList" v-for="(item, index) in items" @click="edit">
+    <div class="recordsList" v-for="(item, index) in items" @click="edit(item.health_id,item.is_my)">
         <div class="records">
             <span class="records_label">{{item.relationship_id_name}}</span>
             <span class="records_name">{{item.true_name}}</span>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="add_disease" @click="add_disease">
+    <div class="add_disease" @click="add_disease()">
         <span>添加亲属健康状况</span>
     </div>
 
@@ -38,11 +38,7 @@ export default {
       last_page: 1, // 总页数
       ismove: true, // 判断滑动和点击
       imgs: '', // imgs
-      items: [
-          {relationship_id_name: '朋友',true_name: '刘德华',age: '50',data:[
-              {name:'健康'}
-          ]}
-      ], // 内容
+      items: [ ], // 内容
       banner: [], // banner
       wd:'',
     }
@@ -55,17 +51,17 @@ export default {
                 p: this.page
             }
         ).then(res => {
-            
+            this.items = res.data
         }, err => {
             console.log(err)
         })
     },
     methods: {
-        edit() {
-            this.$router.push({path: '/OthersHealth'})
+        edit(id,is_my) {
+            this.$router.push({path: '/OthersHealth' +'/'+ id +'/'+ is_my })
         },
-        add_disease() {
-            this.$router.push({path: '/OthersHealth'})
+        add_disease(id,is_my) {
+            this.$router.push({path: '/OthersHealth' +'/'+ id +'/'+ is_my })
         }
     }
 

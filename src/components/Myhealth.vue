@@ -60,7 +60,7 @@
     <div class="condition">
         <div :class="{ 'illness' : isA, 'illnessing': !isA}"  v-for="(item,index) in HealthTag"  @click="cut(index)">{{item}}</div>
 
-        <div class="illness illnessing" v-for="(list, index) in lists"  @click="deleteTag_show" :data-sc="list.health_tag_id">
+        <div class="illness illnessing" v-for="(list, index) in lists"  @click="deleteTag_show(list.health_tag_id)" :data-sc="list.health_tag_id">
             {{list.name}}
             <div class="deleteTag" v-if="deleteIcon" @click="deleteTag"></div>
         </div>
@@ -106,6 +106,7 @@ export default {
             //样式
             deleteIcon:false,
             isA: false,
+            tagId:'', //标签id
         }
     },
     created() {
@@ -168,6 +169,7 @@ export default {
                     true_name: this.name,
                     birthday: this.birth,
                     relationship_id: this.relationship_id,
+                    
                 }
             ).then(res => {
                 if(res.ret == 1) {
@@ -257,14 +259,15 @@ export default {
         },
 
        //删除标签
-        deleteTag_show() {
+        deleteTag_show(id) {
             this.deleteIcon = true
+            this.tagId = id
         },
-        deleteTag(index,list) {
+        deleteTag() {
             const self = this
             this.$api.indexDeleteHealthTag(
                 {
-                    health_tag_id: this.health_tag_id,
+                    health_tag_id: this.tagId,
                     health_id: this.id
                 }
             ).then(res => {
@@ -274,6 +277,7 @@ export default {
                         position: 'bottom',
                         duration: 1000
                     })
+                    this.upData()
                 }else if(res.ret == 0){
                     Toast({
                         message: res.msg,
@@ -287,6 +291,7 @@ export default {
             }, err => {
                 
             })
+            
         },
 
         //删除健康档案
@@ -319,14 +324,13 @@ export default {
         //获取新的健康标签
         upData (){
             const self = this
-        //自己的健康档案
-        this.$api.indexDetailMy().then(res => {
+            this.$api.indexDetailMy().then(res => {
 
-            this.lists = res.data
-            
-        }, err => {
-            
-        })
+                this.lists = res.data
+                
+            }, err => {
+                
+            })
         }
         
 
