@@ -42,6 +42,10 @@ const healthNew = r => require.ensure([], () => r(require('../components/healthN
 const OthersHealth = r => require.ensure([], () => r(require('../components/OthersHealth.vue')), 'OthersHealth')
 
 
+const indexSetting = r => require.ensure([], () => r(require('../components/indexSetting.vue')), 'indexSetting')
+const advices = r => require.ensure([], () => r(require('../components/advices.vue')), 'advices')
+
+
 
 export default  [{ 
     	path: '/',
@@ -160,6 +164,12 @@ export default  [{
     },{
         path: '/OthersHealth/:id',
         component: OthersHealth
+    },{
+        path: '/indexSetting',
+        component: indexSetting
+    },{
+        path: '/advices',
+        component: advices
     }]
 
 
