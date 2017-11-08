@@ -16,7 +16,7 @@
     <div class="field">
         <span>性别</span>
         <div v-if="sex_name">请选择</div>
-        <select @change="change" v-model="sex" >
+        <select @change="change" v-model="sex" dir="rtl">
             <option value="0">保密</option>
             <option value="1">男</option>
             <option value="2">女</option>
@@ -26,8 +26,8 @@
 
     <div class="field" >
         <span>关系</span>
-        <div  v-if="relationship_name" :class="{'relation': isA,}">{{relationship_id_name}}</div>
-        <select @click="guanxi" v-model="relationship_id">
+        <div  v-if="relationship_name" :class="{'relation': isA,}">请选择</div>
+        <select @click="guanxi" v-model="relationship_id" dir="rtl" >
             <option>关系</option>
             <option v-for="list in relationship" :value="list.value">{{list.text}}</option>
         </select>
@@ -67,15 +67,13 @@
     </div>
 
     <div class="condition">
-        <div  class="illness"  v-for="(item,index) in HealthTag"  @click="cut">{{item}}</div>
+        <div class="illness" :class="{'active': item.active}"  v-for="(item,index) in HealthTag"  @click="selectComTag(item)">{{item.value}}</div>
 
-        <div class="illness illnessing" v-for="list in lists"  @click="deleteTag_show">
-            <div class="deleteTag" v-if="deleteIcon" @click="deleteTag"></div>
-            {{list.name}}
+        <div class="illness active" v-for="(item, index) in aloneHealth" @click="deleteTag_show(item)">
+            {{item.name}}
+            <div class="deleteTag" v-show="item.deleteIcon" @click="deleteTag(item.health_tag_id, index)"></div>
         </div>
         <div class="add_illness" @click="add_label">+添加</div>
-        <div class="kong"></div>
-        <div class="kong"></div>
     </div>
 
     <div class="delete_record" @click="deleteHealth" v-if=" id != '' " >
@@ -102,7 +100,7 @@ export default {
             sex: '',
             birthday: '',
             HealthTag:[],      //常用健康标签
-            lists:[], //新增疾病标签
+            aloneHealth:[], //新增疾病标签
             relationship: [], // 关系
             relationship_id: '', // 选中的关系id
             relationship_id_name:'请选择',
@@ -122,45 +120,62 @@ export default {
     created() {
         const self = this
         //健康档案
-        this.$api.indexDetail(
-            {
-                id: self.$route.params.id,
-                is_my: self.$route.params.is_my,
-            }
-        ).then(res => {
-            this.sex = res.sex
-            this.weight = res.weight
-            this.height = res.height
-            this.id = res.health_id
-            this.name = res.true_name
-            this.birth = res.birthday
-            this.lists = res.data
-            this.relationship_id_name = res.relationship_id_name
-            // this.relationship_id = res.relationship_id
-            var option = $(res.form_relationship).children('option')
-            // console.log(option)
-            option.each(function () {
-                self.relationship.push({ value: $(this).val(), text: $(this).text() })
-            // console.log(self.relationship)
+        this.id = self.$route.params.id
+        this.is_my = self.$route.params.is_my
+        console.log(this.id)
+        if(this.id != 'undefined') {
+            this.$api.indexDetail(
+                {
+                    id: this.id,
+                    is_my: this.is_my,
+                }
+            ).then(res => {
+                
+                this.sex = res.sex
+                this.weight = res.weight
+                this.height = res.height
+                this.id = res.health_id
+                this.name = res.true_name
+                this.birth = res.birthday
+                this.lists = res.data
+                res.data.forEach((item) => {
+                    item.deleteIcon = false
+                    this.aloneHealth.push(item)
+                })
+                // this.relationship_id_name = res.relationship_id_name
+                this.relationship_id = res.relationship_id
+                var option = $(res.form_relationship).children('option')
+                // console.log(option)
+                option.each(function () {
+                    self.relationship.push({ value: $(this).val(), text: $(this).text() })
+                // console.log(self.relationship)
+                })
+                if(res.sex){
+                    this.sex_name = false
+                }
+                if(res.relationship_id_name){
+                    // this.isA = true
+                    this.relationship_name = false
+                }
+                if(res.birthday){
+                    this.birth_time = false
+                }
+                
+            }, err => {
+                
             })
-            if(res.sex){
-                this.sex_name = false
-            }
-            if(res.relationship_id_name){
-                this.isA = true
-                // this.relationship_name = false
-            }
-            if(res.birthday){
-                this.birth_time = falser
-            }
-            
-        }, err => {
-            
-        })
+        }
+        
 
         //获取标签接口
         this.$api.indexHealthTag().then(res => {
-            this.HealthTag = res.data
+        	res.data.forEach((value) => {
+        		 let obj = {
+        		 	value: value,
+        		 	active: false
+        		 }
+        		 this.HealthTag.push(obj)
+        	})
         }, err => {
             
         })
@@ -185,9 +200,33 @@ export default {
     methods: {
 
         //保存健康档案
-        save(){
+        save(){ 
+            if(!this.name || this.name == '自己') {
+        		Toast({
+                message: '请输入姓名',
+                position: 'bottom',
+                duration: 1000
+            })
+        		return
+            }
+            if(!this.height) {
+        		Toast({
+                message: '请输入身高',
+                position: 'bottom',
+                duration: 1000
+            })
+        		return
+        	}
+        	if(!this.weight) {
+        		Toast({
+                message: '请输入体重',
+                position: 'bottom',
+                duration: 1000
+            })
+        		return
+        	}
             const self = this
-            if(this.id) {
+            if(this.id && this.id != 'undefined') {
                 this.$api.indexHealthChange(
                     {
                         id: self.id,
@@ -216,7 +255,7 @@ export default {
                 }, err => {
                     
                 })
-            }else{
+            }else {
                 this.$api.indexHealthCreate(
                     {
                         sex: self.sex,
@@ -262,7 +301,7 @@ export default {
         
         guanxi() {
             var self = this
-            this.relationship_name = false
+            // this.relationship_name = false
             // self.changeceshi = $(ele.target).find('option:selected').text()
             // self.relationship_id = $(ele.target).find('option:selected').val()
             
@@ -271,26 +310,49 @@ export default {
         openPicker() {
             this.$refs.picker.open();
         },
-        //点击时间选择器上的确定
+       //点击生日选择器上的确定
         handleConfirm(value) {
             this.birth_time = false
-            var time = value.getFullYear() + '-' + (value.getMonth() + 1) + '-' + value.getDate()
-            this.birth  = time
+            this.birth  = value.getFullYear() + '-' + this.toTwo(value.getMonth() + 1) + '-' + this.toTwo(value.getDate())
             
+
+        },
+        toTwo(n) {
+        	return n <10 ? '0' + n : n
         },
         //切换标签
-        cut() {
-            $(function () {
-                $('.illness').click(function () {
-                    $(this).toggleClass('illnessing');
-                    // $(this).addClass('illnessing').toggle("illnessing").removeClass('illnessing');
-
-                })
-            });
+        selectComTag(item){
+        	item.active = !item.active
+        },
+        //删除标签
+        deleteTag_show(item) {
+            item.deleteIcon = !item.deleteIcon
+        },
+        deleteTag(id, index) {
+            const self = this
+            this.$api.indexDeleteHealthTag(
+                {
+                    health_tag_id: id,
+                    health_id: this.id
+                }
+            ).then(res => {
+                if(res.ret == 1) {
+                	this.aloneHealth.splice(index, 1)
+                    Toast({
+                        message: '删除成功',
+                        position: 'bottom',
+                        duration: 1000
+                    })
+                }
+            }, err => {
+                
+            })
         },
         //添加疾病标签
         add_label() {
-            MessageBox.prompt('慢性病','').then(({ value, action }) => {
+            const self = this
+            
+            MessageBox.prompt('请输入慢性病').then(({ value, action }) => {
                 this.$api.indexAddHealthTag(
                     {
                         health_id: this.id,
@@ -303,12 +365,15 @@ export default {
                             position: 'bottom',
                             duration: 1000
                         })
-                    }else if(res.ret == 0){
-                        Toast({
-                            message: res.msg,
-                            position: 'bottom',
-                            duration: 1000
-                        })
+                        this.initData().then(res => {
+                        		this.aloneHealth = []
+								            res.data.forEach((item) => {
+								            	item.deleteIcon = false
+								            	this.aloneHealth.push(item)
+								            })
+								        }, err => {
+								            
+								        })
                     }
                 }, err => {
                     
@@ -356,43 +421,12 @@ export default {
             
         },
 
-        //删除标签
-        deleteTag_show() {
-            this.deleteIcon = true
-        },
-        deleteTag() {
-            const self = this
-            this.$api.indexDeleteHealthTag(
-                {
-                    health_tag_id: 68,
-                    health_id: this.id
-                }
-            ).then(res => {
-                if(res.ret == 1) {
-                    Toast({
-                        message: '删除成功',
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }else if(res.ret == 0){
-                    Toast({
-                        message: res.msg,
-                        position: 'bottom',
-                        duration: 1000
-                    })
-                }
-                this.upData()
-                this.deleteIcon = false
-                
-            }, err => {
-                
-            })
-        },
+        
         
          //获取新的健康标签
         upData (){
             const self = this
-            this.$api.indexDetailMy().then(res => {
+            this.$api.indexDetail().then(res => {
 
                 this.lists = res.data
                 
@@ -472,7 +506,7 @@ export default {
     }
     select{
         position: absolute;
-        right: .49rem;
+        right: .79rem;
         font-size: .28rem;
     }
     .birth{
@@ -499,11 +533,14 @@ export default {
     width: 100%;
     height: auto;
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
+    padding: 0.15rem;
+}
+.condition>div{
+	margin: 0.15rem 0.2rem;
+	min-width: 2rem;
 }
 .illness{
-    width: 1.8rem;
     border: solid 1px #efefef;
     color: #999;
     background-color: #efefef;
@@ -512,27 +549,16 @@ export default {
     border-radius: 5px;
     margin:.2rem .3rem;
     position: relative;
+    padding: 0 0.15rem;
     
 }
-.illnessing{
-    border: solid 1px #3cafb6;
-    color: #3cafb6;
-    background-color: #fff;
+.illness.active{
+	border: solid 1px #3cafb6;
+	background-color: #fff;
+	color: #3cafb6;
 }
-.deleteTag{
-    position: absolute;
-    width: .3rem;
-    height: .3rem;
-    background: url('../../static/images/29@3x.png') no-repeat;
-    background-size: .17rem .17rem;
-    background-position: .08rem .08rem;
-    right: -.1rem;
-    top: -.1rem;
-    background-color: #ccc;
-    border-radius: 50%;
-}
+
 .add_illness{
-    width: 1.8rem;
     height: .58rem;
     border: dashed 1px #ddd;
     border-radius: 5px;
@@ -540,6 +566,17 @@ export default {
     text-align: center;
     line-height: .58rem;
     color: #ddd; 
+}
+.deleteTag{
+    position: absolute;
+    width: .36rem;
+    height: .36rem;
+    background: url('../../static/images/29@3x.png') no-repeat center;
+    background-size: 50%;
+    right: -.14rem;
+    top: -.14rem;
+    background-color: #ccc;
+    border-radius: 50%;
 }
 .delete_record{
     width: 100%;
