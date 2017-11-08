@@ -75,19 +75,21 @@
         <div class="add_illness" @click="add_label">+添加</div>
     </div>
 
-
+    
 
   </section>
 </template>
 
 <script>
 import $ from 'jquery';
+import { Popup } from 'mint-ui';
 import { DatetimePicker } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
 import { Toast } from 'mint-ui'
 export default {
     data() {
         return {
+            popupVisible:false,
             name: '',   //姓名
             weight: '', //体重
             height: '', //身高
