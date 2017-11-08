@@ -247,6 +247,7 @@ export default {
 }
 .select-status{
 	width: 1rem;
+	height: 100%;
 	& > input{
 		display: none;
 	}

@@ -66,17 +66,22 @@
     </div>
 
     <div class="condition">
-        <div class="illness" :class="{'active': item.active}"  v-for="(item,index) in HealthTag"  @click="selectComTag(item)">{{item.value}}</div>
+        <div class="illness" :class="{'active': item.active}"  v-for="(item,index) in HealthTag" :key="index"  @click="selectComTag(item)">{{item.value}}</div>
 
-        <div class="illness active" v-for="(item, index) in aloneHealth" @click="deleteTag_show(item)">
+        <div class="illness active" v-for="(item, index) in aloneHealth" :key="index" @click="deleteTag_show(item)">
             {{item.name}}
-            <div class="deleteTag" v-show="item.deleteIcon" @click="deleteTag(item.health_tag_id, index)"></div>
+            <div class="deleteTag" v-show="item.deleteIcon" @click.stop="deleteTag(item.health_tag_id, index)"></div>
         </div>
         <div class="add_illness" @click="add_label">+添加</div>
     </div>
 
 
-
+		<confirm-modal 
+			:show="deleteShow" 
+			@confirm_modal="tagDelete" 
+			@closeModal="deleteShow = false" 
+			message="确定删除该健康状况?">
+		</confirm-modal>	
   </section>
 </template>
 
@@ -92,7 +97,7 @@ export default {
             weight: '', //体重
             height: '', //身高
             sex: '',    //性别
-            birthPicker: false,      //生日
+            birthPicker: '',      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
             aloneHealth:[], //新增疾病标签
@@ -103,28 +108,49 @@ export default {
             id :'',
             startDate: new Date('1917-1-1'),
             endDate: new Date(),
-            //样式
-            deleteIcon:false,
-            isA: false,
-            tagId:'', //标签id
+            
+            currTagId: null,
+            currTagIndex: null,
+            deleteShow: false
         }
     },
     created() {
                 
-        
-        const self = this
-        //自己的健康档案
-        this.initData().then(res => {
-            this.birth = res.birthday
-            this.weight = parseInt(res.weight)
+        //获取标签接口
+        this.getComTag().then(res => {
+	        	res.data.forEach((value) => {
+	        		 let obj = {
+	        		 	value: value,
+	        		 	active: false
+	        		 }
+	        		 this.HealthTag.push(obj)
+	        	})
+        		return this.initData()
+        }).then(res => {
+        	  this.birth = res.birthday
+        	  this.birthPicker = res.birthday
+            this.weight = parseInt(res.weight)/1000
             this.height = parseInt(res.height)
             this.name = res.true_name
             this.sex = res.sex
             this.id = res.health_id
             this.relationship_id = res.relationship_id
             res.data.forEach((item) => {
-            	item.deleteIcon = false
-            	this.aloneHealth.push(item)
+            	let isCom = false
+            	this.HealthTag.forEach((obj) => {
+            		if(obj.value == item.name) {
+            			isCom = true
+            			obj.active = true
+            			obj.hasDelete = true
+            			obj.health_tag_id = item.health_tag_id
+            			return
+            		}
+            	})
+            	if(!isCom) {
+            		item.deleteIcon = false
+            		this.aloneHealth.push(item)
+            	}
+            	
             })
             if(res.sex){
                 this.sex_name = false
@@ -132,21 +158,6 @@ export default {
             if(res.birthday){
                 this.birth_time = false
             }
-        }, err => {
-            
-        })
-
-        //获取标签接口
-        this.$api.indexHealthTag().then(res => {
-        	res.data.forEach((value) => {
-        		 let obj = {
-        		 	value: value,
-        		 	active: false
-        		 }
-        		 this.HealthTag.push(obj)
-        	})
-        }, err => {
-            
         })
 
         //获取关系列表
@@ -161,6 +172,9 @@ export default {
         
     },
     methods: {
+    		getComTag() {
+    			return this.$api.indexHealthTag()
+    		},
 	    	initData() {
 	    		return this.$api.indexDetailMy()
 	    	},
@@ -176,7 +190,7 @@ export default {
 				},
         //保存健康档案
         save(){
-        	if(!this.name || this.name == '自己') {
+        	if(!this.name) {
         		Toast({
                 message: '请输入姓名',
                 position: 'bottom',
@@ -192,20 +206,24 @@ export default {
             })
         		return
         	}
-	        const self = this
-	
-	        this.$api.indexHealth(
-	            {
-	                id: this.id,
-	                sex: this.sex,
-	                height: this.height,
-	                weight: this.weight,
-	                true_name: this.name,
-	                birthday: this.birth,
-	                relationship_id: this.relationship_id,
-	                
-	            }
-	        ).then(res => {
+        	
+	        let data = ''
+	        this.HealthTag.forEach((item) => {
+	        	if(item.active && !item.hasDelete) {
+	        		data+=',' + item.value
+	        	}
+	        })
+					data = data.substr(1)
+	        this.$api.indexHealth({
+                id: this.id,
+                sex: this.sex,
+                height: this.height,
+                weight: parseInt(this.weight)*1000,
+                true_name: this.name,
+                birthday: this.birth,
+                relationship_id: this.relationship_id,
+                data: data
+	        }).then(res => {
 	            if(res.ret == 1) {
 	                Toast({
 	                    message: '保存成功',
@@ -239,6 +257,7 @@ export default {
         },
         //点击生日选择器上的确定
         handleConfirm(value) {
+        	console.log(this.birthPicker)
             this.birth_time = false
             this.birth  = value.getFullYear() + '-' + this.toTwo(value.getMonth() + 1) + '-' + this.toTwo(value.getDate())
             
@@ -249,22 +268,37 @@ export default {
         },
         //切换标签
         selectComTag(item){
-        	item.active = !item.active
+        	if(item.hasDelete) {
+        		this.$api.indexDeleteHealthTag({
+		            health_tag_id: item.health_tag_id,
+		            health_id: this.id
+            }).then(res => {
+                if(res.ret == 1) {
+                	item.hasDelete = false
+                	item.health_tag_id = undefined
+                	item.active = !item.active
+                }
+            }, err => {
+                
+            })
+        	}else {
+        		item.active = !item.active
+        	}
+        	
         },
         //删除标签
         deleteTag_show(item) {
             item.deleteIcon = !item.deleteIcon
         },
-        deleteTag(id, index) {
-            const self = this
-            this.$api.indexDeleteHealthTag(
+        tagDelete() {
+        	  this.$api.indexDeleteHealthTag(
                 {
-                    health_tag_id: id,
+                    health_tag_id: this.currTagId,
                     health_id: this.id
                 }
             ).then(res => {
                 if(res.ret == 1) {
-                	this.aloneHealth.splice(index, 1)
+                	this.aloneHealth.splice(this.currTagIndex, 1)
                     Toast({
                         message: '删除成功',
                         position: 'bottom',
@@ -274,6 +308,11 @@ export default {
             }, err => {
                 
             })
+        },
+        deleteTag(id, index) {
+            this.currTagId = id
+            this.currTagIndex = index
+            this.deleteShow = true 
         },
         //添加疾病标签
         add_label() {
