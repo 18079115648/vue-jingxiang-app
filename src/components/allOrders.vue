@@ -56,24 +56,26 @@ import qs from 'qs'
 import { Toast } from 'mint-ui'
 export default {
 	data() {
-    return {
-    	deleteShow: false,
-    	cancelShow: false,
-    	currIndex: null,
-    	currId: null,
-    	title: '',
-    	pagination: {
-	        content: [],
-	        loadEnd: false,
-	        data: {
-	        	p: 1,
-				status: 0
-	        }
-	    },
-    }
+	    return {
+	    	isWx: this.$common.isWeixin(),
+	    	
+	    	
+	    	deleteShow: false,
+	    	cancelShow: false,
+	    	currIndex: null,
+	    	currId: null,
+	    	title: '',
+	    	pagination: {
+		        content: [],
+		        loadEnd: false,
+		        data: {
+		        	p: 1,
+					status: 0
+		        }
+		    },
+	    }
 	},
 	mounted() {
-		this.$store.commit('setLoadingStatus', true)
 		this.status = Number(this.$route.params.status)
 		this.pagination = {
 					        content: [],
@@ -189,6 +191,10 @@ export default {
 			
 			//支付
 			payWx(id){
+				if(!this.isWx) {
+					this.$router.push('/paySubmit/' + id + '/' + '22')
+					return
+				}
 				window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + id
 			},
 			

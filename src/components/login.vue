@@ -12,7 +12,7 @@
 	    			<div class="captcha-btn" :class="{'disabled': !enableSend}" @click="getCode">{{captchaLabel}}</div>
 	    		</div>
 	    	</div>
-	    	<div class="btn-default btn-hover btn-login" @click="login">注册</div>
+	    	<div class="btn-default btn-hover btn-login" @click="login">登录</div>
     </div>
 </template>
 

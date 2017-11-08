@@ -342,4 +342,39 @@ input::-webkit-search-cancel-button {
 	.mint-msgbox-confirm{
 		color: #3cafb6 !important;
 	}
+	
+	.payWay .mint-radiolist-title{
+		display: none;
+	}
+	.payWay .mint-cell{
+		min-height: auto;
+		height: 1rem;
+		display: flex;
+		border-bottom: 1px solid #f5f5f5;
+		background: none !important; 
+	}
+	.payWay .mint-cell-wrapper{
+		font-size: 0.28rem;
+		background: none !important; 
+	}
+	.payWay .mint-radio-core{
+		width: 0.4rem;
+		height: 0.4rem;
+		border-color: #999;
+	}
+	.payWay .mint-radio-core::after{
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-size: 100% 100%; 
+		
+	}
+	.payWay .mint-radio-input:checked + .mint-radio-core{
+		background-color: #3cafb6;
+    	border-color: #3cafb6;
+	}
+	.payWay .mint-radio-input:checked + .mint-radio-core::after{
+		background-image: url(../static/images/43@3x.png)
+	}
 </style>

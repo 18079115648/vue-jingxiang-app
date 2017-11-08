@@ -103,7 +103,6 @@ export default {
 //      }, err => {
 //      	
 //      })
-		this.$store.commit('setLoadingStatus', true)
 		this.homeData()
 	},
 	methods: {

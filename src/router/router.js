@@ -5,6 +5,7 @@ const productList = r => require.ensure([], () => r(require('../components/produ
 const cart = r => require.ensure([], () => r(require('../components/cart.vue')), 'cart')
 const requireList = r => require.ensure([], () => r(require('../components/requireList.vue')), 'requireList')
 const orderSubmit = r => require.ensure([], () => r(require('../components/orderSubmit.vue')), 'orderSubmit')
+const paySubmit = r => require.ensure([], () => r(require('../components/paySubmit.vue')), 'paySubmit')
 const demandSubmit = r => require.ensure([], () => r(require('../components/demandSubmit.vue')), 'demandSubmit')
 const user = r => require.ensure([], () => r(require('../components/user.vue')), 'user')
 const userInfo = r => require.ensure([], () => r(require('../components/userInfo.vue')), 'userInfo')
@@ -37,6 +38,7 @@ const reviewList = r => require.ensure([], () => r(require('../components/review
 const healthRecords = r => require.ensure([], () => r(require('../components/healthRecords.vue')), 'healthRecords')
 
 const Myhealth = r => require.ensure([], () => r(require('../components/Myhealth.vue')), 'Myhealth')
+const healthNew = r => require.ensure([], () => r(require('../components/healthNew.vue')), 'healthNew')
 const OthersHealth = r => require.ensure([], () => r(require('../components/OthersHealth.vue')), 'OthersHealth')
 
 
@@ -71,6 +73,9 @@ export default  [{
     },{
         path: '/orderSubmit/:type/:status',  //type 901： 普通药 ， 902： 处方药   。   status订单来源    0：立即购买， 1： 购物车， 2：需求清单
         component: orderSubmit
+    },{
+        path: '/paySubmit/:order_id/:order_no', 
+        component: paySubmit
     },{
         path: '/demandSubmit',
         component: demandSubmit
@@ -150,7 +155,10 @@ export default  [{
         path: '/Myhealth',
         component: Myhealth
     },{
-        path: '/OthersHealth/:id/:is_my',
+        path: '/healthNew',
+        component: healthNew
+    },{
+        path: '/OthersHealth/:id',
         component: OthersHealth
     }]
 

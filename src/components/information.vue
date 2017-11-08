@@ -55,7 +55,7 @@ export default {
     }
   },
   created() {
-    this.$store.commit('setLoadingStatus', true)
+
   },
   methods: {
   	HTMLDecode(text) {

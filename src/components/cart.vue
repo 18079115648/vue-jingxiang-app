@@ -65,7 +65,6 @@ export default {
 	    }
 	},
 	created() {
-		this.$store.commit('setLoadingStatus', true)
 		this.initData()
 	},
 	computed: {

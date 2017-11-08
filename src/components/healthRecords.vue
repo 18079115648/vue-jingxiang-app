@@ -1,25 +1,36 @@
 <template>
-  <section class="healthRecords">
+  <section class="app">
     <Header title="健康档案"></Header>
-    
-    <div class="recordsList" v-for="(item, index) in items" @click="edit(item.health_id,item.is_my)">
-        <div class="records">
-            <span class="records_label">{{item.relationship_id_name}}</span>
-            <span class="records_name">{{item.true_name}}</span>
-            <span class="records_years">
-                <span>{{item.age}}</span><span>岁</span>
-            </span>
-        </div>
-        <div class="condition">
-            <div v-for="(list, index) in item.data">{{list.name}}</div>
-        </div>
-        <div class="arror_img">
-            <img src="../../static/images/arror.png" >
-        </div>
+    <div class="health-list">
+    		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<img class="none-img" src="../../static/images/25@3x.png"  />
+	    		<p class="none-tip">暂无亲属健康记录</p>
+	    	</div>
+	    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/health/index">
+					<div v-show="pagination.content.length>0">
+						<div class="recordsList" v-for="(item, index) in pagination.content" :key="index" @click="edit(item.health_id)">
+				        <div class="records">
+				            <span class="records_label">{{item.relationship_id_name}}</span>
+				            <span class="records_name">{{item.true_name}}</span>
+				            <span class="records_years">
+				                <span>{{item.age}}</span><span>岁</span>
+				            </span>
+				        </div>
+				        <div class="condition">
+				            <div class="health-tag" v-for="(list, index) in item.data">{{list.name}}</div>
+				        </div>
+				        <div class="arror_img">
+				            <img src="../../static/images/arror.png" >
+				        </div>
+				    </div>
+			    </div>
+				</Pagination>
+	    	
     </div>
+	    
 
-    <div class="add_disease" @click="add_disease()">
-        <span>添加亲属健康状况</span>
+    <div class="add-health btn-default" @click="addHealth">
+        	添加亲属健康状况
     </div>
 
   </section>
@@ -31,69 +42,80 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      loading: false,
-      scroller: null,
-      per_page: 20, // 每页条数
-      page: 1, // 当前页
-      last_page: 1, // 总页数
-      ismove: true, // 判断滑动和点击
-      imgs: '', // imgs
-      items: [ ], // 内容
-      banner: [], // banner
-      wd:'',
+      pagination: {
+	        content: [],
+	        loadEnd: false,
+	        data: {
+	        	p: 1
+	        }
+	    },
     }
   },
   created() {
-    const self = this
-    this.$api.indexHealthRecords(
-            {
-                wd:this.wd,
-                p: this.page
-            }
-        ).then(res => {
-            this.items = res.data
-        }, err => {
-            console.log(err)
-        })
-    },
-    methods: {
-        edit(id,is_my) {
-            this.$router.push({path: '/OthersHealth' +'/'+ id +'/'+ is_my })
-        },
-        add_disease(id,is_my) {
-            this.$router.push({path: '/OthersHealth' +'/'+ id +'/'+ is_my })
-        }
-    }
+
+	},
+	mounted() {
+		this.$refs.pagination.refresh()
+	},
+	methods: {
+			render(res) {
+					res.data.forEach((item) => {
+	        	this.pagination.content.push(item)
+	        })
+			},
+	    edit(id) {
+	        this.$router.push('/OthersHealth/'+ id )
+	    },
+	    addHealth() {
+	        this.$router.push('healthNew')
+	    }
+	}
 
 }
 </script>
 
 <style lang="scss" scoped>
-.healthRecords{
-    background-color: #f5f5f6;
-    height: 100vh;
-    width: 100vw;
+.app{
+    background-color: #f5f5f9;
+    position: relative;
+    line-height: 1.5;
+}
+.health-list{
+	  position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0.92rem;
+    bottom: 1.6rem;
+    overflow-y: auto;
+}
+.add-health{
+	  position: absolute;
+    left: 0.3rem;
+    bottom: 0.5rem;
 }
 .recordsList{
     width: 100%;
     background-color: #fff;
     margin-top: .2rem;
-    padding: .3rem;
+    padding: .3rem 0.3rem 0.2rem;
     position: relative;
+    
     .records{
         display: flex;
         width: 100%;
+   			align-items: center;
+   			padding-bottom: 0.1rem;
         .records_label{
             display: block;
-            width: .6rem;
-            height: .3rem;
+            padding: 0.08rem 0.1rem;
+            border-radius: 0.04rem;
             background-color: #ff6600;
             color: #fff;
             text-align: center;
-            line-height: .3rem;
-            font-size: .08rem;
+            font-size: 0.2rem;
             margin-right: .3rem;
-            font-weight: 100;
+            line-height: 1;
+            
             
         }
         .records_name{
@@ -107,15 +129,16 @@ export default {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
-    div{
-        width: 1.8rem;
+    margin: 0 -0.15rem;
+    width: 6.9rem;
+    div.health-tag{
         border: solid 1px #3cafb6;
         color: #3cafb6;
         text-align: center;
         line-height: .58rem;
-        border-radius: 5px;
-        margin-top: .2rem;
-        margin-right: .2rem;
+        border-radius: 0.06rem;
+        margin: 0.15rem;
+        min-width: 2rem;
     }
 }
 .arror_img{

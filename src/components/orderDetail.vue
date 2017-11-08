@@ -81,20 +81,23 @@ import { Toast, Indicator } from 'mint-ui'
 export default {
 	data() {
 	    return {
+	    	isWx: this.$common.isWeixin(),
+	    	
 	    	orderDetail:{},
 	    	enlargeStatus: false
 	    }
 	},
 	created() {
-		this.$store.commit('setLoadingStatus', true)
 		this.initData()
 	},
 	methods: {
 		initData() {
 			window.scrollTo(0,0)
+			Indicator.open()
 			this.$api.orderDetail({
 				id: this.$route.params.id
 			}).then(res => {
+				Indicator.close()
 				if(res.ret == 1){
 					this.orderDetail = res
 					
@@ -160,7 +163,7 @@ export default {
 				}
 					
 	        }, err => {
-	        	
+	        	Indicator.close()
 	        })
 		},
 		
@@ -193,6 +196,10 @@ export default {
 		
 		//支付
 		payWx(){
+			if(!this.isWx) {
+				this.$router.push('/paySubmit/' + this.$route.params.id + '/' + '22')
+				return
+			}
 			window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + this.$route.params.id
 		},
 		

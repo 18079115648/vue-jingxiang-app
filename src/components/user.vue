@@ -1,6 +1,8 @@
 <template>
     <div class="app">
     	<div class="user-top">
+    		<div v-if="!isWx" class="set-up other-icon"></div>
+    		<div class="news other-icon"></div>
     		<router-link to="/userInfo" class="to-info" >
     			<img :src="userInfo.img_head" class="avatar" />
     			<p class="nick-name">{{userInfo.username}}</p>
@@ -66,7 +68,7 @@
 			</router-link>
 			
     	</div>
-    	<div class="user-link" style="margin-bottom: 0.8rem;">
+    	<div class="user-link" style="margin-bottom: 0.8rem;" v-if="isWx">
     		<router-link to="/aboutUs" class="link-item has-right-arror">
 				<img src="../../static/images/6@3x.png" class="nav-icon" />
 				关于我们
@@ -81,12 +83,14 @@
 export default {
 	data() {
 		return {
+			isWx: this.$common.isWeixin(),
+			
 			userInfo: {},
-			bindMenber: 0
+			bindMenber: 0,
+			isWx: this.$common.isWeixin()
 		}
 	},
 	created() {
-		this.$store.commit('setLoadingStatus', true)
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res
@@ -113,6 +117,25 @@ export default {
 	/*background: url(../../static/images/10@3x.png) no-repeat center;*/
 	/*background-size: 100% auto;*/
 	background: #3cafb6;
+	position: relative;
+}
+.other-icon{
+	position: absolute;
+	width: 1rem;
+	height: 1rem;
+	top: 0rem;
+	background-position: center;
+	background-size: 55%;
+	background-repeat: no-repeat;
+}
+.other-icon.set-up{
+	left: 0;
+	background-image: url(../../static/images/set.png);
+}
+.other-icon.news{
+	right: 0;
+	background-image: url(../../static/images/news.png);
+	background-size: 42%;
 }
 .to-info{
 	display: block;
@@ -211,6 +234,7 @@ export default {
 	background: #FFFFFF;
 	padding-left: 0.3rem;
 	margin-top: 0.3rem;
+	margin-bottom: 0.3rem;
 	.link-item{
 		display: flex;
 		height: 0.9rem;

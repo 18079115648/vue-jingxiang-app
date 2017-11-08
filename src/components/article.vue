@@ -43,6 +43,7 @@
 
 <script>
 import wx from 'weixin-js-sdk'
+import {Indicator } from 'mint-ui'
 export default {
     data() {
         return {
@@ -55,12 +56,13 @@ export default {
     created() {
     	window.scrollTo(0,0)
         const self = this
-        this.$store.commit('setLoadingStatus', true)
+        Indicator.open()
         this.$api.indexInformationContent(
             {
                 id: self.$route.params.id
             }
         ).then(res => {
+        	Indicator.close()
         	this.detail = res
         	this.goodsList = res.goods
         	if(this.$common.isWeixin()) {
@@ -71,7 +73,7 @@ export default {
 				this.wxShare(lineLink, imgUrl, shareTitle, descContent)
 			}	
         }, err => {
-            
+            Indicator.close()
         })
     },
     methods: {

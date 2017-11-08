@@ -67,7 +67,8 @@
     			共<span class="price-color"> {{orderDetail.total}} </span>件， 
     			实付 <span class="price-color"> &yen; {{orderDetail.amount_order}}</span>
     		</div>
-    		<div class="pay-btn" v-if="type_id == 901" @click.stop="payWx">微信支付</div>
+    		<div class="pay-btn" v-if="type_id == 901 && isWx" @click.stop="payWx">微信支付</div>
+    		<div class="pay-btn" v-if="type_id == 901 && !isWx" @click.stop="payApp">立即支付</div>
     		<div class="pay-btn" v-if="type_id == 902" @click.stop="payCommit">提交预定</div>
     	</div>
     </div>
@@ -80,6 +81,8 @@ import wx from 'weixin-js-sdk'
 export default {
 	data() {
 	    return {
+	    	isWx: this.$common.isWeixin(),
+	    	
 	    	num: 0,
 	    	goods_id: null,
 	    	type_id: null,
@@ -258,6 +261,15 @@ export default {
 			this.createOrder().then(res => {
 				if(res.ret == 1) {
 					this.$router.replace('/orderDetail/' + res.order_id)
+				}
+			}, err => {
+	
+			})
+		},
+		payApp() {
+			this.createOrder().then(res => {
+				if(res.ret == 1) {
+					this.$router.replace('/paySubmit/' + res.order_id + '/' + res.order_no)
 				}
 			}, err => {
 	

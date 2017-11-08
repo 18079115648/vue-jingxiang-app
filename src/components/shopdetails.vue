@@ -286,6 +286,7 @@
 								});
 								if(!this.incart) {
 									this.total += 1
+									this.incart = true
 								}
 							}
 
@@ -328,6 +329,7 @@
 									});
 									if(!this.incart) {
 										this.total += 1
+										this.incart = true
 									}
 								}
 		

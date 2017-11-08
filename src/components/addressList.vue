@@ -6,7 +6,7 @@
 	    		<img class="none-img" src="../../static/images/19@3x.png"  />
 	    		<p class="none-tip">暂无收货地址</p>
 	    	</div>
-	    	<Pagination :render="render" :param="pagination" ref="pagination" uri="/address/index">
+	    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/address/index">
 				<div class="address-list" v-show="pagination.content.length>0">
 		    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
 		    			<div @click="selectAddr(item.address_id)">
@@ -59,8 +59,10 @@ export default {
 		}
 	},
 	created() {
-		this.$store.commit('setLoadingStatus', true)
 		this.status = this.$route.params.status
+	},
+	mounted() {
+		this.$refs.pagination.refresh()
 	},
 	methods: {
 		render(res) {
