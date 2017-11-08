@@ -104,7 +104,11 @@ export default {
             this.$router.push('/shopdetails/' + id)
         },
         back() {
-			this.$router.go(-1)
+			if (window.history.length > 1) {
+	            this.$router.go(-1)
+	        } else {
+	            this.$router.replace('/selected')
+	        }   
 		},
     }
    

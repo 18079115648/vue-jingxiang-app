@@ -151,7 +151,7 @@
 							var lineLink = window.location.href
 							var imgUrl = 'http://' + location.host + res.thumb
 							var shareTitle = res.title
-							var descContent = '金象大药房正品保证,售价: ￥' + self.price
+							var descContent = '金象大药房正品保证,售价: ￥' + res.price_shop
 							this.wxShare(lineLink, imgUrl, shareTitle, descContent)
 						}		
 					}
@@ -204,7 +204,11 @@
 					}	
 				},
 				back() {
-					this.$router.go(-1)
+					if (window.history.length > 1) {
+			            this.$router.go(-1)
+			        } else {
+			            this.$router.replace('/selected')
+			        }   
 				},
 
 				//获取购物车数据
@@ -333,7 +337,7 @@
 						} else {
 							Indicator.close()
 							this.$storage.set('history_uri', window.location.hash.substr(1))
-							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.href)
+							window.location.href = this.$store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(window.location.hash.substr(1))
 						}
 					}, err => {
 						Indicator.close()

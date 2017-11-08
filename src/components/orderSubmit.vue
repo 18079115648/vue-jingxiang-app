@@ -67,8 +67,8 @@
     			共<span class="price-color"> {{orderDetail.total}} </span>件， 
     			实付 <span class="price-color"> &yen; {{orderDetail.amount_order}}</span>
     		</div>
-    		<div class="pay-btn" v-if="type_id == 901" @click="payWx">微信支付</div>
-    		<div class="pay-btn" v-if="type_id == 902" @click="payCommit">提交预定</div>
+    		<div class="pay-btn" v-if="type_id == 901" @click.stop="payWx">微信支付</div>
+    		<div class="pay-btn" v-if="type_id == 902" @click.stop="payCommit">提交预定</div>
     	</div>
     </div>
 </template>

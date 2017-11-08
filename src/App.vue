@@ -326,5 +326,20 @@ input::-webkit-search-cancel-button {
 	.mint-indicator-text{
 		font-size: 0.28rem !important;
 	}
-	
+	.mint-datetime-action{
+		color: #3cafb6 !important;
+		font-size: 0.28rem !important;
+	}
+	.mint-datetime-action.mint-datetime-cancel{
+		color: #333 !important;
+	}
+	.picker-slot{
+		font-size: 0.28rem !important;
+	}
+	.picker-item.picker-selected{
+		font-size: 0.3rem !important;
+	}
+	.mint-msgbox-confirm{
+		color: #3cafb6 !important;
+	}
 </style>
