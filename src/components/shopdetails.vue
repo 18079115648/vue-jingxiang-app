@@ -114,6 +114,7 @@
 		Indicator
 	} from 'mint-ui';
 	import wx from 'weixin-js-sdk'
+	import token from '@/fetch/accessToken'
 	export default {
 		data() {
 				return {
@@ -122,7 +123,6 @@
 					chargeNum: 1,
 					opereteStatus: '', //商品操作类型  'add' 加入购物车 ， 'pay' 立即购买
 					aouthStatus: false, //获取登录状态是否登录
-
 					goodsDetail: {},
 					banner: [],
 					comment: {},
@@ -147,12 +147,13 @@
 						this.banner = res.thumb_more
 						this.comment = res.comment
 						this.getCartData()
+						this.lineLink = window.location.href
+						this.imgUrl = 'http://' + location.host + res.thumb
+						this.shareTitle = res.title
+						this.descContent = '金象大药房正品保证,售价: ￥' + res.price_shop
 						if(this.$common.isWeixin()) {
-							var lineLink = window.location.href
-							var imgUrl = 'http://' + location.host + res.thumb
-							var shareTitle = res.title
-							var descContent = '金象大药房正品保证,售价: ￥' + res.price_shop
-							this.wxShare(lineLink, imgUrl, shareTitle, descContent)
+							
+							this.wxShare(this.lineLink, this.imgUrl, this.shareTitle, this.descContent)
 						}		
 					}
 
@@ -199,9 +200,19 @@
 					})
 				},
 				showShareTip() {
+					const self = this
 					if(this.$common.isWeixin()) {
 						this.show = true
-					}	
+						return
+					}
+					this.$bridge.share({
+	                    link: self.lineLink,
+	                    title: self.shareTitle,
+	                    desc: self.descContent,
+	                    icon: self.imgUrl
+	                }).then(ret => {
+	                    
+	                })
 				},
 				back() {
 					if (window.history.length > 1) {
@@ -268,6 +279,7 @@
 					}, err => {
 
 					})
+					
 
 				},
 				operate() {

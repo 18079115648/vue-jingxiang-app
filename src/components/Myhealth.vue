@@ -325,8 +325,20 @@ export default {
                         this.initData().then(res => {
                         		this.aloneHealth = []
 								            res.data.forEach((item) => {
-								            	item.deleteIcon = false
-								            	this.aloneHealth.push(item)
+								            	let isCom = false
+								            	this.HealthTag.forEach((obj) => {
+								            		if(obj.value == item.name) {
+								            			isCom = true
+								            			obj.active = true
+								            			obj.hasDelete = true
+								            			obj.health_tag_id = item.health_tag_id
+								            			return
+								            		}
+								            	})
+								            	if(!isCom) {
+								            		item.deleteIcon = false
+								            		this.aloneHealth.push(item)
+								            	}
 								            })
 								        }, err => {
 								            

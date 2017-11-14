@@ -65,12 +65,12 @@ export default {
         	Indicator.close()
         	this.detail = res
         	this.goodsList = res.goods
+        	this.lineLink = window.location.href
+			this.imgUrl = 'http://' + location.host + res.thumb
+			this.shareTitle = res.title
+			this.descContent = '金象大药房'
         	if(this.$common.isWeixin()) {
-				var lineLink = window.location.href
-				var imgUrl = 'http://' + location.host + res.thumb
-				var shareTitle = res.title
-				var descContent = '金象大药房'
-				this.wxShare(lineLink, imgUrl, shareTitle, descContent)
+				this.wxShare(this.lineLink, this.imgUrl, this.shareTitle, this.descContent)
 			}	
         }, err => {
             Indicator.close()
@@ -100,7 +100,16 @@ export default {
 		showShareTip() {
 			if(this.$common.isWeixin()) {
 				this.show = true
+				return
 			}	
+			this.$bridge.share({
+                link: self.lineLink,
+                title: self.shareTitle,
+                desc: self.descContent,
+                icon: self.imgUrl
+            }).then(ret => {
+                
+            })
 		},
         goDetail(id){
             this.$router.push('/shopdetails/' + id)

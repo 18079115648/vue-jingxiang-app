@@ -29,10 +29,9 @@
     				<p class="tip">上传处方可以缩短审核时间，仅限一张</p>
     			</div>
     			<div class="updata-icon">
-    				<!--<img src="../../static/images/11@3x.png" class="fullEle" @click="changeAvatar" />-->
-    				<!--<img :src="updataImg" class="fullEle" @click="changeAvatar" />-->
-    				<img :src="updataImg" class="fullEle" @click="openImg" />
-    				<input type="file" id="inputImg" @change="onFileChange" accept="image/*" />
+    				<img :src="updataImg" class="fullEle" @click="changeAvatar" />
+    				<!--<img :src="updataImg" class="fullEle" @click="openImg" />
+    				<input type="file" v-if="isWx" id="inputImg" @change="onFileChange" accept="image/*" />-->
     			</div>
     		</div>
     	</div>
@@ -174,7 +173,24 @@ export default {
 			})
 		},
 		openImg() {
-			document.getElementById('inputImg').click()
+			if(this.isWx) {
+				document.getElementById('inputImg').click()
+				return
+			}
+			const self = this
+			let data = {
+				'PHPSESSID': this.$getCookie('PHPSESSID'),
+				'TOKEN': this.$getCookie('TOKEN'),
+				'type': 2
+			}
+			Indicator.open()
+			this.$bridge.choosePhoto(data).then(res => {
+				Indicator.close()
+				if(res.ret == 1) {
+					self.updataImg = res.url
+				}
+                
+            })
 		},
 		
 		onFileChange(e) {
@@ -208,7 +224,6 @@ export default {
 				    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 				    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 				    success: function (res) {
-				    	console.log(res)
 				        wx.uploadImage({
 						    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
 						    isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -217,7 +232,7 @@ export default {
 						        	media_id: res.serverId
 						        }).then(res => {
 									if(res.ret == 1) {
-										self.updataImg = res.img_head
+										self.updataImg = res.img_user
 									}
 						        }, err => {
 						        	
@@ -225,8 +240,22 @@ export default {
 						    }
 						});
 				    }
-				});
+				})
+				return
 			}
+			let data = {
+				'PHPSESSID': this.$getCookie('PHPSESSID'),
+				'TOKEN': this.$getCookie('TOKEN'),
+				'type': 2
+			}
+			Indicator.open()
+			this.$bridge.choosePhoto(data).then(res => {
+				Indicator.close()
+				if(res.ret == 1) {
+					self.updataImg = res.url
+				}
+                
+            })
 				
 		},
 		inputNumber() {

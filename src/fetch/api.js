@@ -2,8 +2,8 @@ import axios from 'axios'
 import qs from 'qs'
 import { Toast } from 'mint-ui'
 import store from '@/vuex/store.js'
-import { Autho } from '../../static/js/app.js'
 import storage from '@/fetch/storage'
+import router from '@/router/router'
 
 
 
@@ -11,7 +11,7 @@ import storage from '@/fetch/storage'
 
 
 // axios 配置
-axios.defaults.timeout = 9000;
+axios.defaults.timeout = 20000;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 axios.defaults.baseURL = '/index'
 						
@@ -316,6 +316,11 @@ export default {
 	//注册
 	registerUser(params) {
 		return fetchPost('/register/index', params)
+	},
+	
+	//注册
+	weixinLogin(params) {
+		return fetchPost('/login/index ', params)
 	},
 	
 	

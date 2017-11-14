@@ -104,7 +104,6 @@ export default {
 }
 .msg_title{
   width: 100%;
-  height: 1.8rem;
   background-color: #fff;
   padding: .2rem .2rem .2rem .2rem;
   position: relative;
@@ -113,8 +112,8 @@ export default {
   
 }
 .img_left{
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.8rem;
+  height: 1.8rem;
   border: 1px solid #eee;
   position: relative;
   overflow: hidden;
@@ -129,18 +128,19 @@ export default {
 }
 .msg_text{
   width: 100%;
-  height: 1.4rem;
-  font-size: .27rem;
+  height: 1.8rem;
+  font-size: .28rem;
   flex: 1;
   flex-wrap: wrap;
   padding-left: .2rem;
   overflow: hidden;
+  line-height: 1.5;
+  position: relative;
   .title{
-  	color: #222;
+  	color: #000;
   	text-overflow: ellipsis;
   	white-space: nowrap;
   	overflow: hidden;
-  	padding-top: 0.06rem;
   }
   .msg-content{
   	font-size: 0.24rem;
@@ -150,14 +150,15 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    line-height: 0.3rem;
     margin: 0.1rem 0;
   }
 }
 .teat_info{
-  height: .24rem;
   font-size: .24rem;
   color: #888;
+  position: absolute;
+  left: 0.2rem;
+  bottom: 0.06rem;
 }
 
 </style>

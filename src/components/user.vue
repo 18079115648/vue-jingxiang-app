@@ -1,10 +1,10 @@
 <template>
     <div class="app">
     	<div class="user-top">
-    		<div v-if="!isWx" class="set-up other-icon"></div>
-    		<div class="news other-icon"></div>
+    		<router-link to="/indexSetting" v-if="!isWx" class="set-up other-icon"></router-link>
+    		<router-link to="/advices" class="news other-icon"></router-link>
     		<router-link to="/userInfo" class="to-info" >
-    			<img :src="userInfo.img_head" class="avatar" />
+    			<img :src="headImg" class="avatar" />
     			<p class="nick-name">{{userInfo.username}}</p>
     		</router-link>
     	</div>
@@ -86,6 +86,7 @@ export default {
 			isWx: this.$common.isWeixin(),
 			
 			userInfo: {},
+			headImg:'',
 			bindMenber: 0,
 			isWx: this.$common.isWeixin()
 		}
@@ -94,6 +95,7 @@ export default {
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res
+				this.headImg = res.img_head || '../../static/images/avatar.png'
 				this.bindMenber = res.bind
 				this.$storage.set('user_money', this.userInfo.user_money)
 			}

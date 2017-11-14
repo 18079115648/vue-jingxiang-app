@@ -15,7 +15,7 @@
         </div>
     </div>	    
 	<div class="content">
-		<Pagination :render="render" :param="pagination" ref="pagination" uri="/goods/comment">
+		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/goods/comment">
 			
 			<div class="review-list" v-show="pagination.content.length>0">
 				<div class="review" v-for="(item, index) in pagination.content" :key="index">
@@ -60,19 +60,22 @@ export default {
 	    return {
 	    	total: 0,
 	    	total_score: 0,
-			pagination: {
-	            content: [],
-	            loadEnd: false,
-	            type: 'post',
-	            data: {
-	            	p: 1,
-	            	id: this.$route.params.id
-	            }
-	        },
-	    }
+				pagination: {
+		            content: [],
+		            loadEnd: false,
+		            type: 'post',
+		            data: {
+		            	p: 1,
+		            	id: this.$route.params.id
+		            }
+		        },
+		    }
     },
     created() {
     	this.$store.commit('setLoadingStatus', true)
+    },
+    mounted() {
+    	this.$refs.pagination.refresh()
     },
     methods: {
   	    render(res) {

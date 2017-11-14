@@ -78,7 +78,7 @@ input::-webkit-search-cancel-button {
 }
 
 .pop-product-img{
-	border: 1px solid #eee;
+	/*border: 1px solid #eee;*/
 }
 .modal-message>span{
 	color: #39B382;

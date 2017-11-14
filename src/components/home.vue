@@ -1,6 +1,7 @@
 <template>
     <div class="app">
     	<Header title="金象大药房" back="hidden"></Header>
+    	
     	<div class="search-content">
     		<a href="#/search" class="search-input">
     			<img src="../../static/images/search-icon.png" />
@@ -77,7 +78,7 @@ export default {
 		}
 	},
 	created() {
-		window.scrollTo(0,0)
+//		window.scrollTo(0,0)
 //		this.$api.indexBanner().then(res => {   
 //          res.forEach((item) => {
 //          	let obj = {

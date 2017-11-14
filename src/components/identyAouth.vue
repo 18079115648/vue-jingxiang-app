@@ -20,7 +20,9 @@ import { Toast } from 'mint-ui'
 export default {
 	data() {
 	    return {
-	    	userInfo: {}
+	    	userInfo: {},
+	    	
+	    	disabledBtn: false
 	    }
 	},
 	mounted() {	
@@ -36,6 +38,10 @@ export default {
 	},
 	methods: {
 		save() {
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			this.$api.updataUserInfo(this.userInfo).then(res => { 
 				if(res.ret !== 1) {
 					Toast({
@@ -53,9 +59,10 @@ export default {
 				})
 				setTimeout(() => {
 					this.$router.go(-1)
+					this.disabledBtn = false
 				},800)
 	        }, err => {
-	        	
+	        	this.disabledBtn = false
 	        })
 		}
 	}

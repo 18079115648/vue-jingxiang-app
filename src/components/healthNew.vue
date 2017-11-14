@@ -112,7 +112,9 @@ export default {
             endDate: new Date(),
             
             currTagIndex: null,
-            deleteShow: false
+            deleteShow: false,
+            
+            disabledBtn: false
         }
     },
     created() {
@@ -206,7 +208,10 @@ export default {
 	            })
         		return
         	}
-        	
+        	if(this.disabledBtn) {
+						return
+					}
+					this.disabledBtn = true
 	        let data = ''
 	        this.HealthTag.forEach((item) => {
 	        	if(item.active) {
@@ -229,17 +234,18 @@ export default {
 	        }).then(res => {
 	            if(res.ret == 1) {
 	                Toast({
-					  message: '添加成功',
-					  position: 'middle',
-					  iconClass: 'toast-icon icon-success',
-					  duration: 1000
-					})
+									  message: '添加成功',
+									  position: 'middle',
+									  iconClass: 'toast-icon icon-success',
+									  duration: 1000
+									})
 	                setTimeout(() => {
 	                    this.$router.go(-1)
+	                    this.disabledBtn = false
 	                },1300)
 	            }
 	        }, err => {
-	        	
+	        	 this.disabledBtn = false
 	        })
 
         	

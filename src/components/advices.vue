@@ -1,6 +1,6 @@
 <template>
     <section class="advices">
-        <Header title="金象大药房"></Header>
+        <Header title="消息"></Header>
 
         <div class="content">
             <div class="advices_time">2010年10月10日</div>

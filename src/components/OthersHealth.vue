@@ -1,5 +1,5 @@
 <template>
-  <section class="health">
+  <section class="app">
 
     <Header title="添加亲属"></Header>
     <div class="save" @click="save">保存</div>
@@ -15,9 +15,8 @@
    
     <div class="field has-right-arror">
         <span>性别</span>
-        <div class="none-data" v-if="sex_name">请选择</div>
-        <div class="right" v-if="!sex_name">
-        	<select @change="change" v-model="sex" dir="rtl">
+        <div class="right">
+        	<select  v-model="sex" dir="rtl">
 	            <option value="0">保密</option>
 	            <option value="1">男</option>
 	            <option value="2">女</option>
@@ -29,8 +28,7 @@
 
     <div class="field has-right-arror" >
         <span>生日</span>
-        <div v-if="birth_time" @click="openPicker">请选择</div>
-        <div v-if="!birth_time" class="right"  @click="openPicker">
+        <div class="right"  @click="openPicker">
         	<div class="birth">{{birth}}</div>
         </div>
 	       <mt-datetime-picker
@@ -104,8 +102,6 @@ export default {
             HealthTag:[],      //常用健康标签
             aloneHealth:[], //新增疾病标签
             relationship_id:'',
-            sex_name: true,
-            birth_time: true,
             birth: '',
             id :'',
             startDate: new Date('1917-1-1'),
@@ -159,12 +155,6 @@ export default {
             	}
             	
             })
-            if(res.sex){
-                this.sex_name = false
-            }
-            if(res.birthday){
-                this.birth_time = false
-            }
         })
         
         setTimeout(() => {
@@ -257,9 +247,6 @@ export default {
 	
 	        	
 	        },
-	        change() {
-	            this.sex_name = false
-	        },
 	        
 	        //打开生日选择器
 	        openPicker() {
@@ -267,8 +254,6 @@ export default {
 	        },
 	        //点击生日选择器上的确定
 	        handleConfirm(value) {
-	        	console.log(this.birthPicker)
-	            this.birth_time = false
 	            this.birth  = value.getFullYear() + '-' + this.toTwo(value.getMonth() + 1) + '-' + this.toTwo(value.getDate())
 	            
 	
@@ -334,8 +319,20 @@ export default {
 	                        this.initData().then(res => {
                         		this.aloneHealth = []
 					            res.data.forEach((item) => {
-					            	item.deleteIcon = false
-					            	this.aloneHealth.push(item)
+					            	let isCom = false
+					            	this.HealthTag.forEach((obj) => {
+					            		if(obj.value == item.name) {
+					            			isCom = true
+					            			obj.active = true
+					            			obj.hasDelete = true
+					            			obj.health_tag_id = item.health_tag_id
+					            			return
+					            		}
+					            	})
+					            	if(!isCom) {
+					            		item.deleteIcon = false
+					            		this.aloneHealth.push(item)
+					            	}
 					            })
 					        }, err => {
 					            
@@ -375,7 +372,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.health{
+.app{
     padding-bottom: 0.5rem;
     background-color: #f5f5f5;
     position: relative;
@@ -525,6 +522,6 @@ input::-webkit-input-placeholder{
     border-radius: 50%;
 }
 .delete-btn{
-	margin: 0.5rem auto 0;
+	margin: 0.7rem auto 0;
 }
 </style>

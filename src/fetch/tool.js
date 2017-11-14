@@ -44,6 +44,19 @@ export function loadJssdk(lineLink, imgUrl, shareTitle, descContent) {
     });
 }
 
+export function getCookie(name) {
+    var strCookie = document.cookie;
+
+    var arrCookie = strCookie.split("; ");
+
+    for (var i = 0; i < arrCookie.length; i++) {
+        var arr = arrCookie[i].split("=");
+        if (arr[0] == name) return arr[1];
+    }
+
+    return "";
+}
+
 export function GetQueryString(name) {
     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
     var param=window.location.hash.split('?')[1];

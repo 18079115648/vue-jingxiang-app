@@ -24,7 +24,9 @@ export default {
 	data() {
 	    return {
 	    	wH: 0,
-	    	card: ''
+	    	card: '',
+	    	
+	    	disabledBtn: false
 	    }
 	},
 	mounted() {	
@@ -45,6 +47,10 @@ export default {
 				});
 				return
 			}
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			this.$api.bindMemberCard({
 				cardno: this.card
 			}).then(res => {
@@ -64,9 +70,10 @@ export default {
 				})
 				setTimeout(() => {
 					this.$router.go(-1)
+					this.disabledBtn = false
 				},800)
 	        }, err => {
-
+				this.disabledBtn = false
 	        })
 		},
 		openMember() {

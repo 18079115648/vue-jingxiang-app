@@ -1,3 +1,9 @@
+import VueRouter from 'vue-router'
+import token from '@/fetch/accessToken'
+import storage from '@/fetch/storage'
+import aouth from '@/fetch/wxAouth'
+import store from '@/vuex/store.js'
+
 const selected = r => require.ensure([], () => r(require('../components/home.vue')), 'selected')
 const search = r => require.ensure([], () => r(require('../components/search.vue')), 'search')
 const searchResult = r => require.ensure([], () => r(require('../components/searchResult.vue')), 'searchResult')
@@ -24,6 +30,8 @@ const addressDetail = r => require.ensure([], () => r(require('../components/add
 const addressNew = r => require.ensure([], () => r(require('../components/addressNew.vue')), 'addressNew')
 const aboutUs = r => require.ensure([], () => r(require('../components/aboutUs.vue')), 'aboutUs')
 const login = r => require.ensure([], () => r(require('../components/login.vue')), 'login')
+const appLogin = r => require.ensure([], () => r(require('../components/appLogin.vue')), 'appLogin')
+const OAuth = r => require.ensure([], () => r(require('../components/OAuth.vue')), 'OAuth')
 
 
 
@@ -47,12 +55,12 @@ const advices = r => require.ensure([], () => r(require('../components/advices.v
 
 
 
-export default  [{ 
-    	path: '/',
-    	redirect: '/selected'
-    },{
+const routes = [{
         path: '/selected',
-        component: selected
+        component: selected,
+        meta: {
+            keepAlive: true
+        }
     },{
         path: '/search',
         component: search
@@ -90,8 +98,14 @@ export default  [{
             requireAuth: true
         }
     },{
+        path: '/OAuth',
+        component: OAuth
+    },{
         path: '/login',
         component: login
+    },{
+        path: '/appLogin',
+        component: appLogin
     },{
         path: '/userInfo',
         component: userInfo
@@ -112,10 +126,16 @@ export default  [{
         component: article
     },{
         path: '/classification',
-        component: classification
+        component: classification,
+        meta: {
+            keepAlive: true
+        }
     },{
         path: '/information',
-        component: information
+        component: information,
+        meta: {
+            keepAlive: true
+        }
     },{
         path: '/shopdetails/:id',
         component: shopdetails
@@ -148,7 +168,10 @@ export default  [{
         component: addressNew
 	},{
         path: '/aboutUs',
-        component: aboutUs
+        component: aboutUs,
+        meta: {
+            keepAlive: true
+        }
 	},{
         path: '/reviewList/:id',
         component: reviewList
@@ -172,5 +195,28 @@ export default  [{
         component: advices
     }]
 
+const router = new VueRouter({
+    routes,
+//  mode: 'history',
+    strict: process.env.NODE_ENV !== 'production'
+})
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth) {
+    	aouth.wxAouth().then(res => {
+    		if(res.ret == 1) {
+    			next()
+    		}else {
+    			storage.set('history_uri', to.fullPath)
+    			window.location.replace(store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(to.fullPath))
+//  			next()
+    		}
+    		
+    	})
+    }else {
+    	next()
+    }
 
     
+})
+export default router   

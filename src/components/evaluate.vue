@@ -45,7 +45,9 @@ export default {
 				logiStar: 0
 			},
 			order_id: null,
-			goodsList: []
+			goodsList: [],
+			
+			disabledBtn: false
 			
 		}
 	},
@@ -106,6 +108,10 @@ export default {
 				});
 				return
 			}
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			goods_ids = '[' + goods_ids.join(',') + ']'
 			score = '[' + score.join(',') + ']'
 			content = '[' + content.join(',') + ']'
@@ -117,11 +123,13 @@ export default {
 				score_service: this.starList.serveStar,
 				score_speed: this.starList.logiStar
 			}).then(res => {
+				
 				if(res.ret == 1) {
 					this.$router.go(-1)
+					this.disabledBtn = false
 				}
 	        }, err => {
-	        	
+	        	this.disabledBtn = false
 	        })
 			
 		}

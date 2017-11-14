@@ -10,11 +10,11 @@
     		<span @click="back">取消</span>
     	</div>
     	<section class="search-history">
-			<div class="search-history-tit">
+			<div class="search-history-tit" v-show="historyWord.length>0">
 				<span class="tit">最近搜索</span>
 				<span class="delete-icon" @click="historyClear"></span>
 			</div>
-			<div class="search-history-list">
+			<div class="search-history-list" v-show="historyWord.length>0">
 				<span class="search-history-item" @click="searchProduct(item.wd)" v-for="(item, index) in historyWord" :key="index">
 					{{item.wd}}
 				</span>

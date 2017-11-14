@@ -65,7 +65,9 @@ export default {
 			areaList: [],
 			
 			address: '',
-			is_default: false
+			is_default: false,
+			
+			disabledBtn: false
 	    }
 	},
 	created() {
@@ -110,6 +112,10 @@ export default {
 	        })
 		},
 		createAddr() {
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			this.$api.createAddr({
 			    contact: this.contact,
 			    mobile: this.mobile, 
@@ -136,10 +142,11 @@ export default {
 				})
 				setTimeout(() => {
 					this.$router.go(-1)
+					this.disabledBtn = false
 				},1200)
 				
 	        }, err => {
-	        	
+	        	this.disabledBtn = false
 	        })
 		}
 	}
@@ -162,7 +169,7 @@ export default {
 		padding-right: 0.3rem;
 		border-bottom: 1px solid #f3f3f3;
 		span{
-			width: 2.3rem;
+			width: 1.9rem;
 		}
 		input{
 			flex: 1;

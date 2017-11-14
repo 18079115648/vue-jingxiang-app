@@ -4,9 +4,9 @@
     	<div class="avatar-content has-right-arror">
     		<span>头像</span>
     		<div class="avatar" @click="enlargeStatus = true">
-    			<img :src="userInfo.img_head" />
+    			<img :src="headImg" />
     		</div>
-    		<div class="changeAvatar" @click="changeAvatar"></div>
+				<div class="changeAvatar" @click="changeAvatar"></div>
     	</div>
     	<div class="user-info">
     		<div @click="editNickName" class="link-item  has-right-arror">
@@ -41,16 +41,20 @@
 				</div>
 	    	</div>
     	</div>
-    	<enlarge-img v-show="enlargeStatus" :url="userInfo.img_head" @enlargeCancel="enlargeStatus = false"></enlarge-img>
+    	<enlarge-img v-show="enlargeStatus" :url="headImg" @enlargeCancel="enlargeStatus = false"></enlarge-img>
     </div>
 </template>
 
 <script>
+import { Toast, Indicator } from 'mint-ui'
 import wx from 'weixin-js-sdk'
 export default {
 	data() {
 		return {
+			isWx: this.$common.isWeixin(),
+			
 			userInfo: {},
+			headImg: '',
 			enlargeStatus: false
 		}
 	},
@@ -58,11 +62,15 @@ export default {
 		this.$api.user().then(res => { 
 			if(res.ret == 1) {
 				this.userInfo = res
+				this.headImg = res.img_head || '../../static/images/avatar.png'
 			}
         }, err => {
         	
         })
-		this.wxJssdk()
+		if(this.isWx) {
+			this.wxJssdk()
+		}
+		
 	},
 	methods: {
 		wxJssdk() {
@@ -71,7 +79,7 @@ export default {
 				url: window.location.href.split('#')[0]
 			}).then((res) => {
 				wx.config({
-					debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 					appId: res.appId, // 必填，公众号的唯一标识
 					timestamp: parseInt(res.timestamp), // 必填，生成签名的时间戳
 					nonceStr: res.noncestr, // 必填，生成签名的随机串
@@ -84,38 +92,48 @@ export default {
 			}).catch((err) => {
 				console.log(err)
 			})
-		},
-		previewAvatar() {
-			wx.previewImage({
-			    current: this.userInfo.img_head, // 当前显示图片的http链接
-			    urls: [this.userInfo.img_head] // 需要预览的图片http链接列表
-			});
-		},
+	  },
 		changeAvatar() {
 			let self = this
-			wx.chooseImage({
-			    count: 1, // 默认9
-			    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-			    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-			    success: function (res) {
-			    	alert(res)
-			        wx.uploadImage({
-					    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
-					    isShowProgressTips: 1, // 默认为1，显示进度提示
-					    success: function (res) {
-					        self.$api.wxUploadUserImg({
-					        	media_id: res.serverId
-					        }).then(res => {
-								if(res.ret == 1) {
-									self.userInfo.img_head = res.img_head
-								}
-					        }, err => {
-					        	
-					        })
-					    }
-					});
-			    }
-			});
+			if(this.isWx) {
+				wx.chooseImage({
+				    count: 1, // 默认9
+				    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+				    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+				    success: function (res) {
+				        wx.uploadImage({
+								    localId:  res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+								    isShowProgressTips: 1, // 默认为1，显示进度提示
+								    success: function (res) {
+								        self.$api.wxUploadUserImg({
+								        	media_id: res.serverId
+								        }).then(res => {
+													if(res.ret == 1) {
+														self.headImg = res.img_head
+													}
+								        }, err => {
+								        	
+								        })
+								    }
+								});
+				    }
+				})
+				return
+			}
+			let data = {
+				'PHPSESSID': this.$getCookie('PHPSESSID'),
+				'TOKEN': this.$getCookie('TOKEN'),
+				'type': 1
+			}
+			Indicator.open()
+			this.$bridge.choosePhoto(data).then(res => {
+				Indicator.close()
+				if(res.ret == 1) {
+					self.headImg = res.url
+				}
+                
+      })
+			
 		},
 		editNickName() {
 			let info = {
@@ -143,6 +161,16 @@ export default {
 			this.$storage.set('user_info', info)
 			this.$router.push('/identyAouth')
 		}
+	},
+	beforeRouteLeave(to, from, next) {
+		if(this.enlargeStatus) {
+			this.enlargeStatus = false
+			next(false)
+			return
+		} else {
+			next()
+		}
+
 	}
 }
 </script>
@@ -173,8 +201,8 @@ export default {
 			left: 50%;
 			top: 50%;
 			transform: translate(-50%, -50%);
-			height: 100%;
-			max-width: 100%;
+			width: 100%;
+			max-height: 100%;
 		}
 	}
 	.changeAvatar{

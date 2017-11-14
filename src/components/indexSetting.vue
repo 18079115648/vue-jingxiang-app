@@ -1,5 +1,5 @@
 <template>
-    <section class="indexSetting">
+    <section class="app">
         <Header title="设置"></Header>
 
         <div class="field">
@@ -10,7 +10,7 @@
     		</div>
         </div>
 
-        <div class="field" style="margin-top:.4rem;">
+        <router-link to="/aboutUs" class="field" style="margin-top:.4rem;">
             <div>关于我们</div>
 
             <div>
@@ -18,13 +18,16 @@
             </div>
 
             <div class="line"></div>
-        </div>
+        </router-link>
 
 
         <div class="field">
             <div>版本</div>
 
             <div class="version">V1.0</div>
+        </div>
+        <div class="btn-default login-out">
+        	退出登录
         </div>
     </section>
 </template>
@@ -49,11 +52,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.indexSetting{
-    width: 100vw;
-    height: 100vh;
+.app{
     background-color: #f5f5f5;
     position: relative;
+    padding-top: 0.4rem;
 }
 .field{
     width: 100%;
@@ -64,7 +66,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     font-size: .3rem;
-    font-weight: 100;
     position: relative;
     .arror{
         width: .15rem;
@@ -80,5 +81,10 @@ export default {
     width: 100%;
     height: 100%;
     border-bottom:solid 1px #f5f5f9;
+}
+.login-out{
+	position: absolute;
+	bottom: 1rem;
+	left: 0.3rem;
 }
 </style>

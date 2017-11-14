@@ -17,6 +17,7 @@
 		</div>
 		<p class="tip">温馨提示：您可以在线进行充值，线下到指定药店办理会员卡</p>
         <div class="btn-default btn-hover pay-wx" @click="payWx">微信支付</div>
+        <div class="btn-default btn-hover pay-ali" v-if="!isWx">支付宝支付</div>
     </div>
 </template>
 
@@ -25,6 +26,8 @@ import { Toast } from 'mint-ui';
     export default {
         data() {
             return {
+            	isWx: this.$common.isWeixin(),
+            	
                 rechargeData: [{
                 	value: 50,
                 	active: true
@@ -42,7 +45,9 @@ import { Toast } from 'mint-ui';
                 	active: false
                 }],
                 recharge: 50,
-                otherStatus: false
+                otherStatus: false,
+                
+                disabledBtn: false
             }
         },
         created() {
@@ -79,14 +84,19 @@ import { Toast } from 'mint-ui';
 					});
 					return
 				}
+				if(this.disabledBtn) {
+					return
+				}
+				this.disabledBtn = true
 				this.$api.recharge({
 					money: parseFloat(this.recharge)
 				}).then(res => {
 					if(res.ret == 1) {
+						this.disabledBtn = false
 						window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_no
 					}
 		        }, err => {
-		        	
+		        	this.disabledBtn = false
 		        })
 			}
         }
@@ -133,6 +143,10 @@ import { Toast } from 'mint-ui';
 }
 .pay-wx{
 	background: #4fb21a;
+	margin-top: 0.8rem;
+}
+.pay-ali{
+	background: #2099df;
 	margin-top: 0.8rem;
 }
 </style>

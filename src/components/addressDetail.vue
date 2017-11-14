@@ -61,6 +61,7 @@ export default {
 			cityId: 0,
 			areaList: [],
 			areaId: 0,
+			disabledBtn: false
 	    }
 	},
 	created() {
@@ -121,6 +122,10 @@ export default {
 	        })
 		},
 		updataAddr() {
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			this.$api.updataAddr({
 				id:  this.addressId,
 			    contact: this.addrDetail.contact,
@@ -148,10 +153,11 @@ export default {
 				})
 				setTimeout(() => {
 					this.$router.go(-1)
+					this.disabledBtn = false
 				},1200)
 				
 	        }, err => {
-	        	
+	        	this.disabledBtn = false
 	        })
 		}
 	}
@@ -174,7 +180,7 @@ export default {
 		padding-right: 0.3rem;
 		border-bottom: 1px solid #f3f3f3;
 		span{
-			width: 2.3rem;
+			width: 1.9rem;
 		}
 		input{
 			flex: 1;

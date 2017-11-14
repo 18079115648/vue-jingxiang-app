@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import routes from './router/router'
+import router from './router/router'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
 
@@ -22,12 +22,25 @@ Vue.prototype.$storage = storage
 import { loadJssdk } from '@/fetch/tool'
 Vue.prototype.$loadJssdk = loadJssdk
 
+import { getCookie } from '@/fetch/tool'
+Vue.prototype.$getCookie = getCookie
+
+import bridge from '@/fetch/bridge'
+Vue.prototype.$bridge = bridge
+
 import common from '@/fetch/common'
 Vue.prototype.$common = common
+
+import weixin from '@/fetch/weixin'
+Vue.prototype.$weixin = weixin
+
+import token from '@/fetch/accessToken'
+Vue.prototype.$token = token
 
 import aouth from '@/fetch/wxAouth'
 Vue.prototype.$wxAouth = aouth.wxAouth
 //console.log(aouth.wxAouth().then(()))
+
 
 import Menu from '@/components/common/tabBar'
 Vue.component('Menu', Menu)
@@ -51,30 +64,7 @@ Vue.use(VueRouter)
 Vue.use(mint)
 
 
-const router = new VueRouter({
-    routes,
-//  mode: 'history',
-    strict: process.env.NODE_ENV !== 'production'
-})
 
-router.beforeEach((to, from, next) => {
-    if (to.meta.requireAuth) {
-    	aouth.wxAouth().then(res => {
-    		if(res.ret == 1) {
-    			next()
-    		}else {
-    			storage.set('history_uri', to.fullPath)
-    			window.location.replace(store.state.back_uri + 'index/api/weixin?url=' + encodeURIComponent(to.fullPath))
-//  			next()
-    		}
-    		
-    	})
-    }else {
-    	next()
-    }
-
-    
-})
 
 
 
