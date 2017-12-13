@@ -2,7 +2,7 @@
     <div class="app">
     	<div class="search-content">
     		<span @click="back" class="back"></span>
-    		<div class="search-input">
+    		<div class="search-input" @click="back">
     			{{search_word}}
     		</div>
     		
@@ -13,7 +13,7 @@
 					<router-link :to="'/shopdetails/' + item.goods_id " class="pop-product-item" v-for="(item, index) in pagination.content" :key="index">
 						<div class="fullEle">
 							<div class="pop-product-img">
-								<img class="fullEle" :src="item.thumb" />
+								<img class="fullEle" v-lazy="item.thumb" />
 							</div>
 							<div class="pop-product-desc">
 								<p class="pop-product-name">{{item.title}}</p>
@@ -24,11 +24,12 @@
 					</router-link>
 					
 				</div>
+				<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+		    		<img class="none-img" src="../../static/images/46@3x.png"  />
+		    		<p class="none-tip">没有找到商品单信息</p>
+		    	</div>
 			</Pagination>
-			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-	    		<img class="none-img" src="../../static/images/46@3x.png"  />
-	    		<p class="none-tip">没有找到商品单信息</p>
-	    	</div>
+			
     	</div>
 		
     </div>
@@ -62,7 +63,6 @@ export default {
 				wd: this.$storage.get('search_word')
             }
         }
-		this.$store.commit('setLoadingStatus', true)
 		this.$refs.pagination.refresh()
 	},
 	methods: {

@@ -29,21 +29,10 @@
 
     <div class="field has-right-arror" >
         <span>生日</span>
-        <div v-if="birth_time" @click="openPicker">请选择</div>
-        <div v-if="!birth_time" class="right"  @click="openPicker">
+        <div  class="right"  @click="openPicker">
         	<div class="birth">{{birth}}</div>
-        </div>
-	       <mt-datetime-picker
-	            ref="picker"
-	            v-model="birthPicker"
-	            type="date"
-	            year-format="{value} 年"
-	            month-format="{value} 月"
-	            date-format="{value} 日"
-	            :startDate="startDate"
-	            :endDate="endDate"
-	            @confirm="handleConfirm">
-	        </mt-datetime-picker> 
+        </div> 
+	       
     </div>
 
     <div class="field">
@@ -69,7 +58,17 @@
         </div>
         <div class="add_illness" @click="add_label">+添加</div>
     </div>
-
+		<mt-datetime-picker
+            ref="picker"
+            v-model="birthPicker"
+            type="date"
+            year-format="{value} 年"
+            month-format="{value} 月"
+            date-format="{value} 日"
+            :startDate="startDate"
+            :endDate="endDate"
+            @confirm="handleConfirm">
+        </mt-datetime-picker> 
 		<confirm-modal 
 			:show="deleteShow" 
 			@confirm_modal="tagDelete" 
@@ -82,10 +81,7 @@
 
 <script>
 import $ from 'jquery';
-import { Popup } from 'mint-ui';
-import { DatetimePicker } from 'mint-ui';
-import { MessageBox } from 'mint-ui';
-import { Toast , Indicator} from 'mint-ui'
+import { MessageBox, Toast , Indicator, DatetimePicker, Popup } from 'mint-ui';
 export default {
     data() {
         return {
@@ -94,7 +90,7 @@ export default {
             weight: '', //体重
             height: '', //身高
             sex: '',    //性别
-            birthPicker: '',      //生日
+            birthPicker: new Date(),      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
             aloneHealth:[], //新增疾病标签
@@ -103,7 +99,7 @@ export default {
             birth_time: true,
             birth: '',
             id :'',
-            startDate: new Date('1917-1-1'),
+            startDate: new Date(new Date().setFullYear(new Date().getFullYear()-80,0,1)),
             endDate: new Date(),
             
             currTagId: null,
@@ -158,15 +154,6 @@ export default {
                 this.birth_time = false
             }
         })
-				setTimeout(() => {
-					Indicator.close()
-				},15000)
-        //获取关系列表
-        // this.$api.indexGetRelation().then(res => {
-        //     this.relationship = res.form_relationship
-        // }, err => {
-            
-        // })
         
 
 

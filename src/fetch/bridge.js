@@ -34,9 +34,8 @@ setupWebViewJavascriptBridge(function(bridge) {
     }
 
     // 跳转消息页面
-    bridge.registerHandler('newsPage', (data, responseCallback) => {
-        router.push('/advices')
-        responseCallback()
+    bridge.registerHandler('viewPage', (data, responseCallback) => {
+        console.log(data)
     })
 
 })

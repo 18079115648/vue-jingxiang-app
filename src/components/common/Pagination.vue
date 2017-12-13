@@ -1,11 +1,11 @@
 <template>
-    <mt-loadmore :bottom-method="loadBottom" :top-method="loadTop" :auto-fill="false" :bottom-all-loaded="allLoaded" :bottomDistance="40" ref="loadmore">
+    <mt-loadmore :bottom-method="loadBottom" :top-method="loadTop" :auto-fill="false" :bottom-all-loaded="allLoaded" topDistance="40" bottomDistance="40" ref="loadmore">
         <slot></slot>
     </mt-loadmore>
 </template>
 
 <script>
-import {Loadmore} from 'mint-ui'
+import {Loadmore, Indicator} from 'mint-ui'
 export default {
     props: {
         render: {
@@ -44,7 +44,7 @@ export default {
         // 上拉刷新加载
         loadTop() {
             this.param.data.p = 1
-            this.param.content = []
+//          this.param.content = []
             this.loadPage(true)
         },
         // 刷新
@@ -55,9 +55,11 @@ export default {
         loadPage(isRefresh) {
             let self = this
             self.param.loadEnd = false
+            Indicator.open('加载中...')
             setTimeout(function() {
             	let Promise = self.param.type === 'post' ? self.$api.pagePost(self.uri, self.param.data) : self.$api.pageGet(self.uri, self.param.data)
                 Promise.then((response) => {
+                	Indicator.close()
                     if (isRefresh) {
                         self.param.data.p = 1
                         self.param.content = []

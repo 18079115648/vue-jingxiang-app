@@ -154,7 +154,7 @@ export default {
 	
 	//首页热门商品
 	indexHot(params) {
-		return fetchPost('/search/hot', params)
+		return fetchGet('/search/hot', params)
 	},
 	
 	//搜索历史

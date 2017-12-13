@@ -8,7 +8,7 @@
 	    		</div>
 	    		<div class="form-item">
 	    			<div class="icon code"></div>
-	    			<input v-model="code" type="tel" @input="inputNumber" placeholder="请输入验证码" maxlength="6" />
+	    			<input v-model="code" type="tel"  placeholder="请输入验证码" maxlength="6" />
 	    			<div class="captcha-btn" :class="{'disabled': !enableSend}" @click="getCode">{{captchaLabel}}</div>
 	    		</div>
 	    	</div>

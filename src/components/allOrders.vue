@@ -2,47 +2,41 @@
     <div class="app">
     	<Header :title="title"></Header>
     	<div class="content">
-    		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-	    		<img class="none-img" src="../../static/images/25@3x.png"  />
-	    		<p class="none-tip">暂无订单信息</p>
-	    	</div>
 	    	<Pagination :render="render" :autoload="false" :param="pagination" ref="pagination" uri="/order/index">
-					<div class="order-list" v-show="pagination.content.length>0">
-	        	<div class="order-item" v-for="(item, index) in pagination.content" :key="index">
-	        		<router-link :to="'/orderDetail/' + item.order_id">
-	        			<div class="order-top">
-		        			<span>{{item.update_time}}</span>
-		        			<span class="price-color">{{item.status_name}}</span>
-		        		</div>
-		        		<div class="product-list">
-					    		<div class="product-item" v-for="(obj, key) in item.goods" :key="key">
-					    			<img :src="obj.thumb" class="product-img" />
-					    			<div class="product-info">
-					    				<div class="product-name">{{obj.title}}</div>
-					    				<div class="product-amount">
-					    					<span class="price-color">&yen;{{obj.price_shop}}</span>
-					    					<span class="count">x{{obj.num}}</span>
-					    				</div>
-					    			</div>
-					    		</div>
-				    		
-				    	  </div>
-					    	<div class="order-total">
-					    		共 {{item.total}} 件商品， 合计：&yen;{{item.amount_payment}}
-					    	</div>
-	        		</router-link>
-		        		
-			    	<div class="order-operate">
-			    		<span @click="selectCancel(item.order_id, index)" v-if="item.status === 0 || item.status === 9">取消订单</span>
-			    		<span @click="payWx(item.order_id)"  v-if="item.status === 0 || item.status === 10" class="other">立即付款</span>
-			    		<span @click="orderReceipt(item.order_id)" v-if="item.status === 50" class="other">确认收货</span>
-			    		<span @click="orderComment(item.order_id)" v-if="item.status === 60 || item.status === 98" class="other">立即评价</span>
-			    		<span @click="selectDelete(item.order_id, index)" v-if="item.status === 60 || item.status === 98 || item.status === 99 || item.status === 100 || item.status === 110" class="other">删除订单</span>
-			    	</div>
-	        	</div>
-	        	
-	        </div>
-				</Pagination>
+				<div class="order-list" v-show="pagination.content.length>0">
+		        	<div class="order-item" v-for="(item, index) in pagination.content" :key="index">
+		        		<router-link :to="'/orderDetail/' + item.order_id">
+		        			<div class="order-top">
+			        			<span>{{item.update_time}}</span>
+			        			<span class="price-color">{{item.status_name}}</span>
+			        		</div>
+			        		<div class="product-list">
+						    		<div class="product-item" v-for="(obj, key) in item.goods" :key="key">
+						    			<img :src="obj.thumb" class="product-img" />
+						    			<div class="product-info">
+						    				<div class="product-name">{{obj.title}}</div>
+						    				<div class="product-amount">
+						    					<span class="price-color">&yen;{{obj.price_shop}}</span>
+						    					<span class="count">x{{obj.num}}</span>
+						    				</div>
+						    			</div>
+						    		</div>
+					    		
+					    	  </div>
+						    	<div class="order-total">
+						    		共 {{item.total}} 件商品， 合计：&yen;{{item.amount_payment}}
+						    	</div>
+		        		</router-link>
+			        		
+				    	<div class="order-operate"><span @click="selectCancel(item.order_id, index)" v-if="item.status === 0 || item.status === 9">取消订单</span><span @click="payWx(item.order_id)"  v-if="item.status === 0 || item.status === 10" class="other">立即付款</span><span @click="orderReceipt(item.order_id)" v-if="item.status === 50" class="other">确认收货</span><span @click="orderComment(item.order_id)" v-if="item.status === 60 || item.status === 98" class="other">立即评价</span><span @click="selectDelete(item.order_id, index)" v-if="item.status === 60 || item.status === 98 || item.status === 99 || item.status === 100 || item.status === 110" class="other">删除订单</span></div>
+		        	</div>
+		        	
+		        </div>
+		        <div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+		    		<img class="none-img" src="../../static/images/25@3x.png"  />
+		    		<p class="none-tip">暂无订单信息</p>
+		    	</div>
+			</Pagination>
     	</div>
 	    	
         
@@ -321,5 +315,7 @@ export default {
 		border: none;
 	}
 }
-
+.order-operate:empty{
+	display: none;
+}
 </style>

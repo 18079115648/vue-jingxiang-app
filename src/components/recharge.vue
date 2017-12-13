@@ -17,7 +17,7 @@
 		</div>
 		<p class="tip">温馨提示：您可以在线进行充值，线下到指定药店办理会员卡</p>
         <div class="btn-default btn-hover pay-wx" @click="payWx">微信支付</div>
-        <div class="btn-default btn-hover pay-ali" v-if="!isWx">支付宝支付</div>
+        <!--<div class="btn-default btn-hover pay-ali" v-if="!isWx">支付宝支付</div>-->
     </div>
 </template>
 

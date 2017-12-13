@@ -87,12 +87,16 @@ input {
     margin: 0;
     padding: 0;
     border: 0;
+    font-size: 100%;
     font-weight: normal;
     vertical-align: baseline;
     list-style: none;
     list-style-type: none;
+    
 }
-
+input, textarea{
+	font-size: 0.28rem;
+}
 
 /* HTML5 display-role reset for older browsers */
 

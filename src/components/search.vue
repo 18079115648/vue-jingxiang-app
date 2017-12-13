@@ -61,7 +61,6 @@ export default {
         })
 	},
 	mounted() {	
-		this.$refs.Input.focus()
 	},
 	methods: {
 		back() {

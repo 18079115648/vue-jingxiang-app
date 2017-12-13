@@ -97,14 +97,14 @@ export default {
             weight: '', //体重
             height: '', //身高
             sex: '',    //性别
-            birthPicker: '',      //生日
+            birthPicker: new Date(),      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
             aloneHealth:[], //新增疾病标签
             relationship_id:'',
             birth: '',
             id :'',
-            startDate: new Date('1917-1-1'),
+            startDate: new Date(new Date().setFullYear(new Date().getFullYear()-80,0,1)),
             endDate: new Date(),
             
             currTagId: null,
@@ -114,7 +114,7 @@ export default {
             deleteHealthShow: false  //记录删除弹框
         }
     },
-    created() {
+    mounted() {
                 
         //获取标签接口
         Indicator.open()

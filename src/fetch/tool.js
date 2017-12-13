@@ -4,7 +4,7 @@ import wx from 'weixin-js-sdk'
 *   Toast公共方法
 */
 
-export function loadJssdk(lineLink, imgUrl, shareTitle, descContent) {
+export function loadJssdk(lineLink, imgUrl, shareTitle, descContent, wxShare) {
     wx.onMenuShareTimeline({
         title: shareTitle, // 分享标题
         link: lineLink, // 分享链接
@@ -12,8 +12,8 @@ export function loadJssdk(lineLink, imgUrl, shareTitle, descContent) {
         success: function () {
             // 用户确认分享后执行的回调函数
         },
-        cancel: function () {
-            // 用户取消分享后执行的回调函数
+        fail: function () {
+            wxShare(lineLink, imgUrl, shareTitle, descContent)
         }
     });
     wx.onMenuShareAppMessage({

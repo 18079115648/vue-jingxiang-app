@@ -175,6 +175,9 @@ export default {
 			})
 		},
 		deleteGoods() {
+			if(this.checkGoodsId.length < 1) {
+				return
+			}
 			this.deleteShow = true
 		},
 		cartDelete() {

@@ -7,7 +7,7 @@
 			<router-link to="/recharge" class="recharge-btn">充值</router-link>
 		</div>
 		<div class="content">
-			<Pagination :render="render" :param="pagination" ref="pagination" uri="/order/recharge">
+			<Pagination :render="render" :autoload="false" :param="pagination" ref="pagination" uri="/order/recharge">
 				<div class="balance-list" v-show="pagination.content.length>0">
 					<div class="balance-item" v-for="(item, index) in pagination.content" :key="index">
 						<p class="item-name">
@@ -22,10 +22,11 @@
 						</p>
 					</div>
 				</div>
+				<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+		    		<p class="none-tip">暂无数据信息</p>
+		    	</div>
 			</Pagination>
-			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-	    		<p class="none-tip">暂无数据信息</p>
-	    	</div>
+			
 		</div>
 		
 		
@@ -47,13 +48,14 @@
 			}
 		},
 		created() {
-			this.balance = parseFloat(this.$storage.get('user_money')).toFixed(2)
+
 		},
 		mounted() {
-
+		  	this.$refs.pagination.refresh()
 		},
 		methods: {
 			render(res) {
+				this.balance = parseFloat(res.user_money).toFixed(2)
 				res.data.forEach((item) => {
 	            	this.pagination.content.push(item)
 	            })

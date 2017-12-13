@@ -1,8 +1,6 @@
 <template>
     <div class="app">
     	<div class="user-top">
-    		<router-link to="/indexSetting" v-if="!isWx" class="set-up other-icon"></router-link>
-    		<router-link to="/advices" class="news other-icon"></router-link>
     		<router-link to="/userInfo" class="to-info" >
     			<img :src="headImg" class="avatar" />
     			<p class="nick-name">{{userInfo.username}}</p>

@@ -64,13 +64,7 @@
     		</div>
     		<p class="time">下单时间：{{orderDetail.add_time}}</p>
     	</div>
-		<div class="order-operate">
-    		<span @click="orderCancel" v-if="orderDetail.status === 0 || orderDetail.status === 9">取消订单</span>
-    		<span @click="payWx" v-if="orderDetail.status === 0 || orderDetail.status === 10" class="other">立即付款</span>
-    		<span @click="orderReceipt" v-if="orderDetail.status === 50" class="other">确认收货</span>
-    		<span @click="orderComment" v-if="orderDetail.status === 60 || orderDetail.status === 98" class="other">立即评价</span>
-    		<span @click="orderDelete" v-if="orderDetail.status === 60 || orderDetail.status === 98 || orderDetail.status === 99 || orderDetail.status === 100 || orderDetail.status === 110" class="other">删除订单</span>
-    	</div>
+		<div class="order-operate"><span @click="orderCancel" v-if="orderDetail.status === 0 || orderDetail.status === 9">取消订单</span><span @click="payWx" v-if="orderDetail.status === 0 || orderDetail.status === 10" class="other">立即付款</span><span @click="orderReceipt" v-if="orderDetail.status === 50" class="other">确认收货</span><span @click="orderComment" v-if="orderDetail.status === 60 || orderDetail.status === 98" class="other">立即评价</span><span @click="orderDelete" v-if="orderDetail.status === 60 || orderDetail.status === 98 || orderDetail.status === 99 || orderDetail.status === 100 || orderDetail.status === 110" class="other">删除订单</span></div>
     	<enlarge-img v-show="enlargeStatus" :url="orderDetail.recipe_img" @enlargeCancel="enlargeStatus = false"></enlarge-img>
     </div>
 </template>
@@ -457,5 +451,8 @@ export default {
 		color: #3cafb6;
 		border-color: #3cafb6;
 	}
+}
+.order-operate:empty{
+	display: none;
 }
 </style>

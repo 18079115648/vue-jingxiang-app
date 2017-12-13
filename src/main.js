@@ -63,7 +63,10 @@ Vue.use(VueRouter)
 
 Vue.use(mint)
 
+//图片懒加载
+import VueLazyload from 'vue-lazyload'
 
+Vue.use(VueLazyload)
 
 
 

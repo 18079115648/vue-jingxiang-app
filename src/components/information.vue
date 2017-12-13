@@ -4,8 +4,8 @@
     <Header title="资讯" back="hidden"></Header>
 
 	<div class="content">
-		<Pagination :render="render" :param="pagination" ref="pagination" uri="/news/index">
-			<div class="product-nav" v-show="pagination.loadEnd">
+		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/news/index">
+			<div class="product-nav">
 				<mt-swipe :auto="0">
 					<mt-swipe-item v-for="(item,index) in bannerCat" :key="index">
 						<router-link :to="'/article/' + item.news_id " class="fullEle">
@@ -56,6 +56,9 @@ export default {
   },
   created() {
 
+  },
+  mounted() {
+  	this.$refs.pagination.refresh()
   },
   methods: {
   	HTMLDecode(text) {

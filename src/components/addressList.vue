@@ -2,10 +2,7 @@
     <div class="app">
     	<Header title="收货地址"></Header>
     	<div class="content">
-    		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-	    		<img class="none-img" src="../../static/images/19@3x.png"  />
-	    		<p class="none-tip">暂无收货地址</p>
-	    	</div>
+    		
 	    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/address/index">
 				<div class="address-list" v-show="pagination.content.length>0">
 		    		<div class="address-item" v-for="(item, index) in pagination.content" :key="index">
@@ -32,6 +29,10 @@
 		    				</div>
 		    			</div>
 		    		</div>
+		    	</div>
+		    	<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+		    		<img class="none-img" src="../../static/images/19@3x.png"  />
+		    		<p class="none-tip">暂无收货地址</p>
 		    	</div>
 			</Pagination>
     	</div>

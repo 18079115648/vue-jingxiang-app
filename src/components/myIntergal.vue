@@ -24,10 +24,11 @@
 							</p>
 						</div>
 					</div>
+					<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+			    		<p class="none-tip">暂无数据信息</p>
+			   	    </div>
 				</Pagination>
-				<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-		    		<p class="none-tip">暂无数据信息</p>
-		   	    </div>
+				
 			</div>
 				
 		</div>
@@ -37,7 +38,7 @@
 			cancel_text="下次再说"
 			confirm_text="去绑定"
 			@closeModal="tipShow = false" 
-			message="积分获取需要绑定会员卡哦！">
+			message="需要绑定会员卡才能查看积分哦！">
 		</confirm-modal>		
 	</section>
 </template>
@@ -51,7 +52,7 @@
 				index: 0,
 				pagination: {
 	                content: [],
-	                loadEnd: false,
+	                loadEnd: true,
 	                data: {
 	                	p: 1,
 						typePoints: 1
@@ -74,6 +75,9 @@
 			
 		},
 		mounted() {
+			if(this.$route.params.status == '0') {
+				return
+			}
 			this.changeMenu(1)
 		},
 		methods: {
@@ -85,6 +89,9 @@
 					return
 				}
 				this.index = index
+				if(this.$route.params.status == '0') {
+					return
+				}
 				this.pagination = {
                     content: [],
 	                loadEnd: false,
@@ -96,6 +103,9 @@
 				this.$refs.pagination.refresh()
 			},
 			render(res) {
+				if(this.$route.params.status == '0') {
+					return
+				}
 				res.data.forEach((item) => {
 	            	this.pagination.content.push(item)
 	            })

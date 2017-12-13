@@ -4,24 +4,24 @@
     <Header title="评论列表"></Header>
 
     <!-- 评价 -->
-	<div class="evaluate" v-show="pagination.loadEnd && pagination.content.length>0">
-        <div class="evaluate_title">
-            <div class="evaluate_left">
-                <span>评价(<span>{{total}}</span>)</span>
-            </div>
-            <div class="evaluate_right">
-                <span>好评度</span><span class="money">{{total_score}}</span><span class="money">%</span>
-            </div>
-        </div>
-    </div>	    
+		  
 	<div class="content">
 		<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/goods/comment">
-			
+			<div class="evaluate" v-show="pagination.content.length>0">
+		        <div class="evaluate_title">
+		            <div class="evaluate_left">
+		                <span>评价(<span>{{total}}</span>)</span>
+		            </div>
+		            <div class="evaluate_right">
+		                <span>好评度</span><span class="money">{{total_score}}</span><span class="money">%</span>
+		            </div>
+		        </div>
+		    </div>	  
 			<div class="review-list" v-show="pagination.content.length>0">
 				<div class="review" v-for="(item, index) in pagination.content" :key="index">
 			        <div class="review_info">
 			            <div class="review_portrait">
-			                <img :src="item.img_head">
+			                <img :src="item.img_head || '../../static/images/moren@3x.png'">
 			                <h4>{{item.uid_username}}</h4>
 			            </div>
 			
@@ -39,11 +39,12 @@
 			        </div>
 			    </div>
 			</div>
+			<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+	    		<img class="none-img" src="../../static/images/26@3x.png"  />
+	    		<p class="none-tip">该商品暂无评价</p>
+	    	</div>
 		</Pagination>
-		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
-    		<img class="none-img" src="../../static/images/26@3x.png"  />
-    		<p class="none-tip">该商品暂无评价</p>
-    	</div>
+		
 		
 			
 	</div>
@@ -72,7 +73,7 @@ export default {
 		    }
     },
     created() {
-    	this.$store.commit('setLoadingStatus', true)
+  
     },
     mounted() {
     	this.$refs.pagination.refresh()
@@ -100,7 +101,7 @@ export default {
 	position: absolute;
 	width: 100%;
 	left: 0;
-	top: 1.72rem;
+	top: 0.92rem;
 	bottom: 0;
 	overflow-y: auto;
 }

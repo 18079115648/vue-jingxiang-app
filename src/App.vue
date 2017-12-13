@@ -160,6 +160,12 @@ input::-webkit-search-cancel-button {
 .sheetModal *{
 	font-size: 0.32rem !important;
 }
+.mint-msgbox-btn{
+	font-size: 0.28rem !important;
+}
+.mint-msgbox-input input{
+	padding: 0.12rem 0.1rem !important;
+}
 .toast-icon{
 	width: 1.5rem;
 	height: 1.5rem;
@@ -376,5 +382,11 @@ input::-webkit-search-cancel-button {
 	}
 	.payWay .mint-radio-input:checked + .mint-radio-core::after{
 		background-image: url(../static/images/43@3x.png)
+	}
+	.content .mint-loadmore{
+		min-height: 100% !important;
+	}
+	.content .mint-loadmore-bottom{
+		display: none !important;
 	}
 </style>

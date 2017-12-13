@@ -9,13 +9,13 @@
     		</a>
     	</div>
     	<div class="content">
-    		<mt-loadmore :top-method="loadTop" :bottom-all-loaded="allLoaded" ref="loadmore">
+    		<mt-loadmore :top-method="loadTop" topDistance="40" bottomDistance="40" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
 			 	<section class="product-banner">
-					<mt-swipe :auto="0">
+					<mt-swipe :auto="4000">
 						<mt-swipe-item v-for="(item,index) in bannerList" :key="index">
-							<router-link :to="'/shopdetails/' + item.goods_id " class="fullEle">
+							<div @click="bannerLink(item)" class="fullEle">
 								<img :src="item.thumb" class="fullEle" />
-							</router-link>
+							</div>
 						</mt-swipe-item>
 					</mt-swipe>
 				</section>
@@ -46,7 +46,7 @@
 						<router-link :to="'/shopdetails/' + item.goods_id " class="pop-product-item" v-for="(item, index) in hotList" :key="index">
 							<div class="fullEle">
 								<div class="pop-product-img">
-									<img class="fullEle" :src="item.thumb" />
+									<img class="fullEle" v-lazy="item.thumb" />
 								</div>
 								<div class="pop-product-desc">
 									<p class="pop-product-name">{{item.title}}</p>
@@ -74,7 +74,10 @@ export default {
 			bannerCat: [{},{},{}],
 			hotList: [],
 			
-			allLoaded: true
+			allLoaded: true,
+			
+			page: 1,
+			allLoaded: false
 		}
 	},
 	created() {
@@ -109,11 +112,19 @@ export default {
 	methods: {
 		loadTop() {
 			Indicator.open('加载中...')
+			this.page = 1
 			this.homeData()
 		    
 		},
+		loadBottom() {
+			Indicator.open('加载中...')
+			this.$api.indexHot({
+        		p: this.page
+        	}).then(res => {
+        		this.loadPage(res)
+        	})
+		},
 		homeData() {
-			
 			this.$api.indexBanner().then(res => {   
 				this.bannerList = []
 	            res.forEach((item) => {
@@ -121,22 +132,53 @@ export default {
 	            		type_id: item.goods.type_id,
 	            		type_id_name: item.goods.type_id_name,
 	            		goods_id: item.goods.goods_id,
-	            		thumb: item.thumb
+	            		thumb: item.thumb,
+	            		url: item.url
 	            	}
 	            	this.bannerList.push(obj)
 	            })
 	            return this.$api.indexBannerCat()
 	        }).then(res => {
 	        	this.bannerCat = res.data
-	        	return this.$api.indexHot()
+	        	return this.$api.indexHot({
+	        		p: this.page
+	        	})
 	        }).then(res => {
-	        	Indicator.close()
 	        	this.hotList = []
-	        	res.forEach((item) => {
-	            	this.hotList.push(item.goods)
-	            })
-	        	this.$refs.loadmore.onTopLoaded();
+	        	this.loadPage(res, true)
+	        	
 	        })
+		},
+		loadPage(response, isRefresh) {
+			setTimeout(() => {
+				Indicator.close()
+			},200)
+			const self = this
+            if (isRefresh) {
+                this.allLoaded = false
+                this.hotList = []
+            }
+            if (response.current_page >= response.last_page || response.last_page === 0 ) {
+                // 设置加1
+                this.allLoaded = true
+            } else {
+                this.page++
+            }
+			response.data.forEach((item) => {
+            	this.hotList.push(item)
+            })
+            if (isRefresh) {
+                self.$refs.loadmore.onTopLoaded()
+            } else {
+                self.$refs.loadmore.onBottomLoaded()
+            }
+        },
+		bannerLink(item){
+			if(item.url) {
+				window.location.href = item.url
+			}else {
+				this.$router.push('/shopdetails/' + item.goods_id)
+			}
 		},
 		goList(id, name){
 	  		this.$storage.set('activity_cat', name)
@@ -184,6 +226,7 @@ export default {
 	top: 1.72rem;
 	bottom: 1rem;
 	overflow-y: auto;
+	-webkit-overflow-scrolling : touch;
 }
 .product-banner{
 	width: 100%;

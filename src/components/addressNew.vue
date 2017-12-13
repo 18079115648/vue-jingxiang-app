@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-    	<Header title="添加服务地址"></Header>
+    	<Header title="添加收货地址"></Header>
     	<div class="user-info">
 			<div class="link-item">
 				<span>收货人</span>

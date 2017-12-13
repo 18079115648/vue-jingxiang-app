@@ -2,13 +2,6 @@
     <section class="app">
         <Header title="设置"></Header>
 
-        <div class="field">
-            <div class="left">消息通知</div>
-            
-            <div class="right">
-    			<mt-switch ></mt-switch>
-    		</div>
-        </div>
 
         <router-link to="/aboutUs" class="field" style="margin-top:.4rem;">
             <div>关于我们</div>

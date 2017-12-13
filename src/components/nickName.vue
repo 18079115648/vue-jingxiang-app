@@ -19,7 +19,6 @@ export default {
 	},
 	mounted() {	
 		this.userInfo = this.$storage.get('user_info')
-		this.$refs.Input.focus()
 		let that = this
 		if(this.$refs.Input.setSelectionRange){
 			setTimeout(function() { 

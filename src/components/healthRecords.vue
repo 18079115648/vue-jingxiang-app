@@ -1,30 +1,31 @@
 <template>
   <section class="app">
     <Header title="健康档案"></Header>
-    <div class="health-list">
-    		<div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
+    <div class="content">
+		
+    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/health/index">
+			<div v-show="pagination.content.length>0">
+				<div class="recordsList" v-for="(item, index) in pagination.content" :key="index" @click="edit(item.health_id)">
+			        <div class="records">
+			            <span class="records_label">{{item.relationship_id_name}}</span>
+			            <span class="records_name">{{item.true_name}}</span>
+			            <span class="records_years">
+			                <span>{{item.age}}</span><span>岁</span>
+			            </span>
+			        </div>
+			        <div class="condition">
+			            <div class="health-tag" v-for="(list, index) in item.data">{{list.name}}</div>
+			        </div>
+			        <div class="arror_img">
+			            <img src="../../static/images/arror.png" >
+			        </div>
+			    </div>
+		    </div>
+		    <div class="none-data" v-show="pagination.content.length<1 && pagination.loadEnd">
 	    		<img class="none-img" src="../../static/images/25@3x.png"  />
 	    		<p class="none-tip">暂无亲属健康记录</p>
 	    	</div>
-	    	<Pagination :render="render" :param="pagination" :autoload="false" ref="pagination" uri="/health/index">
-					<div v-show="pagination.content.length>0">
-						<div class="recordsList" v-for="(item, index) in pagination.content" :key="index" @click="edit(item.health_id)">
-				        <div class="records">
-				            <span class="records_label">{{item.relationship_id_name}}</span>
-				            <span class="records_name">{{item.true_name}}</span>
-				            <span class="records_years">
-				                <span>{{item.age}}</span><span>岁</span>
-				            </span>
-				        </div>
-				        <div class="condition">
-				            <div class="health-tag" v-for="(list, index) in item.data">{{list.name}}</div>
-				        </div>
-				        <div class="arror_img">
-				            <img src="../../static/images/arror.png" >
-				        </div>
-				    </div>
-			    </div>
-				</Pagination>
+		</Pagination>
 	    	
     </div>
 	    
@@ -80,7 +81,7 @@ export default {
     position: relative;
     line-height: 1.5;
 }
-.health-list{
+.content{
 	  position: absolute;
     width: 100%;
     left: 0;

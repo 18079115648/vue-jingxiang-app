@@ -39,7 +39,7 @@
 		<div class="review" v-if="comment.comment_id">
 			<div class="review_info">
 				<div class="review_portrait">
-					<img :src="comment.img_head">
+					<img :src="comment.img_head || '../../static/images/moren@3x.png'">
 					<h4>{{comment.uid_username}}</h4>
 				</div>
 				<div class="review_grade">
@@ -193,8 +193,11 @@
 							jsApiList: ['uploadImage', 'getLocation', 'chooseImage', 'previewImage', 'uploadImage', 'scanQRCode', 'chooseWXPay', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 						})
 						wx.ready(function() {
-							self.$loadJssdk(lineLink, imgUrl, shareTitle, descContent)
+							self.$loadJssdk(lineLink, imgUrl, shareTitle, descContent, self.wxShare)
 						})
+						wx.error(function(res){
+							self.wxShare(lineLink, imgUrl, shareTitle, descContent)
+						});
 					}).catch((err) => {
 						console.log(err)
 					})
