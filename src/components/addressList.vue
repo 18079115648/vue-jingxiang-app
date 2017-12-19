@@ -56,7 +56,8 @@ export default {
                 	p: 1
                 }
             },
-            status: ''
+            status: '',
+            has_default: false
 		}
 	},
 	created() {
@@ -69,7 +70,14 @@ export default {
 		render(res) {
 			res.data.forEach((item) => {
             	this.pagination.content.push(item)
+            	if(item.is_default == 1) {
+            		this.has_default = true
+					this.$storage.set('default_addr_id', item.address_id)
+				}
             })
+			if(!this.has_default) {
+				this.$storage.remove('default_addr_id')
+			}
 		},
 		
 		//设置默认地址
@@ -98,6 +106,7 @@ export default {
 					});
 					return
 				}
+				this.$storage.set('default_addr_id', item.address_id)
 				this.pagination.content.forEach((obj) => {
 					obj.is_default = (item.address_id == obj.address_id)
 				})
@@ -157,7 +166,7 @@ export default {
 			if(this.status == 'list') {
 				return
 			}
-			this.$storage.set('default_addr_id',id)
+			this.$storage.set('select_addr_id',id)
 			this.$router.go(-1)
 		}
 	}

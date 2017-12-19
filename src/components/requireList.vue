@@ -167,6 +167,7 @@ export default {
 		},
 		paySubmit() {
 			this.$storage.set('select_goods_arr', this.checkGoodsId)
+			this.$storage.remove('select_addr_id')
 			this.$router.push({
 				path: '/orderSubmit/' + 902 + '/' + 2
 			})

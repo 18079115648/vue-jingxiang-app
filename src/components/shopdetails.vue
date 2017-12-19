@@ -309,6 +309,7 @@
 							this.showCharge = false
 						})
 					} else if(this.opereteStatus === 'pay' && this.aouthStatus) {
+						this.$storage.remove('select_addr_id')
 						this.$router.push({
 							path: '/orderSubmit/' + this.typeId + '/' + 0,
 							query: {

@@ -101,7 +101,7 @@ export default {
 		this.$store.commit('setLoadingStatus', true)
 		this.status = this.$route.params.status
 		this.type_id = this.$route.params.type
-		this.address_id = this.$storage.get('default_addr_id')
+		this.address_id = this.$storage.get('select_addr_id') || this.$storage.get('default_addr_id')
 		if(this.status === '0') {
 			this.goods_id = [this.$route.query.goods_id]
 			this.num = this.$route.query.num
