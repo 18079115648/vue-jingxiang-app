@@ -4,15 +4,15 @@
     	<div class="user-info">
 			<div class="link-item">
 				<span>收货人</span>
-				<input type="text" v-model.trim="addrDetail.contact" placeholder="请输入姓名" />
+				<input type="text" v-model="addrDetail.contact" @input="inputEmoji(addrDetail.contact, 1)" maxlength="20" placeholder="请输入姓名" />
 			</div>
 			<div class="link-item">
 				<span>联系电话</span>
-				<input type="tel" v-model.trim="addrDetail.mobile" maxlength="11" placeholder="请输入联系电话" />
+				<input type="tel" @input="inputNumber" v-model="addrDetail.mobile" maxlength="11" placeholder="请输入联系电话" />
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" v-model.trim="addrDetail.id_card" maxlength="18" placeholder="请输入身份证号" />
+				<input type="text" @input="inputCard" v-model="addrDetail.id_card" maxlength="18" placeholder="请输入身份证号" />
 			</div>
 			<div class="link-item">
 				<span>所在地区</span>
@@ -31,7 +31,7 @@
                     </select>
 				</div>
 			</div>
-			<textarea class="addr-detail" v-model.trim="addrDetail.address" placeholder="请填写详细地址"></textarea>
+			<textarea class="addr-detail" @input="inputEmoji(addrDetail.address, 2)" maxlength="40" v-model="addrDetail.address" placeholder="请填写详细地址"></textarea>
     	</div>
     	<div class="default-content">
     		<div class="left">
@@ -84,6 +84,21 @@ export default {
         })
 	},
 	methods: {
+		inputEmoji(value, name) {
+			value = value.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, '')
+            value = value.replace(/(^\s+)|\s+$/g, "")
+            name == 1 ? this.addrDetail.contact = value : this.addrDetail.address = value
+		},
+		inputNumber() {
+			if (!/^\d*$/.test(this.addrDetail.mobile)) {	
+	            this.addrDetail.mobile = this.addrDetail.mobile.replace(/\D+/g,'')            
+	        } 
+		},
+		inputCard() {
+			if (!/^\d*$/.test(this.addrDetail.id_card)) {	
+	            this.addrDetail.id_card = this.addrDetail.id_card.replace(/\D+/g,'')            
+	        } 
+		},
 		getCity(id, index) {
 			this.$api.cityList({
 				parent_id: id

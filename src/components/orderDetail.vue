@@ -194,7 +194,7 @@ export default {
 				this.$router.push('/paySubmit/' + this.$route.params.id + '/' + '22')
 				return
 			}
-			window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + this.$route.params.id
+			window.location.replace(this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + this.$route.params.id)
 		},
 		
 		//确认收货

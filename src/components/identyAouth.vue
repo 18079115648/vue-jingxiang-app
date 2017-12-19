@@ -4,11 +4,11 @@
     	<div class="user-info">
 			<div class="link-item">
 				<span>姓名</span>
-				<input ref="Input" type="text" v-model.trim="userInfo.true_name" maxlength="20" placeholder="您的真实姓名" />
+				<input ref="Input" type="text" v-model="userInfo.true_name" maxlength="20" placeholder="您的真实姓名" />
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" v-model.trim="userInfo.id_card" maxlength="18" placeholder="您的身份证号" />
+				<input type="text" v-model="userInfo.id_card" maxlength="18" placeholder="您的身份证号" />
 			</div>
     	</div>
 		<div class="save" @click="save">保存</div>

@@ -93,7 +93,7 @@ import { Toast } from 'mint-ui';
 				}).then(res => {
 					if(res.ret == 1) {
 						this.disabledBtn = false
-						window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_no
+						window.location.replace(this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_no)
 					}
 		        }, err => {
 		        	this.disabledBtn = false

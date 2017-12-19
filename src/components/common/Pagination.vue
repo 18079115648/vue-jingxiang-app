@@ -1,5 +1,5 @@
 <template>
-    <mt-loadmore :bottom-method="loadBottom" :top-method="loadTop" :auto-fill="false" :bottom-all-loaded="allLoaded" topDistance="40" bottomDistance="40" ref="loadmore">
+    <mt-loadmore :bottom-method="loadBottom" :top-method="loadTop" :auto-fill="false" :bottom-all-loaded="allLoaded" :topDistance="40" :bottomDistance="40" ref="loadmore">
         <slot></slot>
     </mt-loadmore>
 </template>

@@ -4,7 +4,7 @@
     		<div class="search-input">
     			<img src="../../static/images/search-icon.png" />
     			<form action="#" onsubmit="return false">
-					<input class="input" ref="Input" type="search" v-model.trim="word" @keyup.enter="searchProduct(word)"   placeholder="搜索你要的宝贝" />
+					<input class="input" ref="Input" maxlength="16" type="search" v-model.trim="word" @keyup.enter="searchProduct(word)"   placeholder="搜索你要的宝贝" />
 				</form>
     		</div>
     		<span @click="back">取消</span>

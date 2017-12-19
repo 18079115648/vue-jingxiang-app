@@ -138,7 +138,9 @@ export default {
 				  duration: 1000
 				});
 				this.pagination.content.splice(this.currIndex, 1)
-				
+				if(this.currId == this.$storage.get('default_addr_id')) {
+					this.$storage.remove('default_addr_id')
+				}
 	        }, err => {
 	        	
 	        })

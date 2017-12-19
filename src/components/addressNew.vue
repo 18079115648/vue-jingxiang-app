@@ -4,15 +4,15 @@
     	<div class="user-info">
 			<div class="link-item">
 				<span>收货人</span>
-				<input type="text" v-model.trim="contact" placeholder="请输入姓名" />
+				<input type="text" v-model="contact" @input="inputEmoji(contact, 1)" maxlength="20" placeholder="请输入姓名" />
 			</div>
 			<div class="link-item">
 				<span>联系电话</span>
-				<input type="tel" v-model.trim="mobile" maxlength="11" placeholder="请输入联系电话" />
+				<input type="tel" v-model="mobile" @input="inputNumber" maxlength="11" placeholder="请输入联系电话" />
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" v-model.trim="id_card" maxlength="18" placeholder="请输入身份证号" />
+				<input type="text" v-model="id_card" @input="inputCard" maxlength="18" placeholder="请输入身份证号" />
 			</div>
 			<div class="link-item">
 				<span>所在地区</span>
@@ -31,7 +31,7 @@
                     </select>
 				</div>
 			</div>
-			<textarea class="addr-detail" v-model.trim="address" placeholder="请填写详细地址"></textarea>
+			<textarea class="addr-detail" maxlength="40" @input="inputEmoji(address, 2)" v-model="address" placeholder="请填写详细地址"></textarea>
     	</div>
     	<div class="default-content">
     		<div class="left">
@@ -74,6 +74,21 @@ export default {
 		this.getCity(1, 0)
 	},
 	methods: {
+		inputEmoji(value, name) {
+			value = value.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, '')
+            value = value.replace(/(^\s+)|\s+$/g, "")
+            name == 1 ? this.contact = value : this.address = value
+		},
+		inputNumber() {
+			if (!/^\d*$/.test(this.mobile)) {	
+	            this.mobile = this.mobile.replace(/\D+/g,'')            
+	        } 
+		},
+		inputCard() {
+			if (!/^\d*$/.test(this.id_card)) {	
+	            this.id_card = this.id_card.replace(/\D+/g,'')            
+	        } 
+		},
 		getCity(id, index) {
 			this.$api.cityList({
 				parent_id: id

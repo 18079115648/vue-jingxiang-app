@@ -2,7 +2,7 @@
     <div class="app">
     	<Header title="修改昵称"></Header>
     	<section class="content">
-			<input ref="Input" type="text" maxlength="20" placeholder="昵称" @keyup.enter="save" v-model.trim="userInfo.username" />
+			<input ref="Input" type="text" @input="inputEmoji" maxlength="20" placeholder="昵称" @keyup.enter="save" v-model="userInfo.username" />
 		</section>
 		<div class="save" @click="save">保存</div>
     </div>
@@ -28,7 +28,19 @@ export default {
 		}
 	},
 	methods: {
+		inputEmoji() {
+			this.userInfo.username = this.userInfo.username.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, '')
+            this.userInfo.username = this.userInfo.username.replace(/(^\s+)|\s+$/g, "")
+		},
 		save() {
+			if(!this.userInfo.username) {
+				Toast({
+				  message: '请输入昵称',
+				  position: 'bottom',
+				  duration: 1000
+				});
+				return
+			}
 			this.$api.updataUserInfo(this.userInfo).then(res => { 
 				if(res.ret !== 1) {
 					Toast({

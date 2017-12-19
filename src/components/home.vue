@@ -9,7 +9,7 @@
     		</a>
     	</div>
     	<div class="content">
-    		<mt-loadmore :top-method="loadTop" topDistance="40" bottomDistance="40" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
+    		<mt-loadmore :top-method="loadTop" :topDistance="40" :bottomDistance="40" :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" ref="loadmore">
 			 	<section class="product-banner">
 					<mt-swipe :auto="4000">
 						<mt-swipe-item v-for="(item,index) in bannerList" :key="index">

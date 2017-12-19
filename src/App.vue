@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import '../static/rem.js'
+import '@/assets/reset.css'
+import '@/assets/rem.js'
 import { mapGetters } from 'vuex'
 export default{
 	  computed: {

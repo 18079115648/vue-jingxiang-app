@@ -8,7 +8,7 @@
 			</div>
 			<div class="link-item">
 				<span>身份证号</span>
-				<input type="tel" v-model="id_card" maxlength="18" placeholder="您的身份证号" class="input" />
+				<input type="text" v-model="id_card" maxlength="18" placeholder="您的身份证号" class="input" />
 			</div>
 			<div class="link-item has-right-arror">
 				<span>所在地区</span>
@@ -47,7 +47,8 @@ export default {
 	    		label: '女',
 	    		value: 2
 	    	}],
-	    	wH: 0
+	    	wH: 0,
+	    	disabledBtn: false
 	    }
 	},
 	created() {
@@ -96,12 +97,25 @@ export default {
 				});
 				return
 			}
+			if(this.sex == 'disabled') {
+				Toast({
+					message: '请选择性别',
+					position: 'bottom',
+					duration: 1000
+				});
+				return
+			}
+			if(this.disabledBtn) {
+				return
+			}
+			this.disabledBtn = true
 			this.$api.regMember({
 				true_name: this.name,
 				city: this.city,
 				idcard: this.id_card,
 				sex: this.sex
 			}).then(res => {
+				this.disabledBtn = false
 				if(res.ret == 1) {
 					Toast({
 					  message: '注册成功',

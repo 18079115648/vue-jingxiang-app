@@ -336,7 +336,7 @@ export default {
 //			})
 			this.createOrder().then(res => {
 				if(res.ret == 1) {
-					window.location.href = this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_id
+					window.location.replace(this.$store.state.back_uri + 'api/Payment/getCode/order_id/' + res.order_id)
 				}
 			}, err => {
 	

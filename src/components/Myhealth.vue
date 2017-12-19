@@ -15,8 +15,7 @@
    
     <div class="field has-right-arror">
         <span>性别</span>
-        <div class="none-data" v-if="sex_name">请选择</div>
-        <div class="right" v-if="!sex_name">
+        <div class="right">
         	<select @change="change" v-model="sex" dir="rtl">
 	            <option value="0">保密</option>
 	            <option value="1">男</option>
@@ -89,7 +88,7 @@ export default {
             name: '',   //姓名
             weight: '', //体重
             height: '', //身高
-            sex: '',    //性别
+            sex: '0',    //性别
             birthPicker: new Date(),      //生日
             relationship: [],  //关系
             HealthTag:[],      //常用健康标签
